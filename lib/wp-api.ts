@@ -108,7 +108,23 @@ export async function fetchCPTBySlug(cpt: string, slug: string): Promise<WPRawPo
     const res = await fetch(url, { cache: 'force-cache' });
     if (!res.ok) return null;
     const data: WPRawPost[] = await res.json();
-    return data[0] ?? null;
+    const post = data[0] ?? null;
+    if (!post) return null;
+
+    // Resolve featured_media and gallery_media IDs to URLs
+    const mediaIds: number[] = [];
+    if (post.featured_media && post.featured_media > 0) mediaIds.push(post.featured_media);
+    const gm = post.meta?.gallery_media;
+    if (Array.isArray(gm)) gm.forEach(id => { const n = Number(id); if (n > 0) mediaIds.push(n); });
+
+    const mediaMap = await batchResolveMedia(mediaIds);
+
+    const featuredUrl = post.featured_media && post.featured_media > 0
+      ? (mediaMap.get(post.featured_media) ?? '') : '';
+    const galleryUrls = Array.isArray(gm)
+      ? gm.map(id => mediaMap.get(Number(id)) ?? '').filter(Boolean) : [];
+
+    return { ...post, resolvedFeaturedImage: featuredUrl, resolvedGallery: galleryUrls };
   } catch {
     return null;
   }
