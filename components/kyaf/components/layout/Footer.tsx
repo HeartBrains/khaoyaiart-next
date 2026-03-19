@@ -11,7 +11,7 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
       <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-12 md:gap-0">
         
         {/* Left: Logo */}
-        <div className="flex flex-col w-[48%] md:w-[13.5vw]">
+        <div className="flex flex-col w-[48%] md:w-[13.5vw] pl-[24px]">
           <svg 
             className="w-full h-auto" 
             fill="none" 

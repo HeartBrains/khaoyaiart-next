@@ -11,9 +11,9 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
       <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-12 md:gap-0 mr-[5%] md:pr-[2%]">
         
         {/* Left: Logo */}
-        <div className="flex flex-col">
+        <div className="flex flex-col pl-[24px]">
           <Logo 
-            className="h-[40px] md:h-[60px] w-auto -m-2 md:m-0"
+            className="h-[40px] md:h-[60px] w-auto"
             white={true}
           />
         </div>
