@@ -32,10 +32,10 @@ export function ActivitiesPage({ onNavigate }: ActivitiesPageProps) {
     : activities.filter(a => a.status === statusFilter);
 
   const statusLabels: Record<StatusFilter, { en: string; th: string }> = {
-    all:      { en: 'All',      th: 'ทั้งหมด' },
-    upcoming: { en: 'Upcoming', th: 'กำลังจะมาถึง' },
-    current:  { en: 'Current',  th: 'ปัจจุบัน' },
-    past:     { en: 'Past',     th: 'ที่ผ่านมา' },
+    all:      { en: 'All Activities',      th: 'กิจกรรมทั้งหมด' },
+    upcoming: { en: 'Upcoming Activities', th: 'กิจกรรมที่กำลังจะมาถึง' },
+    current:  { en: 'Current Activities',  th: 'กิจกรรมปัจจุบัน' },
+    past:     { en: 'Past Activities',     th: 'กิจกรรมที่ผ่านมา' },
   };
 
   return (
