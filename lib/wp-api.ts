@@ -1,6 +1,23 @@
 const WP_BASE =
   (process.env.WP_BASE_URL ?? 'https://content.bkkkapp.com/wp-json/wp/v2').replace(/\/$/, '');
 
+// Maps registered post_type slugs to their WP REST API base paths
+const REST_BASE: Record<string, string> = {
+  exhibition:       'exhibitions',
+  activity:         'activities',
+  moving_image:     'moving-images',
+  residency_artist: 'residency-artists',
+  team_member:      'team-members',
+  blog_post:        'blog-posts',
+  press_item:       'press-items',
+  post:             'posts',
+  page:             'pages',
+};
+
+function restBase(cpt: string): string {
+  return REST_BASE[cpt] ?? cpt;
+}
+
 export type WPSite = 'bkkk' | 'kyaf';
 
 export interface WPRawPost {
@@ -38,7 +55,7 @@ export async function fetchCPT(cpt: string, site: WPSite): Promise<WPRawPost[]> 
     const allPosts: WPRawPost[] = [];
     let page = 1;
     while (true) {
-      const url = `${WP_BASE}/${cpt}?per_page=100&page=${page}&_fields=id,slug,title,content,date,modified,meta,featured_media`;
+      const url = `${WP_BASE}/${restBase(cpt)}?per_page=100&page=${page}&_fields=id,slug,title,content,date,modified,meta,featured_media`;
       const res = await fetch(url, { cache: 'force-cache' });
       if (!res.ok) break;
       const data: WPRawPost[] = await res.json();
@@ -104,7 +121,7 @@ export async function resolveMediaIds(ids: string): Promise<string[]> {
 
 export async function fetchCPTBySlug(cpt: string, slug: string): Promise<WPRawPost | null> {
   try {
-    const url = `${WP_BASE}/${cpt}?slug=${slug}&_fields=id,slug,title,content,date,modified,meta,featured_media`;
+    const url = `${WP_BASE}/${restBase(cpt)}?slug=${slug}&_fields=id,slug,title,content,date,modified,meta,featured_media`;
     const res = await fetch(url, { cache: 'force-cache' });
     if (!res.ok) return null;
     const data: WPRawPost[] = await res.json();
