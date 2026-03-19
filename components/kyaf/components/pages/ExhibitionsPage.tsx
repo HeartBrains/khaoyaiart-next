@@ -6,7 +6,7 @@ import { ParallaxHero } from '../ui/ParallaxHero';
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/utils/languageContext';
-import { exhibitions, type Exhibition } from '@/utils/exhibitionsDataNew';
+import { exhibitions, type Exhibition } from '@/components/kyaf/utils/exhibitionsDataNew';
 import { EXHIBITIONS_HERO_IMAGE } from '@/utils/imageConstants';
 
 interface ExhibitionsPageProps {

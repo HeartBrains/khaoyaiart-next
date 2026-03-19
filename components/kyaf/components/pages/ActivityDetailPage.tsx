@@ -15,7 +15,7 @@ import { Reveal } from '../ui/Reveal';
 import { VisitInfo } from './sections/VisitInfo';
 import { useLanguage } from '@/utils/languageContext';
 import { useActivityBySlug } from '@/lib/useWPData';
-import { getDetailContentByLanguage } from '@/utils/detailContent';
+import { getDetailContentByLanguage } from '@/components/kyaf/utils/detailContent';
 import { useScrollHide } from '@/utils/useScrollHide';
 
 interface ActivityDetailPageProps {

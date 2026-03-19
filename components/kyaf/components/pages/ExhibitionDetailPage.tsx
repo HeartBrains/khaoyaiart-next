@@ -4,8 +4,8 @@ import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useLanguage } from '@/utils/languageContext';
-import { getExhibitionBySlug, type Exhibition } from '@/utils/exhibitionsDataNew';
-import { getDetailContentByLanguage } from '@/utils/detailContent';
+import { getExhibitionBySlug, type Exhibition } from '@/components/kyaf/utils/exhibitionsDataNew';
+import { getDetailContentByLanguage } from '@/components/kyaf/utils/detailContent';
 import { Reveal } from '../ui/Reveal';
 import {
   Carousel,

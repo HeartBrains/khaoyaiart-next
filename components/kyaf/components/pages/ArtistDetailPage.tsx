@@ -14,7 +14,7 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import { Reveal } from '../ui/Reveal';
 import { useLanguage } from '@/utils/languageContext';
-import { ARTISTS } from '@/utils/mockData';
+import { ARTISTS_DATA as ARTISTS } from '@/components/kyaf/utils/residencyData';
 import { useScrollHide } from '@/utils/useScrollHide';
 
 interface ArtistDetailPageProps {

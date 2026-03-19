@@ -5,9 +5,9 @@ import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { Reveal } from '../ui/Reveal';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { useLanguage } from '@/utils/languageContext';
-import { exhibitions } from '@/utils/exhibitionsDataNew';
-import { activities } from '@/utils/activitiesDataNew';
-import { createBilingualPost } from '@/utils/dataAdapter';
+import { exhibitions } from '@/components/kyaf/utils/exhibitionsDataNew';
+import { activities } from '@/components/kyaf/utils/activitiesDataNew';
+import { createBilingualPost } from '@/components/kyaf/utils/dataAdapter';
 import { IMG_MADRID_SRC } from '@/utils/imageConstants';
 import { WPPost } from '@/utils/types';
 

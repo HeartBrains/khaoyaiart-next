@@ -3,8 +3,8 @@
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { HeroSlider } from '../ui/HeroSlider';
 import { useLanguage } from '@/utils/languageContext';
-import { exhibitions } from '@/utils/exhibitionsDataNew';
-import { activities } from '@/utils/activitiesDataNew';
+import { exhibitions } from '@/components/kyaf/utils/exhibitionsDataNew';
+import { activities } from '@/components/kyaf/utils/activitiesDataNew';
 import { HOME_HERO_IMAGES } from '@/utils/imageConstants';
 import { isHomeSectionVisible } from '@/utils/siteConfig';
 
