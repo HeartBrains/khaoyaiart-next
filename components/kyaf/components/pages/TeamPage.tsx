@@ -13,7 +13,7 @@ interface TeamPageProps {
     onNavigate?: (page: string) => void;
 }
 
-export function TeamPage({ activePage = 'team' }: TeamPageProps) {
+export function TeamPage({ activePage }: TeamPageProps) {
   const { language } = useLanguage();
 
   // Handle auto-scroll to section
@@ -157,7 +157,7 @@ export function TeamPage({ activePage = 'team' }: TeamPageProps) {
             {/* Left Column - Title */}
             <div className="w-full md:w-1/2 mb-12 md:mb-0">
                 <h2 className={`text-xl md:text-2xl font-normal sticky top-32 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                    {language === 'th' ? 'ทีมงาน' : 'Teams'}
+                    {language === 'th' ? 'ทีมงาน' : 'Team'}
                 </h2>
             </div>
 
