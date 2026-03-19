@@ -24,7 +24,7 @@ export function ContactPage() {
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
       </HeroSlider>
 
-      <div className="w-full px-6 pt-24">
+      <div className="w-full px-[6vw] pt-24">
         
         {/* Section 1: Connect with Khao Yai Art Forest */}
         <div className="flex flex-col md:flex-row mb-12 md:mb-16">

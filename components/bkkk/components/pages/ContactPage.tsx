@@ -21,7 +21,7 @@ export function ContactPage() {
           />
       </div>
 
-      <div className="w-full px-6 pt-24">
+      <div className="w-full px-[5%] pt-24">
         
         {/* Contact Content */}
         <div className="flex flex-col md:flex-row mb-32 md:mb-40">
