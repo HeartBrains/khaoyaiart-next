@@ -3,7 +3,8 @@
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { Reveal } from '../ui/Reveal';
 import { useLanguage } from '@/utils/languageContext';
-import { FOUNDER, DIRECTORS, TEAM_GROUPS, ADVISORY_BOARD_MEMBERS } from '@/components/bkkk/utils/teamDataBilingual';
+import { FOUNDER, DIRECTORS, TEAM_GROUPS } from '@/components/bkkk/utils/teamDataBilingual';
+const ADVISORY_BOARD_MEMBERS: string[] = [];
 
 const TEAM_HERO = 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=1600&auto=format&fit=crop';
 
@@ -38,9 +39,11 @@ export function TeamPage({ activePage }: TeamPageProps) {
             )}
             <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
               <div className="mb-2">{FOUNDER.name}</div>
-              {FOUNDER.bio && (
-                <div className="whitespace-pre-line text-base md:text-lg text-gray-700 mt-2">
-                  {language === 'th' ? (FOUNDER.bioTH || FOUNDER.bio) : FOUNDER.bio}
+              {FOUNDER.bio?.length > 0 && (
+                <div className="flex flex-col gap-3 text-base md:text-lg text-gray-700 mt-2">
+                  {(language === 'th' ? (FOUNDER.bioTH || FOUNDER.bio) : FOUNDER.bio).map((p, i) => (
+                    <p key={i}>{p}</p>
+                  ))}
                 </div>
               )}
             </div>
@@ -66,9 +69,11 @@ export function TeamPage({ activePage }: TeamPageProps) {
                     )}
                     <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
                       <div className="mb-2">{director.name}</div>
-                      {director.bio && (
-                        <div className="whitespace-pre-line text-base md:text-lg text-gray-700 mt-2">
-                          {language === 'th' ? (director.bioTH || director.bio) : director.bio}
+                      {director.bio?.length > 0 && (
+                        <div className="flex flex-col gap-3 text-base md:text-lg text-gray-700 mt-2">
+                          {(language === 'th' ? (director.bioTH || director.bio) : director.bio).map((p, i) => (
+                            <p key={i}>{p}</p>
+                          ))}
                         </div>
                       )}
                     </div>
@@ -108,15 +113,12 @@ export function TeamPage({ activePage }: TeamPageProps) {
             {TEAM_GROUPS.map((group, gIdx) => (
               <div key={gIdx} className="flex flex-col gap-4">
                 <h3 className="text-xl md:text-2xl font-normal text-gray-500">
-                  {language === 'th' ? (group.categoryTH || group.category) : group.category}
+                  {language === 'th' ? (group.roleTH || group.role) : group.role}
                 </h3>
-                <div className="flex flex-col gap-4">
-                  {group.members.map((member, mIdx) => (
-                    <div key={mIdx} className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
-                      <div>{member.name}</div>
-                      {member.role && (
-                        <div className="text-base text-gray-500">{language === 'th' ? (member.roleTH || member.role) : member.role}</div>
-                      )}
+                <div className="flex flex-col gap-2">
+                  {group.members.map((name, mIdx) => (
+                    <div key={mIdx} className="text-xl md:text-2xl font-sans text-black font-normal">
+                      {name}
                     </div>
                   ))}
                 </div>
