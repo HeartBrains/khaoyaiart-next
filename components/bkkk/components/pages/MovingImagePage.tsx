@@ -14,7 +14,8 @@ interface MovingImagePageProps {
 
 export function MovingImagePage({ onNavigate, targetSectionId, initialData = [] }: MovingImagePageProps) {
   const { language } = useLanguage();
-  const movingImageRecords = initialData;
+  const [movingImageRecords, setMovingImageRecords] = useState(initialData);
+  useEffect(() => { setMovingImageRecords(initialData); }, [initialData]);
   const [activeSection, setActiveSection] = useState('current-programs');
 
   const upcomingPrograms = movingImageRecords.filter(r => r.status === 'upcoming');

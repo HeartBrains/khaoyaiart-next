@@ -1,5 +1,6 @@
 // @ts-nocheck
 'use client';
+import { useState, useEffect } from 'react';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { Reveal } from '../ui/Reveal';
 import { useLanguage } from '@/utils/languageContext';
@@ -15,7 +16,8 @@ interface TeamPageProps {
 
 export function TeamPage({ activePage, initialData = [] }: TeamPageProps) {
   const { language } = useLanguage();
-  const members = initialData;
+  const [members, setMembers] = useState(initialData);
+  useEffect(() => { setMembers(initialData); }, [initialData]);
 
   // Group members by their 'group' field, sorted by 'order'
   const grouped = members

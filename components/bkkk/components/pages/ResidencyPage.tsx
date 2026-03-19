@@ -16,7 +16,8 @@ interface ResidencyPageProps {
 
 export function ResidencyPage({ onNavigate, targetSectionId, initialData = [] }: ResidencyPageProps) {
   const { language } = useLanguage();
-  const ARTISTS_DATA = initialData;
+  const [ARTISTS_DATA, setArtistsData] = useState(initialData);
+  useEffect(() => { setArtistsData(initialData); }, [initialData]);
   const [activeSection, setActiveSection] = useState('current-artists');
 
   // Helper function to extract year and month from period string

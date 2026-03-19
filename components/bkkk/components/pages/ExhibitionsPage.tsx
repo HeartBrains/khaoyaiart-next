@@ -47,7 +47,8 @@ interface ExhibitionsPageProps {
 export function ExhibitionsPage({ onNavigate, targetSectionId, initialData = [] }: ExhibitionsPageProps) {
   const { language } = useLanguage();
   const [activeSection, setActiveSection] = useState('current-exhibitions');
-  const exhibitions = initialData;
+  const [exhibitions, setExhibitions] = useState(initialData);
+  useEffect(() => { setExhibitions(initialData); }, [initialData]);
 
   const today = new Date();
 

@@ -18,7 +18,8 @@ interface ExhibitionsPageProps {
 type Category = 'current' | 'upcoming' | 'past';
 
 export function ExhibitionsPage({ onNavigate, activeSection, initialData = [] }: ExhibitionsPageProps) {
-  const exhibitions = initialData;
+  const [exhibitions, setExhibitions] = useState(initialData);
+  useEffect(() => { setExhibitions(initialData); }, [initialData]);
   const [activeCategory, setActiveCategory] = useState<Category>(
     (activeSection as Category) || 'current'
   );

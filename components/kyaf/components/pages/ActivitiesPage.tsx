@@ -16,7 +16,8 @@ interface ActivitiesPageProps {
 export function ActivitiesPage({ onNavigate, targetSectionId, initialData = [] }: ActivitiesPageProps) {
   const { language } = useLanguage();
   const [activeSection, setActiveSection] = useState('current-activities');
-  const rawActivities = initialData;
+  const [rawActivities, setRawActivities] = useState(initialData);
+  useEffect(() => { setRawActivities(initialData); }, [initialData]);
 
   const currentActivities  = rawActivities.filter(a => a.status === 'current');
   const upcomingActivities = rawActivities.filter(a => a.status === 'upcoming');

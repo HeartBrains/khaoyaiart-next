@@ -18,7 +18,8 @@ interface ResidencyPageProps {
 
 export function ResidencyPage({ onNavigate, activeSection, initialData = [] }: ResidencyPageProps) {
   const { language } = useLanguage();
-  const ARTISTS_DATA = initialData;
+  const [ARTISTS_DATA, setArtistsData] = useState(initialData);
+  useEffect(() => { setArtistsData(initialData); }, [initialData]);
   const [activeCategory, setActiveCategory] = useState<'current' | 'upcoming' | 'past'>(
     (activeSection === 'previous' ? 'past' : activeSection as 'current' | 'upcoming' | 'past') || 'current'
   );

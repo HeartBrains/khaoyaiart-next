@@ -1,6 +1,6 @@
 // @ts-nocheck
 'use client';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { Reveal } from '../ui/Reveal';
@@ -16,7 +16,8 @@ interface TeamPageProps {
 
 export function TeamPage({ activePage, initialData = [] }: TeamPageProps) {
   const { language } = useLanguage();
-  const members = initialData;
+  const [members, setMembers] = useState(initialData);
+  useEffect(() => { setMembers(initialData); }, [initialData]);
 
   const sorted = members.slice().sort((a, b) => a.order - b.order);
   const grouped = sorted.reduce((acc, m) => {
