@@ -10,12 +10,26 @@ const WP_BASE = (
   process.env.NEXT_PUBLIC_WP_BASE_URL ?? 'https://content.bkkkapp.com/wp-json/wp/v2'
 ).replace(/\/$/, '');
 
+async function batchResolveMedia(ids: number[]): Promise<Map<number, string>> {
+  const unique = [...new Set(ids.filter(id => id > 0))];
+  if (unique.length === 0) return new Map();
+  try {
+    const url = `${WP_BASE}/media?include=${unique.join(',')}&per_page=100&_fields=id,source_url`;
+    const res = await fetch(url);
+    if (!res.ok) return new Map();
+    const data: Array<{ id: number; source_url: string }> = await res.json();
+    return new Map(data.map(m => [m.id, m.source_url]));
+  } catch {
+    return new Map();
+  }
+}
+
 async function clientFetchCPT(cpt: string, site: 'bkkk' | 'kyaf'): Promise<WPRawPost[]> {
   try {
     const allPosts: WPRawPost[] = [];
     let page = 1;
     while (true) {
-      const url = `${WP_BASE}/${cpt}?per_page=100&page=${page}&_fields=id,slug,title,content,date,modified,meta`;
+      const url = `${WP_BASE}/${cpt}?per_page=100&page=${page}&_fields=id,slug,title,content,date,modified,meta,featured_media`;
       const res = await fetch(url);
       if (!res.ok) break;
       const data: WPRawPost[] = await res.json();
@@ -25,7 +39,25 @@ async function clientFetchCPT(cpt: string, site: 'bkkk' | 'kyaf'): Promise<WPRaw
       if (page >= total) break;
       page++;
     }
-    return allPosts.filter(p => !p.meta?.site || p.meta.site === site);
+    const filtered = allPosts.filter(p => !p.meta?.site || p.meta.site === site);
+
+    // Collect and batch-resolve all media IDs
+    const mediaIds: number[] = [];
+    for (const post of filtered) {
+      if (post.featured_media && post.featured_media > 0) mediaIds.push(post.featured_media);
+      const gm = post.meta?.gallery_media;
+      if (Array.isArray(gm)) gm.forEach(id => { const n = Number(id); if (n > 0) mediaIds.push(n); });
+    }
+    const mediaMap = await batchResolveMedia(mediaIds);
+
+    return filtered.map(post => {
+      const featuredUrl = post.featured_media && post.featured_media > 0
+        ? (mediaMap.get(post.featured_media) ?? '') : '';
+      const gm = post.meta?.gallery_media;
+      const galleryUrls = Array.isArray(gm)
+        ? gm.map(id => mediaMap.get(Number(id)) ?? '').filter(Boolean) : [];
+      return { ...post, resolvedFeaturedImage: featuredUrl, resolvedGallery: galleryUrls };
+    });
   } catch {
     return [];
   }

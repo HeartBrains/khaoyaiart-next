@@ -9,18 +9,26 @@ type Lang = 'en' | 'th';
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function m(post: WPRawPost, key: string): string {
-  return post.meta?.[key] ?? '';
+  const val = post.meta?.[key];
+  if (Array.isArray(val)) return val.join(',');
+  return val ?? '';
 }
 
-// Returns raw gallery_ids string for client-side media ID resolution
-export function getGalleryIds(post: WPRawPost): string {
-  return m(post, 'gallery_ids');
+// Featured image: native WP media (resolved at fetch time) → meta text URL fallback
+function featuredImageUrl(post: WPRawPost): string {
+  return post.resolvedFeaturedImage || post.meta?.['featured_image_url'] as string || '';
 }
 
+// Gallery: native WP media IDs (resolved at fetch time) merged with text URL fallback
 function galleryUrls(post: WPRawPost): string[] {
-  const raw = m(post, 'gallery');
-  if (!raw) return [];
-  return raw.split('|||').filter(Boolean);
+  const resolved = post.resolvedGallery ?? [];
+  const text = m(post, 'gallery') ? m(post, 'gallery').split('|||').filter(Boolean) : [];
+  // Merge: resolved first, then any text URLs not already included
+  const merged = [...resolved];
+  for (const url of text) {
+    if (!merged.includes(url)) merged.push(url);
+  }
+  return merged;
 }
 
 // ─── BKKK Exhibition ─────────────────────────────────────────────────────────
@@ -40,7 +48,7 @@ export function mapBkkkExhibition(post: WPRawPost) {
     },
     year: m(post, 'year'),
     status: (m(post, 'status') || 'past') as 'current' | 'upcoming' | 'past',
-    featuredImage: m(post, 'featured_image_url'),
+    featuredImage: featuredImageUrl(post),
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),
     tags: m(post, 'tags_en'),
@@ -70,7 +78,7 @@ export function mapKyafExhibition(post: WPRawPost) {
     },
     year: m(post, 'year'),
     status: (m(post, 'status') || 'past') as 'current' | 'upcoming' | 'past',
-    featuredImage: m(post, 'featured_image_url'),
+    featuredImage: featuredImageUrl(post),
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),
     tags: { en: m(post, 'tags_en').split(',').map(t => t.trim()).filter(Boolean), th: [] },
@@ -102,7 +110,7 @@ export function mapMovingImage(post: WPRawPost) {
     },
     year: m(post, 'year'),
     status: (m(post, 'status') || 'past') as 'current' | 'upcoming' | 'past',
-    featuredImage: m(post, 'featured_image_url'),
+    featuredImage: featuredImageUrl(post),
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),
     additionalInfo: m(post, 'additional_info'),
@@ -124,7 +132,7 @@ export function mapResidencyArtist(post: WPRawPost) {
     nameTH: m(post, 'title_th') || post.title.rendered,
     period: m(post, 'date_display_en'),
     periodTH: m(post, 'date_display_th') || m(post, 'date_display_en'),
-    featuredImage: m(post, 'featured_image_url'),
+    featuredImage: featuredImageUrl(post),
     status: (m(post, 'status') || 'past') as 'current' | 'past' | 'upcoming',
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),
@@ -143,7 +151,7 @@ export function mapBkkkTeamMember(post: WPRawPost) {
     roleTH: m(post, 'role_th') || m(post, 'role_en'),
     bio: [m(post, 'bio_en')].filter(Boolean),
     bioTH: [m(post, 'bio_th') || m(post, 'bio_en')].filter(Boolean),
-    image: m(post, 'photo_url') || undefined,
+    image: post.resolvedFeaturedImage || m(post, 'photo_url') || undefined,
     group: m(post, 'group'),
     order: Number(m(post, 'order')) || 0,
     site: m(post, 'site') as WPSite,
@@ -159,7 +167,7 @@ export function mapKyafTeamMember(post: WPRawPost) {
     roleTH: m(post, 'role_th') || m(post, 'role_en'),
     bio: m(post, 'bio_en') || undefined,
     bioTH: m(post, 'bio_th') || m(post, 'bio_en') || undefined,
-    image: m(post, 'photo_url') || undefined,
+    image: post.resolvedFeaturedImage || m(post, 'photo_url') || undefined,
     group: m(post, 'group'),
     order: Number(m(post, 'order')) || 0,
     site: m(post, 'site') as WPSite,
@@ -182,7 +190,7 @@ export function mapActivity(post: WPRawPost, lang: Lang = 'en') {
     categories: { en: tags, th: tags },
     typeLabel: { en: tags[0] ?? '', th: tags[0] ?? '' },
     artist: { en: m(post, 'artist_en'), th: m(post, 'artist_th') || m(post, 'artist_en') },
-    featuredImage: m(post, 'featured_image_url'),
+    featuredImage: featuredImageUrl(post),
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),
     listingSummary: {
