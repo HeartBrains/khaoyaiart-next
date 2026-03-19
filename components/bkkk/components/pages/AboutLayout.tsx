@@ -88,7 +88,7 @@ export function AboutLayout({ children, activePage, onNavigate }: AboutLayoutPro
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />
       </ParallaxHero>
 
-      <div className="w-full px-6 py-12 md:py-16">
+      <div className="w-full px-[5%] py-12 md:py-16">
         <div className="flex flex-col md:flex-row gap-12 md:gap-24">
           {/* Sidebar Navigation */}
           <aside className="w-full md:w-1/4 shrink-0 h-fit hidden md:block">
