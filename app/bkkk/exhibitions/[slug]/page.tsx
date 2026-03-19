@@ -3,6 +3,7 @@ import { fetchCPT, fetchCPTBySlug } from '@/lib/wp-api';
 import { exhibitions } from '@/components/bkkk/utils/exhibitionsDataNew';
 import { mapBkkkExhibition } from '@/lib/wp-mappers';
 import { bkkkMetadata } from '@/lib/seo';
+import { JsonLd, exhibitionJsonLd, breadcrumbJsonLd } from '@/lib/JsonLd';
 import { ExhibitionDetailClientPage } from '@/components/bkkk/ExhibitionDetailClientPage';
 
 
@@ -31,5 +32,32 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  return <ExhibitionDetailClientPage site="bkkk" slug={slug} />;
+  const post = await fetchCPTBySlug('exhibitions', slug);
+  const data = post ? mapBkkkExhibition(post) : null;
+  const BASE = 'https://next.bkkapp.com/bkkk';
+
+  return (
+    <>
+      {data && (
+        <>
+          <JsonLd data={exhibitionJsonLd({
+            name: str(data.title),
+            description: str(data.content)?.replace(/<[^>]+>/g, '').slice(0, 300),
+            image: data.featuredImage,
+            startDate: data.fromDate,
+            endDate: data.toDate,
+            url: `${BASE}/exhibitions/${slug}`,
+            location: { name: 'Bangkok Kunsthalle', address: 'Bangkok, Thailand' },
+            organizer: { name: 'Bangkok Kunsthalle', url: BASE },
+          })} />
+          <JsonLd data={breadcrumbJsonLd([
+            { name: 'Bangkok Kunsthalle', url: BASE },
+            { name: 'Exhibitions', url: `${BASE}/exhibitions` },
+            { name: str(data.title), url: `${BASE}/exhibitions/${slug}` },
+          ])} />
+        </>
+      )}
+      <ExhibitionDetailClientPage site="bkkk" slug={slug} />
+    </>
+  );
 }

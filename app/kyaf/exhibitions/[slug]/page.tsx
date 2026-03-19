@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { fetchCPT, fetchCPTBySlug } from '@/lib/wp-api';
 import { mapKyafExhibition } from '@/lib/wp-mappers';
 import { kyafMetadata } from '@/lib/seo';
+import { JsonLd, exhibitionJsonLd, breadcrumbJsonLd } from '@/lib/JsonLd';
 import { ExhibitionDetailClientPage } from '@/components/kyaf/ExhibitionDetailClientPage';
 
 
@@ -31,5 +32,32 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  return <ExhibitionDetailClientPage site="kyaf" slug={slug} />;
+  const post = await fetchCPTBySlug('exhibitions', slug);
+  const data = post ? mapKyafExhibition(post) : null;
+  const BASE = 'https://next.bkkapp.com/kyaf';
+
+  return (
+    <>
+      {data && (
+        <>
+          <JsonLd data={exhibitionJsonLd({
+            name: str(data.title),
+            description: str(data.content)?.replace(/<[^>]+>/g, '').slice(0, 300),
+            image: data.featuredImage,
+            startDate: data.fromDate,
+            endDate: data.toDate,
+            url: `${BASE}/exhibitions/${slug}`,
+            location: { name: 'Khao Yai Art Forest', address: 'Khao Yai, Thailand' },
+            organizer: { name: 'Khao Yai Art Forest', url: BASE },
+          })} />
+          <JsonLd data={breadcrumbJsonLd([
+            { name: 'Khao Yai Art Forest', url: BASE },
+            { name: 'Exhibitions', url: `${BASE}/exhibitions` },
+            { name: str(data.title), url: `${BASE}/exhibitions/${slug}` },
+          ])} />
+        </>
+      )}
+      <ExhibitionDetailClientPage site="kyaf" slug={slug} />
+    </>
+  );
 }
