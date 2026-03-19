@@ -39,8 +39,8 @@ async function batchResolveMedia(ids: number[]): Promise<Map<number, string>> {
   const unique = [...new Set(ids.filter(id => id > 0))];
   if (unique.length === 0) return new Map();
   try {
-    const url = `${WP_BASE}/media?include=${unique.join(',')}&per_page=100&_fields=id,source_url`;
-    const res = await fetch(url, { cache: 'force-cache' });
+    const url = `${WP_BASE}/media?include=${unique.join(',')}&per_page=100&_fields=id,source_url&_=${Date.now()}`;
+    const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) return new Map();
     const data: Array<{ id: number; source_url: string }> = await res.json();
     return new Map(data.map(m => [m.id, m.source_url]));
@@ -55,8 +55,8 @@ export async function fetchCPT(cpt: string, site: WPSite): Promise<WPRawPost[]> 
     const allPosts: WPRawPost[] = [];
     let page = 1;
     while (true) {
-      const url = `${WP_BASE}/${restBase(cpt)}?per_page=100&page=${page}&_fields=id,slug,title,content,date,modified,meta,featured_media`;
-      const res = await fetch(url, { cache: 'force-cache' });
+      const url = `${WP_BASE}/${restBase(cpt)}?per_page=100&page=${page}&_fields=id,slug,title,content,date,modified,meta,featured_media&_=${Date.now()}`;
+      const res = await fetch(url, { cache: 'no-store' });
       if (!res.ok) break;
       const data: WPRawPost[] = await res.json();
       if (!Array.isArray(data) || data.length === 0) break;
@@ -121,8 +121,8 @@ export async function resolveMediaIds(ids: string): Promise<string[]> {
 
 export async function fetchCPTBySlug(cpt: string, slug: string): Promise<WPRawPost | null> {
   try {
-    const url = `${WP_BASE}/${restBase(cpt)}?slug=${slug}&_fields=id,slug,title,content,date,modified,meta,featured_media`;
-    const res = await fetch(url, { cache: 'force-cache' });
+    const url = `${WP_BASE}/${restBase(cpt)}?slug=${slug}&_fields=id,slug,title,content,date,modified,meta,featured_media&_=${Date.now()}`;
+    const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) return null;
     const data: WPRawPost[] = await res.json();
     const post = data[0] ?? null;
