@@ -2,7 +2,8 @@
 import { X, ChevronDown, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useState } from 'react';
-import { ASSETS } from '@/utils/assets';
+import { ASSETS as ROOT_ASSETS } from '@/utils/assets';
+import { ASSETS } from '@/components/kyaf/utils/assets';
 import { ExpandingSearch } from '../search/ExpandingSearch';
 import { useLanguage } from '@/utils/languageContext';
 import { siteConfig, isMenuVisible, isSectionVisible } from '@/utils/siteConfig';
@@ -138,7 +139,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
           >
             <div 
               className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-              style={{ backgroundImage: `url(${ASSETS.BUILDING})` }}
+              style={{ backgroundImage: `url(${ASSETS.LANDING_BUILDING})`, filter: 'saturate(0) brightness(0.85)' }}
               onClick={onClose}
             />
 
