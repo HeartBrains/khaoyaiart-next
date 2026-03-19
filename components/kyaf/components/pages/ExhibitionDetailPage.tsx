@@ -53,8 +53,8 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
 
   // Content from WP
   const detailContent = language === 'th'
-    ? (exhibitionData?.contentTH || exhibitionData?.content)
-    : exhibitionData?.content;
+    ? (exhibitionData?.content?.th || exhibitionData?.content?.en)
+    : exhibitionData?.content?.en;
 
   return (
     <div className="w-full bg-white pb-24 min-h-screen">

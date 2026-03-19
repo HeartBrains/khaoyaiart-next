@@ -132,7 +132,7 @@ export function MovingImagePage({ onNavigate, targetSectionId }: MovingImagePage
                     </div>
                   ))
                 ) : (
-                  <div className="py-20 text-gray-400 font-sans text-xl md:text-2xl">
+                  <div className="py-20 text-gray-400 font-sans text-xl md:text-2xl text-left w-full">
                     {getEmptyStateMessage('noUpcomingMovingImage', language)}
                   </div>
                 )}
@@ -162,7 +162,7 @@ export function MovingImagePage({ onNavigate, targetSectionId }: MovingImagePage
                     </div>
                   ))
                 ) : (
-                  <div className="py-20 text-gray-400 font-sans text-xl md:text-2xl">
+                  <div className="py-20 text-gray-400 font-sans text-xl md:text-2xl text-left w-full">
                     {getEmptyStateMessage('noCurrentMovingImage', language)}
                   </div>
                 )}
@@ -192,7 +192,7 @@ export function MovingImagePage({ onNavigate, targetSectionId }: MovingImagePage
                     </div>
                   ))
                 ) : (
-                  <div className="py-20 text-gray-400 font-sans text-xl md:text-2xl">
+                  <div className="py-20 text-gray-400 font-sans text-xl md:text-2xl text-left w-full">
                     {getEmptyStateMessage('noPastMovingImage', language)}
                   </div>
                 )}

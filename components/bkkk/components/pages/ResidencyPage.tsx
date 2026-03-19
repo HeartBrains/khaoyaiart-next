@@ -164,7 +164,7 @@ export function ResidencyPage({ onNavigate, targetSectionId }: ResidencyPageProp
                       </Reveal>
                     ))
                   ) : (
-                    <p className={`text-xl md:text-2xl font-normal text-gray-400 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                    <p className={`text-xl md:text-2xl font-normal text-gray-400 text-left w-full ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                       {getEmptyStateMessage('noCurrentResidency', language)}
                     </p>
                   )}

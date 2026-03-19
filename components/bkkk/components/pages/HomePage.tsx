@@ -120,7 +120,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                       </div>
                     </div>
                   )) : (
-                    <p className={`text-xl md:text-2xl font-normal text-gray-400 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getEmptyStateMessage('noCurrentExhibitions', language)}</p>
+                    <p className={`text-xl md:text-2xl font-normal text-gray-400 text-left w-full ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getEmptyStateMessage('noCurrentExhibitions', language)}</p>
                   )}
                 </div>
               </section>
@@ -144,7 +144,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                       </div>
                     </div>
                   )) : (
-                    <p className={`text-xl md:text-2xl font-normal text-gray-400 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getEmptyStateMessage('noUpcomingExhibitions', language)}</p>
+                    <p className={`text-xl md:text-2xl font-normal text-gray-400 text-left w-full ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getEmptyStateMessage('noUpcomingExhibitions', language)}</p>
                   )}
                 </div>
               </section>
@@ -168,7 +168,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                       </div>
                     </div>
                   ) : (
-                    <p className={`text-xl md:text-2xl font-normal text-gray-400 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getEmptyStateMessage('noCurrentMovingImage', language)}</p>
+                    <p className={`text-xl md:text-2xl font-normal text-gray-400 text-left w-full ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getEmptyStateMessage('noCurrentMovingImage', language)}</p>
                   )}
                 </div>
               </section>
@@ -192,7 +192,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                       </div>
                     </div>
                   )) : (
-                    <p className={`text-xl md:text-2xl font-normal text-gray-400 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getEmptyStateMessage('noCurrentActivities', language)}</p>
+                    <p className={`text-xl md:text-2xl font-normal text-gray-400 text-left w-full ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getEmptyStateMessage('noCurrentActivities', language)}</p>
                   )}
                 </div>
               </section>
