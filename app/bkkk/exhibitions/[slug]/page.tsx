@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { fetchCPT, fetchCPTBySlug } from '@/lib/wp-api';
+import { exhibitions } from '@/components/bkkk/utils/exhibitionsDataNew';
 import { mapBkkkExhibition } from '@/lib/wp-mappers';
 import { bkkkMetadata } from '@/lib/seo';
 import { ExhibitionDetailClientPage } from '@/components/bkkk/ExhibitionDetailClientPage';
@@ -13,7 +14,8 @@ function str(v: string | { en: string; th: string } | undefined | null): string 
 
 export async function generateStaticParams() {
   const posts = await fetchCPT('exhibitions', 'bkkk');
-  return posts.map(p => ({ slug: p.slug }));
+  if (posts.length > 0) return posts.map(p => ({ slug: p.slug }));
+  return exhibitions.map(e => ({ slug: e.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
