@@ -25,6 +25,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
+          WP_BASE_URL: ${{ secrets.NEXT_PUBLIC_WP_BASE_URL }}
           NEXT_PUBLIC_WP_BASE_URL: ${{ secrets.NEXT_PUBLIC_WP_BASE_URL }}
 
       - name: Commit build output
