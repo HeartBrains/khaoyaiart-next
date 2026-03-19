@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "export",
-  distDir: "public_html",
+  distDir: "out",
   trailingSlash: true,
   images: {
     unoptimized: true,

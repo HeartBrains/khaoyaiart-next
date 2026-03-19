@@ -2,7 +2,7 @@
 module.exports = {
   siteUrl: process.env.SITE_URL || 'https://khaoyai.bkkkapp.com',
   generateRobotsTxt: false, // robots.txt is managed manually in public/robots.txt
-  outDir: 'public_html',
+  outDir: 'out',
   exclude: ['/404', '/500'],
   changefreq: 'weekly',
   priority: 0.7,
