@@ -2,5 +2,5 @@
 2:I[15787,["/_next/static/chunks/0684jzcn8cxdm.js","/_next/static/chunks/0dbhjjzl8qfwv.js","/_next/static/chunks/0g0-~25rhhzcc.js","/_next/static/chunks/0aspvnmxaw1gw.js","/_next/static/chunks/09t2isllljna7.js","/_next/static/chunks/0guixkl5d4m6m.js","/_next/static/chunks/0gv1fmowoa8hx.js","/_next/static/chunks/00kso5kh-fmo9.js"],"BlogDetailClientPage"]
 3:I[97367,["/_next/static/chunks/0684jzcn8cxdm.js","/_next/static/chunks/0dbhjjzl8qfwv.js"],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"kyaf","slug":"installation-basics"}],[["$","script","script-0",{"src":"/_next/static/chunks/00kso5kh-fmo9.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"a6dM40KK-kl8idn1DA-r3"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"kyaf","slug":"installation-basics"}],[["$","script","script-0",{"src":"/_next/static/chunks/00kso5kh-fmo9.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"l2aYVCjfgVCBbAwrKGPmy"}
 5:null
