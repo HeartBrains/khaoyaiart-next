@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import type { WPRawPost } from './wp-api';
+import { fetchCPTBySlug, type WPRawPost } from './wp-api';
 import {
   mapBkkkExhibition, mapKyafExhibition, mapMovingImage,
   mapActivity, mapResidencyArtist,
