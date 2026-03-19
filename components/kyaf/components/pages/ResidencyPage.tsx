@@ -8,16 +8,17 @@ import { ChevronDown } from 'lucide-react';
 import { useLanguage } from '@/utils/languageContext';
 import { getTranslation } from '@/utils/translations';
 import { IMG_FOG_SRC, IMG_PULSUS_SRC } from '@/utils/imageConstants';
-import { useResidencyArtists } from '@/lib/useWPData';
+import type { ResidencyArtistItem } from '@/lib/wp-mappers';
 
 interface ResidencyPageProps {
+  initialData?: ResidencyArtistItem[];
   onNavigate?: (page: string, slug?: string) => void;
   activeSection?: string;
 }
 
-export function ResidencyPage({ onNavigate, activeSection }: ResidencyPageProps) {
+export function ResidencyPage({ onNavigate, activeSection, initialData = [] }: ResidencyPageProps) {
   const { language } = useLanguage();
-  const { data: ARTISTS_DATA } = useResidencyArtists();
+  const ARTISTS_DATA = initialData;
   const [activeCategory, setActiveCategory] = useState<'current' | 'upcoming' | 'past'>(
     (activeSection === 'previous' ? 'past' : activeSection as 'current' | 'upcoming' | 'past') || 'current'
   );

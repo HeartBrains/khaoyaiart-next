@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { useLanguage } from '@/utils/languageContext';
-import { useBkkkExhibitions } from '@/lib/useWPData';
+import type { ExhibitionItem } from '@/lib/wp-mappers';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 
@@ -39,14 +39,15 @@ function getExhibitionStatus(fromDate: string, toDate: string, explicitStatus: '
 }
 
 interface ExhibitionsPageProps {
+  initialData?: ExhibitionItem[];
   onNavigate?: (page: string, slug?: string) => void;
   targetSectionId?: string;
 }
 
-export function ExhibitionsPage({ onNavigate, targetSectionId }: ExhibitionsPageProps) {
+export function ExhibitionsPage({ onNavigate, targetSectionId, initialData = [] }: ExhibitionsPageProps) {
   const { language } = useLanguage();
   const [activeSection, setActiveSection] = useState('current-exhibitions');
-  const { data: exhibitions } = useBkkkExhibitions();
+  const exhibitions = initialData;
 
   const today = new Date();
 

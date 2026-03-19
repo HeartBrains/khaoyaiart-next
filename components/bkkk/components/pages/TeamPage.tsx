@@ -3,18 +3,19 @@
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { Reveal } from '../ui/Reveal';
 import { useLanguage } from '@/utils/languageContext';
-import { useBkkkTeamMembers } from '@/lib/useWPData';
+import type { TeamMemberItem } from '@/lib/wp-mappers';
 
 const TEAM_HERO = 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=1600&auto=format&fit=crop';
 
 interface TeamPageProps {
+  initialData?: TeamMemberItem[];
   activePage?: string;
   onNavigate?: (page: string) => void;
 }
 
-export function TeamPage({ activePage }: TeamPageProps) {
+export function TeamPage({ activePage, initialData = [] }: TeamPageProps) {
   const { language } = useLanguage();
-  const { data: members } = useBkkkTeamMembers();
+  const members = initialData;
 
   // Group members by their 'group' field, sorted by 'order'
   const grouped = members

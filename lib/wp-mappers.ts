@@ -1,8 +1,15 @@
 /**
- * Maps raw WordPress REST API responses to the existing TypeScript interfaces
- * used by page components. Page components require zero changes.
+ * Maps raw WordPress REST API responses to typed objects used by page components.
  */
 import type { WPRawPost, WPSite } from './wp-api';
+
+// ─── Exported types (inferred from mapper return types) ───────────────────────
+export type ExhibitionItem = ReturnType<typeof mapBkkkExhibition>;
+export type KyafExhibitionItem = ReturnType<typeof mapKyafExhibition>;
+export type MovingImageItem = ReturnType<typeof mapMovingImage>;
+export type ResidencyArtistItem = ReturnType<typeof mapResidencyArtist>;
+export type TeamMemberItem = ReturnType<typeof mapBkkkTeamMember>;
+export type ActivityItem = ReturnType<typeof mapActivity>;
 
 type Lang = 'en' | 'th';
 
@@ -168,8 +175,8 @@ export function mapBkkkTeamMember(post: WPRawPost) {
     name: post.title.rendered,
     role: m(post, 'role_en'),
     roleTH: m(post, 'role_th') || m(post, 'role_en'),
-    bio: [m(post, 'bio_en')].filter(Boolean),
-    bioTH: [m(post, 'bio_th') || m(post, 'bio_en')].filter(Boolean),
+    bio: m(post, 'bio_en') || undefined,
+    bioTH: m(post, 'bio_th') || m(post, 'bio_en') || undefined,
     image: post.resolvedFeaturedImage || m(post, 'photo_url') || undefined,
     group: m(post, 'group'),
     order: Number(m(post, 'order')) || 0,

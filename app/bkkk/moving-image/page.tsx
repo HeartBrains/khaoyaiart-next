@@ -1,9 +1,13 @@
 import type { Metadata } from 'next';
 import { bkkkMetadata } from '@/lib/seo';
-import { ClientPage } from '@/components/bkkk/ClientPage';
+import { fetchCPT } from '@/lib/wp-api';
+import { mapMovingImage } from '@/lib/wp-mappers';
+import { MovingImagePage } from '@/components/bkkk/components/pages/MovingImagePage';
 
-export const metadata: Metadata = bkkkMetadata('Moving Image', 'Moving image programme at Bangkok Kunsthalle — film screenings and video art.', { path: '/bkkk/moving-image' });
+export const metadata: Metadata = bkkkMetadata('Moving Image', 'Moving image works at Bangkok Kunsthalle.', { path: '/bkkk/moving-images' });
 
-export default function Page() {
-  return <ClientPage site="bkkk" component="MovingImagePage"  />;
+export default async function Page() {
+  const posts = await fetchCPT('moving_image', 'bkkk');
+  const items = posts.map(mapMovingImage);
+  return <MovingImagePage initialData={items} />;
 }

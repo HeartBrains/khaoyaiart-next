@@ -1,9 +1,13 @@
 import type { Metadata } from 'next';
 import { bkkkMetadata } from '@/lib/seo';
-import { ClientPage } from '@/components/bkkk/ClientPage';
+import { fetchCPT } from '@/lib/wp-api';
+import { mapResidencyArtist } from '@/lib/wp-mappers';
+import { ResidencyPage } from '@/components/bkkk/components/pages/ResidencyPage';
 
-export const metadata: Metadata = bkkkMetadata('Residency', 'Artist residency programme at Bangkok Kunsthalle.', { path: '/bkkk/residency' });
+export const metadata: Metadata = bkkkMetadata('Residency', 'Artist residency program at Bangkok Kunsthalle.', { path: '/bkkk/residency' });
 
-export default function Page() {
-  return <ClientPage site="bkkk" component="ResidencyPage"  />;
+export default async function Page() {
+  const posts = await fetchCPT('residency_artist', 'bkkk');
+  const artists = posts.map(mapResidencyArtist);
+  return <ResidencyPage initialData={artists} />;
 }

@@ -2,20 +2,21 @@
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { Reveal } from '../ui/Reveal';
-import { useResidencyArtists } from '@/lib/useWPData';
+import type { ResidencyArtistItem } from '@/lib/wp-mappers';
 import { useLanguage } from '@/utils/languageContext';
 import { getTranslation } from '@/utils/translations';
 import { useState, useEffect } from 'react';
 import { getEmptyStateMessage } from '@/utils/siteConfig';
 
 interface ResidencyPageProps {
+  initialData?: ResidencyArtistItem[];
   onNavigate?: (page: string, slug?: string) => void;
   targetSectionId?: string;
 }
 
-export function ResidencyPage({ onNavigate, targetSectionId }: ResidencyPageProps) {
+export function ResidencyPage({ onNavigate, targetSectionId, initialData = [] }: ResidencyPageProps) {
   const { language } = useLanguage();
-  const { data: ARTISTS_DATA } = useResidencyArtists();
+  const ARTISTS_DATA = initialData;
   const [activeSection, setActiveSection] = useState('current-artists');
 
   // Helper function to extract year and month from period string

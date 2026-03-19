@@ -2,18 +2,19 @@
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { useLanguage } from '@/utils/languageContext';
 import { useState, useEffect, useMemo } from 'react';
-import { useMovingImages } from '@/lib/useWPData';
+import type { MovingImageItem } from '@/lib/wp-mappers';
 import { getEmptyStateMessage } from '@/utils/siteConfig';
 const movingImageHero = '/assets/429c8ad61cdb4d502462d129e377fe4faf35abf2.png';
 
 interface MovingImagePageProps {
+  initialData?: MovingImageItem[];
   onNavigate?: (page: string, slug?: string) => void;
   targetSectionId?: string;
 }
 
-export function MovingImagePage({ onNavigate, targetSectionId }: MovingImagePageProps) {
+export function MovingImagePage({ onNavigate, targetSectionId, initialData = [] }: MovingImagePageProps) {
   const { language } = useLanguage();
-  const { data: movingImageRecords } = useMovingImages();
+  const movingImageRecords = initialData;
   const [activeSection, setActiveSection] = useState('current-programs');
 
   const upcomingPrograms = movingImageRecords.filter(r => r.status === 'upcoming');

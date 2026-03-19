@@ -3,19 +3,20 @@
 import { useState, useEffect } from 'react';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { useLanguage } from '@/utils/languageContext';
-import { useKyafActivities } from '@/lib/useWPData';
+import type { ActivityItem } from '@/lib/wp-mappers';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 
 interface ActivitiesPageProps {
+  initialData?: ActivityItem[];
   onNavigate?: (page: string, slug?: string) => void;
   targetSectionId?: string;
 }
 
-export function ActivitiesPage({ onNavigate, targetSectionId }: ActivitiesPageProps) {
+export function ActivitiesPage({ onNavigate, targetSectionId, initialData = [] }: ActivitiesPageProps) {
   const { language } = useLanguage();
   const [activeSection, setActiveSection] = useState('current-activities');
-  const { data: rawActivities } = useKyafActivities();
+  const rawActivities = initialData;
 
   const currentActivities  = rawActivities.filter(a => a.status === 'current');
   const upcomingActivities = rawActivities.filter(a => a.status === 'upcoming');

@@ -5,17 +5,18 @@ import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { Reveal } from '../ui/Reveal';
 import { useLanguage } from '@/utils/languageContext';
-import { useKyafTeamMembers } from '@/lib/useWPData';
+import type { TeamMemberItem } from '@/lib/wp-mappers';
 import { TEAM_HERO_IMAGE } from '@/utils/imageConstants';
 
 interface TeamPageProps {
+  initialData?: TeamMemberItem[];
     activePage?: 'team' | 'advisory-board';
     onNavigate?: (page: string) => void;
 }
 
-export function TeamPage({ activePage }: TeamPageProps) {
+export function TeamPage({ activePage, initialData = [] }: TeamPageProps) {
   const { language } = useLanguage();
-  const { data: members } = useKyafTeamMembers();
+  const members = initialData;
 
   const sorted = members.slice().sort((a, b) => a.order - b.order);
   const grouped = sorted.reduce((acc, m) => {

@@ -6,18 +6,19 @@ import { ParallaxHero } from '../ui/ParallaxHero';
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/utils/languageContext';
-import { useKyafExhibitions } from '@/lib/useWPData';
+import type { KyafExhibitionItem } from '@/lib/wp-mappers';
 import { EXHIBITIONS_HERO_IMAGE } from '@/utils/imageConstants';
 
 interface ExhibitionsPageProps {
+  initialData?: KyafExhibitionItem[];
     onNavigate?: (page: string, slug?: string) => void;
     activeSection?: string;
 }
 
 type Category = 'current' | 'upcoming' | 'past';
 
-export function ExhibitionsPage({ onNavigate, activeSection }: ExhibitionsPageProps) {
-  const { data: exhibitions } = useKyafExhibitions();
+export function ExhibitionsPage({ onNavigate, activeSection, initialData = [] }: ExhibitionsPageProps) {
+  const exhibitions = initialData;
   const [activeCategory, setActiveCategory] = useState<Category>(
     (activeSection as Category) || 'current'
   );
