@@ -136,8 +136,8 @@ export function ExhibitionsPage({ onNavigate, activeSection }: ExhibitionsPagePr
                         </Reveal>
                     ))
                 ) : (
-                    <div className="py-20 text-gray-400 font-sans text-xl">
-                        {language === 'th' ? 'ไม่พบข้อมูล' : 'No results found'}
+                    <div className="py-20 text-gray-400 font-sans text-xl text-left">
+                        {language === 'th' ? 'เร็วๆ นี้' : 'Coming soon'}
                     </div>
                 )}
             </div>

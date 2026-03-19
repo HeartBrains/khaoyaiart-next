@@ -204,9 +204,10 @@ export function ExhibitionsPage({ onNavigate, targetSectionId }: ExhibitionsPage
                       <ExhibitionCard key={`upcoming-${item.id}`} item={item} index={index} prefix="upcoming" />
                     ))
                   ) : (
-                    <EmptyState 
+                    <EmptyState
+                      className="w-full text-left"
                       message={getEmptyStateMessage('noUpcomingExhibitions', language)}
-                      className="w-full text-center"
+                      className="w-full text-left"
                     />
                   )}
                 </div>
@@ -222,7 +223,8 @@ export function ExhibitionsPage({ onNavigate, targetSectionId }: ExhibitionsPage
                       <ExhibitionCard key={item.id} item={item} index={index} prefix="current" />
                     ))
                   ) : (
-                    <EmptyState 
+                    <EmptyState
+                      className="w-full text-left"
                       message={getEmptyStateMessage('noCurrentExhibitions', language)}
                     />
                   )}
@@ -239,7 +241,8 @@ export function ExhibitionsPage({ onNavigate, targetSectionId }: ExhibitionsPage
                       <ExhibitionCard key={`past-${item.id}`} item={item} index={index} prefix="past" />
                     ))
                   ) : (
-                    <EmptyState 
+                    <EmptyState
+                      className="w-full text-left"
                       message={getEmptyStateMessage('noPastExhibitions', language)}
                     />
                   )}
