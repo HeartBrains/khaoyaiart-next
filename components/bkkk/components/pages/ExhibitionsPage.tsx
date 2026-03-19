@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { useLanguage } from '@/utils/languageContext';
-import { exhibitions } from '@/utils/exhibitionsDataNew';
+import { useBkkkExhibitions } from '@/lib/useWPData';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 
@@ -46,9 +46,9 @@ interface ExhibitionsPageProps {
 export function ExhibitionsPage({ onNavigate, targetSectionId }: ExhibitionsPageProps) {
   const { language } = useLanguage();
   const [activeSection, setActiveSection] = useState('current-exhibitions');
+  const { data: exhibitions } = useBkkkExhibitions();
 
-  // Reference date: March 10, 2026
-  const today = new Date(2026, 2, 10);
+  const today = new Date();
 
   // Categorize exhibitions by status
   const currentExhibitions = exhibitions

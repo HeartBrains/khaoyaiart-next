@@ -3,17 +3,18 @@
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { HeroSlider } from '../ui/HeroSlider';
 import { useLanguage } from '@/utils/languageContext';
-import { exhibitions } from '@/components/kyaf/utils/exhibitionsDataNew';
-import { activities } from '@/components/kyaf/utils/activitiesDataNew';
+import { useKyafExhibitions, useKyafActivities } from '@/lib/useWPData';
 import { HOME_HERO_IMAGES } from '@/utils/imageConstants';
 import { isHomeSectionVisible } from '@/utils/siteConfig';
 
 export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: string) => void }) {
   const { language } = useLanguage();
 
-  // Filter by status directly from new data structure
-  const currentExhibitions = exhibitions.filter(ex => ex.status === 'current');
-  const currentActivities = activities.filter(act => act.status === 'current');
+  const { data: allExhibitions } = useKyafExhibitions();
+  const { data: allActivities }  = useKyafActivities();
+
+  const currentExhibitions = allExhibitions.filter(ex => ex.status === 'current');
+  const currentActivities  = allActivities.filter(act => act.status === 'current');
 
   // Check visibility settings
   const showCurrentExhibitions = isHomeSectionVisible('currentExhibitions');
@@ -42,40 +43,22 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
             <div className="w-full md:w-1/2 flex flex-col gap-12 md:gap-16">
                {currentExhibitions.map((exhibition) => (
                   <div key={exhibition.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', exhibition.slug)}>
-                      <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                          <ImageWithFallback 
-                              src={exhibition.featuredImage} 
-                              alt={language === 'th' ? exhibition.title.th : exhibition.title.en}
-                              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                          />
-                      </div>
-                      <div className="flex flex-col gap-4">
-                          {/* English Content */}
-                          {language !== 'th' && (
-                              <div className="flex flex-col gap-1">
-                                  <h3 className="text-lg md:text-xl font-normal leading-tight">{exhibition.title.en}</h3>
-                                  <p className="text-lg md:text-xl font-normal text-black leading-tight">{exhibition.artist.en}</p>
-                                  
-                                  {exhibition.listingSummary && (
-                                      <p className="text-lg md:text-xl font-normal text-gray-600 leading-tight mt-1 line-clamp-2">
-                                          {exhibition.listingSummary.en}
-                                      </p>
-                                  )}
-                              </div>
-                          )}
-
-                          {/* Thai Content */}
-                          {language === 'th' && (
-                              <div className="flex flex-col gap-1">
-                                  <h3 className="text-lg md:text-xl font-normal font-sans leading-[1.82em]">{exhibition.title.th}</h3>
-                                  <p className="text-lg md:text-xl font-normal font-sans text-black leading-[1.82em]">{exhibition.artist.th}</p>
-                                  
-                                  {exhibition.listingSummary && (
-                                      <p className="text-lg md:text-xl font-normal font-sans text-gray-600 leading-[1.82em] mt-1 line-clamp-2">
-                                          {exhibition.listingSummary.th}
-                                      </p>
-                                  )}
-                              </div>
+                      {exhibition.featuredImage && (
+                        <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
+                            <ImageWithFallback
+                                src={exhibition.featuredImage}
+                                alt={exhibition.title[language] || exhibition.title.en}
+                                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                            />
+                        </div>
+                      )}
+                      <div className="flex flex-col gap-1">
+                          <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{exhibition.title[language] || exhibition.title.en}</h3>
+                          <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{exhibition.artist[language] || exhibition.artist.en}</p>
+                          {exhibition.listingSummary && (
+                              <p className={`text-xl md:text-2xl font-normal text-gray-600 leading-tight mt-1 line-clamp-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                                  {exhibition.listingSummary[language] || exhibition.listingSummary.en}
+                              </p>
                           )}
                       </div>
                   </div>
@@ -95,40 +78,21 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
             <div className="w-full md:w-1/2 flex flex-col gap-12">
                 {currentActivities.map((activity) => (
                     <div key={activity.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', activity.slug)}>
-                        <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                            <ImageWithFallback 
-                                src={activity.featuredImage} 
-                                alt={language === 'th' ? activity.title.th : activity.title.en}
-                                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                            />
-                        </div>
-                        <div className="flex flex-col gap-4">
-                            {/* English Content */}
-                            {language !== 'th' && (
-                                <div className="flex flex-col gap-1">
-                                    <h3 className="text-lg md:text-xl font-normal leading-tight whitespace-pre-wrap">
-                                        {activity.title.en}
-                                    </h3>
-                                    {activity.listingSummary && (
-                                        <p className="text-lg md:text-xl font-normal text-gray-600 leading-tight mt-1 line-clamp-2">
-                                            {activity.listingSummary.en}
-                                        </p>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Thai Content */}
-                            {language === 'th' && (
-                                <div className="flex flex-col gap-1">
-                                    <h3 className="text-lg md:text-xl font-normal font-sans leading-[1.82em] whitespace-pre-wrap">
-                                        {activity.title.th}
-                                    </h3>
-                                    {activity.listingSummary && (
-                                        <p className="text-lg md:text-xl font-normal font-sans text-gray-600 leading-[1.82em] mt-1 line-clamp-2">
-                                            {activity.listingSummary.th}
-                                        </p>
-                                    )}
-                                </div>
+                        {activity.featuredImage && (
+                          <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
+                              <ImageWithFallback
+                                  src={activity.featuredImage}
+                                  alt={activity.title[language] || activity.title.en}
+                                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                              />
+                          </div>
+                        )}
+                        <div className="flex flex-col gap-1">
+                            <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{activity.title[language] || activity.title.en}</h3>
+                            {activity.listingSummary && (
+                                <p className={`text-xl md:text-2xl font-normal text-gray-600 leading-tight mt-1 line-clamp-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                                    {activity.listingSummary[language] || activity.listingSummary.en}
+                                </p>
                             )}
                         </div>
                     </div>

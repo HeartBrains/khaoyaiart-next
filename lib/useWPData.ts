@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { fetchCPTBySlug, type WPRawPost } from './wp-api';
 import {
   mapBkkkExhibition, mapKyafExhibition, mapMovingImage,
-  mapActivity, mapResidencyArtist,
+  mapActivity, mapResidencyArtist, mapBkkkTeamMember, mapKyafTeamMember,
 } from './wp-mappers';
 
 const WP_BASE = (
@@ -67,6 +67,9 @@ export const useBkkkActivities  = () => useWPList('activities', 'bkkk', mapActiv
 export const useKyafActivities  = () => useWPList('activities', 'kyaf', mapActivity);
 export const useMovingImages    = () => useWPList('moving-images', 'bkkk', mapMovingImage);
 export const useResidencyArtists = () => useWPList('residency-artists', 'bkkk', mapResidencyArtist);
+
+export const useBkkkTeamMembers = () => useWPList('team-members', 'bkkk', mapBkkkTeamMember);
+export const useKyafTeamMembers = () => useWPList('team-members', 'kyaf', mapKyafTeamMember);
 
 export const useExhibitionBySlug    = (slug: string) => useWPItem('exhibitions', slug, mapBkkkExhibition);
 export const useActivityBySlug      = (slug: string) => useWPItem('activities', slug, mapActivity);

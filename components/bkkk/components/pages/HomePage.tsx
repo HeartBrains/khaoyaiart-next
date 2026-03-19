@@ -1,10 +1,6 @@
 'use client';
 import { useLanguage } from '@/utils/languageContext';
-import { getMockPost } from '@/utils/mockDataBilingual';
-import { getCurrentMovingImageProgram } from '@/utils/movingImageData';
-import { movingImageGalleries } from '@/utils/movingImageGalleryData';
-import { getUpcomingExhibitions, getCurrentExhibitions } from '@/utils/exhibitionHelpers';
-import { getMockPostsByType } from '@/utils/mockDataBilingual';
+import { useBkkkExhibitions, useBkkkActivities, useMovingImages } from '@/lib/useWPData';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { HeroSlider } from '../ui/HeroSlider';
 import { useState, useEffect, useMemo } from 'react';
@@ -25,51 +21,21 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
   const { language, t } = useLanguage();
   const [activeSection, setActiveSection] = useState('current-exhibitions');
 
-  // Get bilingual content
-  const liminalSignals = getMockPost('liminal-signals', language);
-  
-  // Get current moving image program
-  const currentMovingImageProgram = getCurrentMovingImageProgram();
-  
-  // Get gallery images for current moving image program
-  const currentProgramGallery = currentMovingImageProgram?.slug 
-    ? (currentMovingImageProgram.gallery || movingImageGalleries[currentMovingImageProgram.slug as keyof typeof movingImageGalleries])
-    : null;
-  const currentProgramHasImages = currentMovingImageProgram?.featuredImage || (currentProgramGallery && currentProgramGallery.length > 0);
+  const { data: allExhibitions } = useBkkkExhibitions();
+  const { data: allActivities }  = useBkkkActivities();
+  const { data: allMovingImages } = useMovingImages();
 
-  // Get current and upcoming exhibitions from exhibitionsData.ts
-  const currentExhibitions = getCurrentExhibitions(language);
-  const upcomingExhibitions = getUpcomingExhibitions(language);
+  const currentExhibitions  = allExhibitions.filter(e => e.status === 'current');
+  const upcomingExhibitions = allExhibitions.filter(e => e.status === 'upcoming');
+  const currentActivities   = allActivities.filter(a => a.status === 'current');
+  const currentMovingImageProgram = allMovingImages.find(m => m.status === 'current') ?? null;
 
-  // Get current activities
-  const currentActivities = getMockPostsByType('activity', language);
-
-  // Anchor sections - memoized to prevent recreation on every render
-  const sections = useMemo(() => {
-    const allSections = [
-      { 
-        id: 'current-exhibitions', 
-        label: t?.('exhibitions.current') || 'Current Exhibitions', 
-        visible: siteConfig.homeAnchors.currentExhibitions && currentExhibitions.length > 0 
-      },
-      { 
-        id: 'upcoming-exhibitions', 
-        label: t?.('exhibitions.upcoming') || 'Upcoming Exhibitions', 
-        visible: siteConfig.homeAnchors.upcomingExhibitions && upcomingExhibitions.length > 0 
-      },
-      { 
-        id: 'moving-image-program', 
-        label: language === 'th' ? 'โปรแกรมภาพเคลื่อนไหวปัจจุบัน' : 'Current Moving Image Program', 
-        visible: siteConfig.homeAnchors.currentMovingImageProgram && currentMovingImageProgram !== null 
-      },
-      { 
-        id: 'current-activities', 
-        label: language === 'th' ? 'กิจกรรมปัจจุบัน' : 'Current Activities', 
-        visible: siteConfig.homeAnchors.currentActivities && currentActivities.length > 0 
-      }
-    ];
-    return allSections.filter(section => section.visible);
-  }, [language, t, currentExhibitions, upcomingExhibitions, currentMovingImageProgram, currentActivities]);
+  const sections = useMemo(() => [
+    { id: 'current-exhibitions',   label: language === 'th' ? 'นิทรรศการปัจจุบัน' : 'Current Exhibitions',          visible: siteConfig.homeAnchors.currentExhibitions && currentExhibitions.length > 0 },
+    { id: 'upcoming-exhibitions',  label: language === 'th' ? 'นิทรรศการที่กำลังจะเริ่ม' : 'Upcoming Exhibitions',   visible: siteConfig.homeAnchors.upcomingExhibitions && upcomingExhibitions.length > 0 },
+    { id: 'moving-image-program',  label: language === 'th' ? 'โปรแกรมภาพเคลื่อนไหวปัจจุบัน' : 'Current Moving Image Program', visible: siteConfig.homeAnchors.currentMovingImageProgram && currentMovingImageProgram !== null },
+    { id: 'current-activities',    label: language === 'th' ? 'กิจกรรมปัจจุบัน' : 'Current Activities',              visible: siteConfig.homeAnchors.currentActivities && currentActivities.length > 0 },
+  ].filter(s => s.visible), [language, currentExhibitions, upcomingExhibitions, currentMovingImageProgram, currentActivities]);
 
   // Scroll to section
   const scrollToSection = (id: string) => {
@@ -140,24 +106,22 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
             {siteConfig.homeAnchors.currentExhibitions && (
               <section id="current-exhibitions" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:gap-16 md:items-end">
-                  {currentExhibitions.map((item) => (
-                    <div key={item!.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', item!.slug)}>
-                      <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                        {item!.featuredImage && (
-                          <ImageWithFallback 
-                            src={item!.featuredImage?.sourceUrl} 
-                            alt={item!.title}
-                            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                          />
-                        )}
-                      </div>
+                  {currentExhibitions.length > 0 ? currentExhibitions.map((item) => (
+                    <div key={item.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', item.slug)}>
+                      {item.featuredImage && (
+                        <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
+                          <ImageWithFallback src={item.featuredImage} alt={item.title[language] || item.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                        </div>
+                      )}
                       <div className="flex flex-col gap-1">
-                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item!.title}</h3>
-                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item!.acf?.artist || item!.acf?.curator}</p>
-                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item!.date}</p>
+                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title[language] || item.title.en}</h3>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.artist[language] || item.artist.en}</p>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.dateDisplay[language] || item.dateDisplay.en}</p>
                       </div>
                     </div>
-                  ))}
+                  )) : (
+                    <p className={`text-xl md:text-2xl font-normal text-gray-400 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getEmptyStateMessage('noCurrentExhibitions', language)}</p>
+                  )}
                 </div>
               </section>
             )}
@@ -166,31 +130,21 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
             {siteConfig.homeAnchors.upcomingExhibitions && (
               <section id="upcoming-exhibitions" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:items-end">
-                  {upcomingExhibitions.length > 0 ? (
-                    upcomingExhibitions.map((item) => (
-                      <div key={item!.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', item!.slug)}>
-                        {item!.featuredImage && (
-                          <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                            <ImageWithFallback 
-                              src={item!.featuredImage?.sourceUrl} 
-                              alt={item!.title}
-                              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                            />
-                          </div>
-                        )}
-                        <div className="flex flex-col gap-1">
-                          <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item!.title}</h3>
-                          <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item!.acf?.artist || item!.acf?.curator}</p>
-                          <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item!.date}</p>
+                  {upcomingExhibitions.length > 0 ? upcomingExhibitions.map((item) => (
+                    <div key={item.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', item.slug)}>
+                      {item.featuredImage && (
+                        <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
+                          <ImageWithFallback src={item.featuredImage} alt={item.title[language] || item.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
+                      )}
+                      <div className="flex flex-col gap-1">
+                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title[language] || item.title.en}</h3>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.artist[language] || item.artist.en}</p>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.dateDisplay[language] || item.dateDisplay.en}</p>
                       </div>
-                    ))
-                  ) : (
-                    <div className="flex flex-col gap-6 w-full">
-                      <p className={`text-xl md:text-2xl font-normal text-gray-400 leading-tight text-center md:text-left ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                        {getEmptyStateMessage('noUpcomingExhibitions', language)}
-                      </p>
                     </div>
+                  )) : (
+                    <p className={`text-xl md:text-2xl font-normal text-gray-400 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getEmptyStateMessage('noUpcomingExhibitions', language)}</p>
                   )}
                 </div>
               </section>
@@ -200,33 +154,21 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
             {siteConfig.homeAnchors.currentMovingImageProgram && (
               <section id="moving-image-program" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:items-end">
-                  {currentMovingImageProgram && (
-                    <div 
-                      className="flex flex-col gap-6 w-full cursor-pointer group" 
-                      onClick={() => onNavigate?.('moving-image-detail', currentMovingImageProgram.slug)}
-                    >
-                      {currentProgramHasImages && (
+                  {currentMovingImageProgram ? (
+                    <div className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('moving-image-detail', currentMovingImageProgram.slug)}>
+                      {currentMovingImageProgram.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                          <ImageWithFallback
-                            src={currentMovingImageProgram.featuredImage || currentProgramGallery![0]}
-                            alt={currentMovingImageProgram.title[language]}
-                            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                          />
+                          <ImageWithFallback src={currentMovingImageProgram.featuredImage} alt={currentMovingImageProgram.title[language] || currentMovingImageProgram.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
-                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                          {currentMovingImageProgram.title[language]}
-                        </h3>
-                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                          {language === 'th' ? 'ภัณฑารักษ์: ' : 'Curated by '}
-                          {currentMovingImageProgram.curator[language]}
-                        </p>
-                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                          {currentMovingImageProgram.dateDisplay[language]}
-                        </p>
+                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{currentMovingImageProgram.title[language] || currentMovingImageProgram.title.en}</h3>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{currentMovingImageProgram.curator?.[language] || currentMovingImageProgram.curator?.en}</p>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{currentMovingImageProgram.dateDisplay?.[language] || currentMovingImageProgram.dateDisplay?.en}</p>
                       </div>
                     </div>
+                  ) : (
+                    <p className={`text-xl md:text-2xl font-normal text-gray-400 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getEmptyStateMessage('noCurrentMovingImage', language)}</p>
                   )}
                 </div>
               </section>
@@ -236,31 +178,21 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
             {siteConfig.homeAnchors.currentActivities && (
               <section id="current-activities" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:items-end">
-                  {currentActivities.length > 0 ? (
-                    currentActivities.map((item) => (
-                      <div key={item.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', item.slug)}>
+                  {currentActivities.length > 0 ? currentActivities.map((item) => (
+                    <div key={item.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', item.slug)}>
+                      {item.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                          <ImageWithFallback 
-                            src={item.featuredImage?.sourceUrl} 
-                            alt={item.title}
-                            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                          />
+                          <ImageWithFallback src={item.featuredImage} alt={item.title[language] || item.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
-                        <div className="flex flex-col gap-1">
-                          <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title}</h3>
-                          {item.acf?.artist && (
-                            <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.acf.artist}</p>
-                          )}
-                          <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.date}</p>
-                        </div>
+                      )}
+                      <div className="flex flex-col gap-1">
+                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title[language] || item.title.en}</h3>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.artist?.[language] || item.artist?.en}</p>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.dateDisplay?.[language] || item.dateDisplay?.en}</p>
                       </div>
-                    ))
-                  ) : (
-                    <div className="flex flex-col gap-6 w-full">
-                      <p className={`text-xl md:text-2xl font-normal text-gray-400 leading-tight text-center md:text-left ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                        {getEmptyStateMessage('noCurrentActivities', language)}
-                      </p>
                     </div>
+                  )) : (
+                    <p className={`text-xl md:text-2xl font-normal text-gray-400 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getEmptyStateMessage('noCurrentActivities', language)}</p>
                   )}
                 </div>
               </section>

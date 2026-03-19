@@ -3,8 +3,7 @@
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { Reveal } from '../ui/Reveal';
 import { useLanguage } from '@/utils/languageContext';
-import { FOUNDER, DIRECTORS, TEAM_GROUPS } from '@/components/bkkk/utils/teamDataBilingual';
-const ADVISORY_BOARD_MEMBERS: string[] = [];
+import { useBkkkTeamMembers } from '@/lib/useWPData';
 
 const TEAM_HERO = 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=1600&auto=format&fit=crop';
 
@@ -15,6 +14,25 @@ interface TeamPageProps {
 
 export function TeamPage({ activePage }: TeamPageProps) {
   const { language } = useLanguage();
+  const { data: members } = useBkkkTeamMembers();
+
+  // Group members by their 'group' field, sorted by 'order'
+  const grouped = members
+    .slice()
+    .sort((a, b) => a.order - b.order)
+    .reduce((acc, m) => {
+      const key = m.group || 'Team';
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(m);
+      return acc;
+    }, {} as Record<string, typeof members>);
+
+  const FOUNDER = members.find(m => m.group?.toLowerCase() === 'founder');
+  const DIRECTORS = grouped['Directors'] || grouped['directors'] || [];
+  const ADVISORY = grouped['Advisory Board'] || grouped['advisory-board'] || [];
+  const teamGroups = Object.entries(grouped).filter(
+    ([key]) => !['founder', 'Founder', 'Directors', 'directors', 'Advisory Board', 'advisory-board'].includes(key)
+  );
 
   return (
     <div className="relative w-full min-h-screen bg-white pb-24">
@@ -25,30 +43,30 @@ export function TeamPage({ activePage }: TeamPageProps) {
       <div className="w-full px-[5%] pt-[96px] pb-[0px]">
 
         {/* Founder */}
-        <section id="founder" className="flex flex-col md:flex-row mb-24 md:mb-32">
-          <div className="w-full md:w-1/2 mb-12 md:mb-0">
-            <h2 className="text-xl md:text-2xl font-normal sticky top-32">
-              {language === 'th' ? 'ผู้ก่อตั้ง' : 'Founder'}
-            </h2>
-          </div>
-          <div className="w-full md:w-1/2 flex flex-col gap-8">
-            {FOUNDER.image && (
-              <div className="w-full mb-4">
-                <img src={FOUNDER.image} alt={FOUNDER.name} className="w-full h-auto object-cover" />
-              </div>
-            )}
-            <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
-              <div className="mb-2">{FOUNDER.name}</div>
-              {FOUNDER.bio?.length > 0 && (
-                <div className="flex flex-col gap-3 text-base md:text-lg text-gray-700 mt-2">
-                  {(language === 'th' ? (FOUNDER.bioTH || FOUNDER.bio) : FOUNDER.bio).map((p, i) => (
-                    <p key={i}>{p}</p>
-                  ))}
+        {FOUNDER && (
+          <section id="founder" className="flex flex-col md:flex-row mb-24 md:mb-32">
+            <div className="w-full md:w-1/2 mb-12 md:mb-0">
+              <h2 className="text-xl md:text-2xl font-normal sticky top-32">
+                {language === 'th' ? 'ผู้ก่อตั้ง' : 'Founder'}
+              </h2>
+            </div>
+            <div className="w-full md:w-1/2 flex flex-col gap-8">
+              {FOUNDER.image && (
+                <div className="w-full mb-4">
+                  <img src={FOUNDER.image} alt={FOUNDER.name} className="w-full h-auto object-cover" />
                 </div>
               )}
+              <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
+                <div className="mb-2">{FOUNDER.name}</div>
+                {FOUNDER.bio && (
+                  <div className="text-base md:text-lg text-gray-700 mt-2">
+                    <p>{language === 'th' ? (FOUNDER.bioTH || FOUNDER.bio) : FOUNDER.bio}</p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* Directors */}
         {DIRECTORS.length > 0 && (
@@ -69,11 +87,10 @@ export function TeamPage({ activePage }: TeamPageProps) {
                     )}
                     <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
                       <div className="mb-2">{director.name}</div>
-                      {director.bio?.length > 0 && (
-                        <div className="flex flex-col gap-3 text-base md:text-lg text-gray-700 mt-2">
-                          {(language === 'th' ? (director.bioTH || director.bio) : director.bio).map((p, i) => (
-                            <p key={i}>{p}</p>
-                          ))}
+                      <div className="text-base md:text-lg text-gray-500">{language === 'th' ? (director.roleTH || director.role) : director.role}</div>
+                      {director.bio && (
+                        <div className="text-base md:text-lg text-gray-700 mt-2">
+                          <p>{language === 'th' ? (director.bioTH || director.bio) : director.bio}</p>
                         </div>
                       )}
                     </div>
@@ -85,7 +102,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
         )}
 
         {/* Advisory Board */}
-        {ADVISORY_BOARD_MEMBERS?.length > 0 && (
+        {ADVISORY.length > 0 && (
           <section id="advisory-board" className="flex flex-col md:flex-row mb-24 md:mb-32">
             <div className="w-full md:w-1/2 mb-12 md:mb-0">
               <h2 className="text-xl md:text-2xl font-normal sticky top-32">
@@ -93,39 +110,32 @@ export function TeamPage({ activePage }: TeamPageProps) {
               </h2>
             </div>
             <div className="w-full md:w-1/2 flex flex-col gap-4">
-              {ADVISORY_BOARD_MEMBERS.map((member, idx) => (
-                <p key={idx} className="text-xl md:text-2xl font-sans text-black font-normal">
-                  {member}
-                </p>
+              {ADVISORY.map((member, idx) => (
+                <div key={idx} className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
+                  <div>{member.name}</div>
+                  {member.role && <div className="text-base md:text-lg text-gray-500">{language === 'th' ? (member.roleTH || member.role) : member.role}</div>}
+                </div>
               ))}
             </div>
           </section>
         )}
 
-        {/* Team */}
-        <section id="team" className="flex flex-col md:flex-row mb-12">
-          <div className="w-full md:w-1/2 mb-12 md:mb-0">
-            <h2 className="text-xl md:text-2xl font-normal sticky top-32">
-              {language === 'th' ? 'ทีมงาน' : 'Team'}
-            </h2>
-          </div>
-          <div className="w-full md:w-1/2 flex flex-col gap-12">
-            {TEAM_GROUPS.map((group, gIdx) => (
-              <div key={gIdx} className="flex flex-col gap-4">
-                <h3 className="text-xl md:text-2xl font-normal text-gray-500">
-                  {language === 'th' ? (group.roleTH || group.role) : group.role}
-                </h3>
-                <div className="flex flex-col gap-2">
-                  {group.members.map((name, mIdx) => (
-                    <div key={mIdx} className="text-xl md:text-2xl font-sans text-black font-normal">
-                      {name}
-                    </div>
-                  ))}
+        {/* Team groups */}
+        {teamGroups.map(([groupName, groupMembers], gIdx) => (
+          <section key={gIdx} id={groupName.toLowerCase().replace(/\s+/g, '-')} className="flex flex-col md:flex-row mb-24 md:mb-32">
+            <div className="w-full md:w-1/2 mb-12 md:mb-0">
+              <h2 className="text-xl md:text-2xl font-normal sticky top-32">{groupName}</h2>
+            </div>
+            <div className="w-full md:w-1/2 flex flex-col gap-4">
+              {groupMembers.map((member, mIdx) => (
+                <div key={mIdx} className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
+                  <div>{member.name}</div>
+                  {member.role && <div className="text-base md:text-lg text-gray-500">{language === 'th' ? (member.roleTH || member.role) : member.role}</div>}
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
+        ))}
 
       </div>
     </div>
