@@ -38,6 +38,23 @@ export async function fetchCPT(cpt: string, site: WPSite): Promise<WPRawPost[]> 
   }
 }
 
+// Resolve comma-separated WP attachment IDs to source URLs (client-side use)
+export async function resolveMediaIds(ids: string): Promise<string[]> {
+  const list = ids.split(',').map(s => s.trim()).filter(Boolean);
+  if (list.length === 0) return [];
+  const results = await Promise.all(
+    list.map(async id => {
+      try {
+        const res = await fetch(`${WP_BASE}/media/${id}?_fields=source_url`);
+        if (!res.ok) return null;
+        const data = await res.json();
+        return (data.source_url as string) || null;
+      } catch { return null; }
+    })
+  );
+  return results.filter((u): u is string => u !== null);
+}
+
 export async function fetchCPTBySlug(cpt: string, slug: string): Promise<WPRawPost | null> {
   try {
     const url = `${WP_BASE}/${cpt}?slug=${slug}&_fields=id,slug,title,content,date,modified,meta,featured_media`;

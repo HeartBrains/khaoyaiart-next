@@ -12,6 +12,11 @@ function m(post: WPRawPost, key: string): string {
   return post.meta?.[key] ?? '';
 }
 
+// Returns raw gallery_ids string for client-side media ID resolution
+export function getGalleryIds(post: WPRawPost): string {
+  return m(post, 'gallery_ids');
+}
+
 function galleryUrls(post: WPRawPost): string[] {
   const raw = m(post, 'gallery');
   if (!raw) return [];
