@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://khaoyaiart.bkkkapp.com/sitemap.xml
+Sitemap: https://khaoyaiartforest.com/sitemap.xml

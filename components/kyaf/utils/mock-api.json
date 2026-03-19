@@ -1,0 +1,271 @@
+{
+  "description": "This file represents the expected JSON structure from the WordPress REST API for each Custom Post Type (CPT). Use this as a reference for configuring JetEngine REST API endpoints with bilingual ACF fields.",
+  "routes": {
+    "/wp-json/wp/v2/activities": [
+      {
+        "id": 101,
+        "date": "2024-01-01T00:00:00",
+        "slug": "k-bar-experience",
+        "type": "activity",
+        "title": {
+          "rendered": "K-BAR Experience"
+        },
+        "content": {
+          "rendered": "<p>An intimate bar experience open once a month, offering craft cocktails in the heart of the forest.</p>"
+        },
+        "acf": {
+          "title_th": "K-BAR Experience",
+          "artist_en": "Elmgreen & Dragset",
+          "artist_th": "เอล์มกรีน และ แดร็กเซ็ต",
+          "date_display_en": "Every second Saturday of each month",
+          "date_display_th": "ทุกวันเสาร์ที่สองของเดือน",
+          "status": "current",
+          "year": "2024",
+          "categories_en": ["Event", "Social", "Gastronomy"],
+          "categories_th": ["กิจกรรม", "สังคม", "อาหารและเครื่องดื่ม"],
+          "listing_summary_en": "An intimate bar experience open once a month, offering craft cocktails in the heart of the forest.",
+          "listing_summary_th": "ประสบการณ์บาร์สุดพิเศษที่เปิดเดือนละครั้ง เสิร์ฟค็อกเทลคราฟท์ท่ามกลางป่า",
+          "image_credits": "Photo by Andrea Rossetti, Chinnakit Ruenma, Rungkit Tangtongpon",
+          "tags_en": ["K-BAR", "Elmgreen & Dragset", "Monthly Event", "Cocktails", "Art Experience", "Limited Access", "Reservation Required", "Forest Bar", "Contemporary Art", "Social Art"],
+          "tags_th": ["K-BAR", "เอล์มกรีน และ แดร็กเซ็ต", "กิจกรรมรายเดือน", "ค็อกเทล", "ประสบการณ์ศิลปะ", "การเข้าถึงจำกัด", "ต้องจองล่วงหน้า", "บาร์ในป่า", "ศิลปะร่วมสมัย", "ศิลปะสังคม"],
+          "type_label_en": "Monthly Event",
+          "type_label_th": "กิจกรรมรายเดือน",
+          "gallery": [
+            "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Z44YyZbqstJ99oE8_03K-Bar_PhotobyAndreaRossetti-1920w.jpg",
+            "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/K-Bar-exterior-night-1920w.jpg",
+            "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/K-Bar-interior-details-1920w.jpg"
+          ]
+        },
+        "_embedded": {
+          "wp:featuredmedia": [
+            {
+              "id": 501,
+              "source_url": "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Z44YyZbqstJ99oE8_03K-Bar_PhotobyAndreaRossetti-1920w.jpg",
+              "alt_text": "K-BAR Experience"
+            }
+          ]
+        }
+      }
+    ],
+    "/wp-json/wp/v2/exhibitions": [
+      {
+        "id": 201,
+        "date": "2024-01-01T00:00:00",
+        "slug": "madrid-circle",
+        "type": "exhibition",
+        "title": {
+          "rendered": "Madrid Circle"
+        },
+        "content": {
+          "rendered": "<p>A perfect circle of slate slabs placed on a plateau delivering an interpretation of Infinity.</p>"
+        },
+        "acf": {
+          "title_th": "Madrid Circle",
+          "artist_en": "Richard Long",
+          "artist_th": "ริชาร์ด ลอง",
+          "curator_en": "Stefano Rabolli Pansera, Ratsiree Rattanawan, Chonnipa Pokachaiyapat",
+          "curator_th": "สเตฟาโน ราโบลลี พันเซรา, รัตน์ศิรี รัตนวรรณ, ชลนิภา โพธาไชยพัฒน์",
+          "date_display_en": "Permanent",
+          "date_display_th": "ถาวร",
+          "status": "current",
+          "year": "2024",
+          "categories_en": ["Land Art", "Installation", "Richard Long"],
+          "categories_th": ["ศิลปะภูมิประเทศ", "ศิลปะจัดวาง", "ริชาร์ด ลอง"],
+          "listing_summary_en": "A perfect circle of slate slabs placed on a plateau delivering an interpretation of Infinity.",
+          "listing_summary_th": "วงกลมสมบูรณ์ของแผ่นหินชนวนที่วางอยู่บนที่ราบสูง สื่อถึงความเป็นอนันต์",
+          "image_credits": "Photo by Andrea Rossetti, Chittawan Limcharoen, Chinnakit Ruenma, and Nawaphon Phokrachang",
+          "tags_en": ["Land Art", "Richard Long", "Slate Sculpture", "Minimalism", "Buddhist Art", "Infinity", "Outdoor Installation", "Contemporary Art", "Khao Yai Art", "Meditation"],
+          "tags_th": ["ศิลปะภูมิประเทศ", "ริชาร์ด ลอง", "ประติมากรรมหินชนวน", "มินิมอล", "ศิลปะพุทธ", "อนันต์", "ศิลปะจัดวางกลางแจ้ง", "ศิลปะร่วมสมัย", "ศิลปะเขาใหญ่", "การทำสมาธิ"],
+          "specifications_en": {
+            "material": "Slate slabs",
+            "location": "High plateau overlook",
+            "theme": "Geological vs Earthling time"
+          },
+          "specifications_th": {
+            "วัสดุ": "แผ่นหินชนวน",
+            "สถานที่": "จุดชมวิวบนที่ราบสูง",
+            "ธีม": "เวลาทางธรณีวิทยา vs เวลาของมนุษย์"
+          },
+          "gallery": [
+            "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-3.+Exhibitions-3.7+Madrid+Circle--Madrid+Circle-+drone+images-+uncredit+1-20923d09-1920w.jpg",
+            "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-3.+Exhibitions-3.7+Madrid+Circle--Madrid+Circle-+Nawaphon+Phokrachang+4-31ed8dfd-1920w.jpg",
+            "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-3.+Exhibitions-3.7+Madrid+Circle--Madrid+Circle-+Andrea+Rossetti+3-4dc293b4-1920w.jpg"
+          ]
+        },
+        "_embedded": {
+          "wp:featuredmedia": [
+            {
+              "id": 601,
+              "source_url": "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-3.+Exhibitions-3.7+Madrid+Circle--Madrid+Circle-+drone+images-+uncredit+1-20923d09-1920w.jpg",
+              "alt_text": "Madrid Circle by Richard Long"
+            }
+          ]
+        }
+      },
+      {
+        "id": 202,
+        "date": "2024-01-01T00:00:00",
+        "slug": "khao-yai-fog-forrest",
+        "type": "exhibition",
+        "title": {
+          "rendered": "Khao Yai Fog Forest"
+        },
+        "content": {
+          "rendered": "<p>A 'fog sculpture' that activates three times a day to produce an intense water mist.</p>"
+        },
+        "acf": {
+          "title_th": "ป่าหมอกเขาใหญ่",
+          "artist_en": "Fujiko Nakaya",
+          "artist_th": "ฟูจิโกะ นากายะ",
+          "curator_en": "Stefano Rabolli Pansera, Ratsiree Rattanawan, Chonnipa Pokachaiyapat",
+          "curator_th": "สเตฟาโน ราโบลลี พันเซรา, รัตน์ศิรี รัตนวรรณ, ชลนิภา โพธาไชยพัฒน์",
+          "date_display_en": "Permanent (Activates 3x daily)",
+          "date_display_th": "ถาวร (ทำงาน 3 ครั้งต่อวัน)",
+          "status": "current",
+          "year": "2024",
+          "categories_en": ["Fog Sculpture", "Installation", "Fujiko Nakaya"],
+          "categories_th": ["ประติมากรรมหมอก", "ศิลปะจัดวาง", "ฟูจิโกะ นากายะ"],
+          "listing_summary_en": "A 'fog sculpture' that activates three times a day to produce an intense water mist.",
+          "listing_summary_th": "ประติมากรรมหมอกที่จะทำงานสามครั้งต่อวันเพื่อสร้างละอองน้ำหนาทึบ",
+          "image_credits": "Photo by Andrea Rossetti, Nawaphon Phokrachang, Chittawan Limcharoen, Nut Fotofixed, and Ratsiree Rattanawan",
+          "tags_en": ["Fog Sculpture", "Fujiko Nakaya", "Interactive Art", "Japanese Artist", "Sustainable Art", "Landscape Architecture", "Atmospheric Art", "Immersive Experience", "Khao Yai Fog", "Eco-friendly"],
+          "tags_th": ["ประติมากรรมหมอก", "ฟูจิโกะ นากายะ", "ศิลปะเชิงโต้ตอบ", "ศิลปินญี่ปุ่น", "ศิลปะยั่งยืน", "สถาปัตยกรรมภูมิทัศน์", "ศิลปะบรรยากาศ", "ประสบการณ์ดื่มด่ำ", "หมอกเขาใหญ่", "เป็นมิตรกับสิ่งแวดล้อม"],
+          "specifications_en": {
+            "duration": "20-minute intervals",
+            "technology": "Atmospheric water generator",
+            "architect": "Atsushi Kitagawara Architects"
+          },
+          "specifications_th": {
+            "ระยะเวลา": "ช่วงละ 20 นาที",
+            "เทคโนโลยี": "เครื่องกำเนิดน้ำจากบรรยากาศ",
+            "สถาปนิก": "Atsushi Kitagawara Architects"
+          },
+          "gallery": [
+            "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-3.+Exhibitions-3.3+Khao+Yai+Fog+Forest--Fog+Forest-+Nawaphon+7-9d59518f-1920w.jpg",
+            "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-3.+Exhibitions-3.3+Khao+Yai+Fog+Forest--Fog+Forest-+Chinnakit+Ruenma+2-d5883836-1920w.jpg",
+            "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-3.+Exhibitions-3.3+Khao+Yai+Fog+Forest--Fog+Forest-+Andrea+Rossetti+5-4db5c43c-1920w.jpg"
+          ]
+        },
+        "_embedded": {
+          "wp:featuredmedia": [
+            {
+              "id": 602,
+              "source_url": "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-3.+Exhibitions-3.3+Khao+Yai+Fog+Forest--Fog+Forest-+Chittawan+Limcharoen+COVER-c7dba651-1920w.jpg",
+              "alt_text": "Khao Yai Fog Forest by Fujiko Nakaya"
+            }
+          ]
+        }
+      },
+      {
+        "id": 203,
+        "date": "2024-01-01T00:00:00",
+        "slug": "god",
+        "type": "exhibition",
+        "title": {
+          "rendered": "GOD"
+        },
+        "content": {
+          "rendered": "<p>A massive concrete artwork that evokes Buddhist iconography through minimal geometry.</p>"
+        },
+        "acf": {
+          "title_th": "GOD",
+          "artist_en": "Francesco Arena",
+          "artist_th": "ฟรานเชสโก อารีนา",
+          "curator_en": "Stefano Rabolli Pansera, Ratsiree Rattanawan, Chonnipa Pokachaiyapat",
+          "curator_th": "สเตฟาโน ราโบลลี พันเซรา, รัตน์ศิรี รัตนวรรณ, ชลนิภา โพธาไชยพัฒน์",
+          "date_display_en": "Permanent",
+          "date_display_th": "ถาวร",
+          "status": "current",
+          "year": "2024",
+          "categories_en": ["Sculpture", "Installation", "Francesco Arena"],
+          "categories_th": ["ประติมากรรม", "ศิลปะจัดวาง", "ฟรานเชสโก อารีนา"],
+          "listing_summary_en": "A massive concrete artwork that evokes Buddhist iconography through minimal geometry.",
+          "listing_summary_th": "ผลงานคอนกรีตขนาดใหญ่ที่สื่อถึงปรัชญาพุทธผ่านเรขาคณิตเรียบง่าย",
+          "image_credits": "Photo by Andrea Rossetti",
+          "tags_en": ["Sculpture", "Francesco Arena", "Concrete Art", "Minimalism", "Buddhist Symbolism", "Italian Artist", "Contemporary Sculpture", "Spiritual Art", "Monumental Art", "Site-specific"],
+          "tags_th": ["ประติมากรรม", "ฟรานเชสโก อารีนา", "ศิลปะคอนกรีต", "มินิมอล", "สัญลักษณ์พุทธ", "ศิลปินอิตาลี", "ประติมากรรมร่วมสมัย", "ศิลปะจิตวิญญาณ", "ศิลปะขนาดใหญ่", "เฉพาะพื้นที่"],
+          "specifications_en": {
+            "material": "Concrete",
+            "dimensions": "Monumental scale",
+            "theme": "Buddhist iconography meets Western minimalism"
+          },
+          "specifications_th": {
+            "วัสดุ": "คอนกรีต",
+            "ขนาด": "ขนาดอนุสาวรีย์",
+            "ธีม": "ปรัชญาพุทธพบกับมินิมอลตะวันตก"
+          },
+          "gallery": [
+            "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-3.+Exhibitions-3.5+GOD--God-+Andrea+Rossetti+2+COVER-e46b7ff7-1920w.jpg"
+          ]
+        },
+        "_embedded": {
+          "wp:featuredmedia": [
+            {
+              "id": 603,
+              "source_url": "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-3.+Exhibitions-3.5+GOD--God-+Andrea+Rossetti+2+COVER-e46b7ff7-1920w.jpg",
+              "alt_text": "GOD by Francesco Arena"
+            }
+          ]
+        }
+      }
+    ],
+    "/wp-json/wp/v2/posts": [
+      {
+        "id": 301,
+        "date": "2025-01-15T00:00:00",
+        "slug": "art-forest-philosophy",
+        "type": "post",
+        "title": {
+          "rendered": "The Philosophy of Khao Yai Art Forest"
+        },
+        "content": {
+          "rendered": "<p>Khao Yai Art Forest represents a unique approach to contemporary art presentation, where artworks are not confined to white cube galleries but integrated into the natural landscape. This philosophy reflects a deep respect for both artistic expression and environmental context.</p>"
+        },
+        "acf": {
+          "title_th": "ปรัชญาของเขาใหญ่อาร์ตฟอเรสต์",
+          "summary_en": "Exploring the unique philosophy behind integrating contemporary art with natural landscape.",
+          "summary_th": "สำรวจปรัชญาพิเศษในการผสานศิลปะร่วมสมัยกับภูมิทัศน์ธรรมชาติ",
+          "author_en": "Khao Yai Art Forest Editorial Team",
+          "author_th": "ทีมบรรณาธิการเขาใหญ่อาร์ตฟอเรสต์",
+          "categories_en": ["Philosophy", "Contemporary Art", "Landscape"],
+          "categories_th": ["ปรัชญา", "ศิลปะร่วมสมัย", "ภูมิทัศน์"]
+        },
+        "_embedded": {
+          "wp:featuredmedia": [
+            {
+              "id": 701,
+              "source_url": "https://images.unsplash.com/photo-1501084817091-a4f3d1d19e07",
+              "alt_text": "Art in Nature"
+            }
+          ],
+          "wp:term": [
+            [
+              { "id": 10, "name": "Contemporary Art" },
+              { "id": 11, "name": "Philosophy" },
+              { "id": 12, "name": "Nature" }
+            ]
+          ]
+        }
+      }
+    ]
+  },
+  "notes": {
+    "bilingual_structure": "All content uses separate ACF fields for Thai (_th) and English (_en) to maintain proper bilingual support",
+    "acf_fields": [
+      "title_th: Thai translation of title",
+      "artist_en, artist_th: Artist name in both languages",
+      "curator_en, curator_th: Curator name(s) in both languages",
+      "date_display_en, date_display_th: Display date in both languages",
+      "categories_en, categories_th: Array of category strings",
+      "listing_summary_en, listing_summary_th: Short summary for listing pages",
+      "tags_en, tags_th: Array of tag strings for search/filtering",
+      "specifications_en, specifications_th: Object with key-value pairs for technical details",
+      "gallery: Array of image URLs",
+      "image_credits: Photo credits string",
+      "status: 'current' | 'upcoming' | 'past'",
+      "year: String year for archiving"
+    ],
+    "wordpress_setup": "Configure JetEngine or ACF to create these custom fields for each CPT. Ensure REST API access is enabled.",
+    "embedding": "Use _embed parameter in WordPress REST API to include featured media and taxonomy terms in response"
+  }
+}

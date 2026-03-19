@@ -1,0 +1,143 @@
+// @ts-nocheck
+'use client';
+import { ImageWithFallback } from '../figma/ImageWithFallback';
+import { HeroSlider } from '../ui/HeroSlider';
+import { useLanguage } from '@/utils/languageContext';
+import { exhibitions } from '@/utils/exhibitionsDataNew';
+import { activities } from '@/utils/activitiesDataNew';
+import { HOME_HERO_IMAGES } from '@/utils/imageConstants';
+import { isHomeSectionVisible } from '@/utils/siteConfig';
+
+export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: string) => void }) {
+  const { language } = useLanguage();
+
+  // Filter by status directly from new data structure
+  const currentExhibitions = exhibitions.filter(ex => ex.status === 'current');
+  const currentActivities = activities.filter(act => act.status === 'current');
+
+  // Check visibility settings
+  const showCurrentExhibitions = isHomeSectionVisible('currentExhibitions');
+  const showCurrentActivities = isHomeSectionVisible('currentActivities');
+
+  return (
+    <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
+      {/* Hero Section - Using all 6 images from CSV */}
+      <HeroSlider 
+        images={HOME_HERO_IMAGES} 
+        height="h-[80vh]"
+      >
+        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
+      </HeroSlider>
+
+      <div className="w-full px-[6vw] pt-[96px] pb-[0px]">
+        
+        {/* Current Exhibitions */}
+        {showCurrentExhibitions && currentExhibitions.length > 0 && (
+          <section className="flex flex-col md:flex-row mb-32 md:mb-40">
+            <div className="w-full md:w-1/2 mb-12 md:mb-0">
+               <h2 className="text-xl md:text-2xl font-normal sticky top-32">
+                  {language === 'th' ? 'นิทรรศการปัจจุบัน' : 'Current Exhibitions'}
+               </h2>
+            </div>
+            <div className="w-full md:w-1/2 flex flex-col gap-12 md:gap-16">
+               {currentExhibitions.map((exhibition) => (
+                  <div key={exhibition.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', exhibition.slug)}>
+                      <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
+                          <ImageWithFallback 
+                              src={exhibition.featuredImage?.sourceUrl} 
+                              alt={language === 'th' ? exhibition.title.th : exhibition.title.en}
+                              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                          />
+                      </div>
+                      <div className="flex flex-col gap-4">
+                          {/* English Content */}
+                          {language !== 'th' && (
+                              <div className="flex flex-col gap-1">
+                                  <h3 className="text-lg md:text-xl font-normal leading-tight">{exhibition.title.en}</h3>
+                                  <p className="text-lg md:text-xl font-normal text-black leading-tight">{exhibition.artist.en}</p>
+                                  
+                                  {exhibition.listingSummary && (
+                                      <p className="text-lg md:text-xl font-normal text-gray-600 leading-tight mt-1 line-clamp-2">
+                                          {exhibition.listingSummary.en}
+                                      </p>
+                                  )}
+                              </div>
+                          )}
+
+                          {/* Thai Content */}
+                          {language === 'th' && (
+                              <div className="flex flex-col gap-1">
+                                  <h3 className="text-lg md:text-xl font-normal font-sans leading-[1.82em]">{exhibition.title.th}</h3>
+                                  <p className="text-lg md:text-xl font-normal font-sans text-black leading-[1.82em]">{exhibition.artist.th}</p>
+                                  
+                                  {exhibition.listingSummary && (
+                                      <p className="text-lg md:text-xl font-normal font-sans text-gray-600 leading-[1.82em] mt-1 line-clamp-2">
+                                          {exhibition.listingSummary.th}
+                                      </p>
+                                  )}
+                              </div>
+                          )}
+                      </div>
+                  </div>
+               ))}
+            </div>
+          </section>
+        )}
+
+        {/* Current Activities */}
+        {showCurrentActivities && currentActivities.length > 0 && (
+            <section className="flex flex-col md:flex-row mb-32 md:mb-40">
+            <div className="w-full md:w-1/2 mb-12 md:mb-0">
+                <h2 className="text-xl md:text-2xl font-normal sticky top-32">
+                    {language === 'th' ? 'กิจกรรมปัจจุบัน' : 'Current Activities'}
+                </h2>
+            </div>
+            <div className="w-full md:w-1/2 flex flex-col gap-12">
+                {currentActivities.map((activity) => (
+                    <div key={activity.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', activity.slug)}>
+                        <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
+                            <ImageWithFallback 
+                                src={activity.featuredImage?.sourceUrl} 
+                                alt={language === 'th' ? activity.title.th : activity.title.en}
+                                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-4">
+                            {/* English Content */}
+                            {language !== 'th' && (
+                                <div className="flex flex-col gap-1">
+                                    <h3 className="text-lg md:text-xl font-normal leading-tight whitespace-pre-wrap">
+                                        {activity.title.en}
+                                    </h3>
+                                    {activity.listingSummary && (
+                                        <p className="text-lg md:text-xl font-normal text-gray-600 leading-tight mt-1 line-clamp-2">
+                                            {activity.listingSummary.en}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Thai Content */}
+                            {language === 'th' && (
+                                <div className="flex flex-col gap-1">
+                                    <h3 className="text-lg md:text-xl font-normal font-sans leading-[1.82em] whitespace-pre-wrap">
+                                        {activity.title.th}
+                                    </h3>
+                                    {activity.listingSummary && (
+                                        <p className="text-lg md:text-xl font-normal font-sans text-gray-600 leading-[1.82em] mt-1 line-clamp-2">
+                                            {activity.listingSummary.th}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+            </section>
+        )}
+
+      </div>
+    </div>
+  );
+}

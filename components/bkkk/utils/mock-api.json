@@ -1,0 +1,103 @@
+{
+  "description": "This file represents the expected JSON structure from the WordPress REST API for each Custom Post Type (CPT). Use this as a reference for configuring JetEngine REST API endpoints.",
+  "routes": {
+    "/wp-json/wp/v2/activities": [
+      {
+        "id": 101,
+        "date": "2025-08-22T00:00:00",
+        "slug": "neon-reveries",
+        "type": "activity",
+        "title": {
+          "rendered": "Neon Reveries"
+        },
+        "content": {
+          "rendered": "<p>This August and September, Bangkok Kunsthalle screens four Wong Kar Wai classics on Saturday nights, beginning with 'In the Mood for Love' (2000) on August 22—filmed partly in the Yaowarat neighborhood of the Kunsthalle. The series continues with 'Happy Together' (1997) on August 23, 'Chungking Express' (1994) on August 30, and 'Fallen Angels' (1995) on September 6. Moving from quiet longing to restless encounters and neon-lit nights, the films capture Wong's unforgettable vision of love, loneliness, and fleeting connection.</p>"
+        },
+        "acf": {
+          "date_range": "01 Oct – 01 Nov 2025",
+          "categories": ["Wong Kar-Wai", "Screening Series", "Screenings"],
+          "gallery": [
+             "https://images.unsplash.com/photo-1514525253440-b393452e8d26",
+             "https://images.unsplash.com/photo-1726591466875-8868a42b4e10",
+             "https://images.unsplash.com/photo-1752769479345-36628bb26d97",
+             "https://images.unsplash.com/photo-1604060800795-80a563440fb2",
+             "https://images.unsplash.com/photo-1764649841560-eebc51d76dd1"
+          ],
+          "schedule": [
+            { "title": "'In the Mood for Love' (2000)", "details": "on August 22 19.00 (one round only)" },
+            { "title": "'Happy Together' (1997)", "details": "on August 23 Round 1 at 17.00 Round 2 at 19.00" },
+            { "title": "'Chungking Express' (1994)", "details": "on August 30 Round 1 at 17.00 Round 2 at 19.00" },
+            { "title": "'Fallen Angels' (1995)", "details": "on September 6 Round 1 at 17.00 Round 2 at 19.00" }
+          ],
+          "additionalContent": "We encourage you to arrive at Bangkok Kunsthalle 15-30 minutes before the screening begins. Seats not claimed by the start of the film may be released to visitors in the standby line."
+        },
+        "_embedded": {
+          "wp:featuredmedia": [
+            {
+              "id": 501,
+              "source_url": "https://images.unsplash.com/photo-1514525253440-b393452e8d26",
+              "alt_text": "Neon Reveries"
+            }
+          ]
+        }
+      }
+    ],
+    "/wp-json/wp/v2/exhibitions": [
+      {
+        "id": 102,
+        "date": "2025-01-29T00:00:00",
+        "slug": "unwinding-architecture",
+        "type": "exhibition",
+        "title": {
+          "rendered": "Unwinding Architecture the Poetics of the Snake Nicolas Amato"
+        },
+        "content": {
+          "rendered": "<p>The serpent moves across time, across borders. It is a transcultural and transhistorical symbol appearing in diverse mythologies from the frozen landscapes of Russia to the arid expanses of Egypt, from the dense jungles of the Americas to the sacred temples of Thailand. Across millennia, the serpent has persisted as an emblem of ritual, an artifact of ancient epistemologies, and a bridge between the seen and the unseen.</p><p>At Bangkok Kunsthalle, this presence moves across floors and across buildings.</p><p>It is not imposed but revealed. The serpent stretches along the banister, winding across four flights of green terrazzo stairs. Nicolas Amato, arriving at the Kunsthalle on the first day of the Chinese New Year—the Year of the Snake—recognized it embedded within the architecture itself. His intervention does not introduce something foreign; rather, it uncovers what was already there, transforming perception through an act as subtle yet profound as polishing.</p>"
+        },
+        "acf": {
+          "exhibition_date": ""
+        },
+        "_embedded": {
+          "wp:featuredmedia": [] 
+        }
+      }
+    ],
+    "/wp-json/wp/v2/posts": [
+      {
+        "id": 103,
+        "date": "2025-11-22T00:00:00",
+        "slug": "art-as-reflection",
+        "type": "post",
+        "title": {
+          "rendered": "Art as a Reflection of Society"
+        },
+        "content": {
+          "rendered": "<p>Art has always served as a mirror to society, reflecting its triumphs, struggles, and evolving identity. In the contemporary landscape, this relationship has become even more intricate. Artists are not merely observers but active participants in the cultural dialogue, challenging norms and envisioning new futures.</p>"
+        },
+        "acf": {
+           "keyThemes": [
+              { "title": "Identity & Belonging", "desc": "Exploring how personal and collective identities are shaped in a globalized world." },
+              { "title": "Urban Transformation", "desc": "Documenting the changing face of our cities and the impact on local communities." },
+              { "title": "Digital Horizons", "desc": "Investigating the intersection of technology and traditional artistic practices." }
+           ]
+        },
+        "_embedded": {
+          "wp:featuredmedia": [
+            {
+               "id": 503,
+               "source_url": "https://images.unsplash.com/photo-1501084817091-a4f3d1d19e07",
+               "alt_text": "Art as a Reflection of Society"
+            }
+          ],
+          "wp:term": [
+             [
+                { "id": 10, "name": "Contemporary Art" },
+                { "id": 11, "name": "Culture" },
+                { "id": 12, "name": "Insights" }
+             ]
+          ]
+        }
+      }
+    ]
+  }
+}
