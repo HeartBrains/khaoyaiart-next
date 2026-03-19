@@ -3,7 +3,7 @@ import { fetchCPT, fetchCPTBySlug } from '@/lib/wp-api';
 import { mapActivity } from '@/lib/wp-mappers';
 import { bkkkMetadata } from '@/lib/seo';
 import { ActivityDetailClientPage } from '@/components/bkkk/ActivityDetailClientPage';
-
+import { getMockBkkkActivities } from '@/lib/mock-data';
 
 function str(v: string | { en: string; th: string } | undefined | null): string {
   if (!v) return '';
@@ -13,7 +13,8 @@ function str(v: string | { en: string; th: string } | undefined | null): string 
 
 export async function generateStaticParams() {
   const posts = await fetchCPT('activities', 'bkkk');
-  return posts.map(p => ({ slug: p.slug }));
+  if (posts.length > 0) return posts.map(p => ({ slug: p.slug }));
+  return getMockBkkkActivities().map(a => ({ slug: str(a.slug) }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {

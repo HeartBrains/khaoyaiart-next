@@ -25,9 +25,9 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          WP_BASE_URL: ${{ secrets.WP_BASE_URL || 'https://content.bkkkapp.com/wp-json/wp/v2' }}
-          BKKK_BASE_URL: ${{ secrets.VITE_BKKK_BASE_URL || 'https://next.bkkapp.com/bkkk' }}
-          KYAF_BASE_URL: ${{ secrets.VITE_KYAF_BASE_URL || 'https://next.bkkapp.com/kyaf' }}
+          WP_BASE_URL: https://content.bkkkapp.com/wp-json/wp/v2
+          BKKK_BASE_URL: https://next.bkkapp.com/bkkk
+          KYAF_BASE_URL: https://next.bkkapp.com/kyaf
 
       - name: Setup SSH key
         run: |

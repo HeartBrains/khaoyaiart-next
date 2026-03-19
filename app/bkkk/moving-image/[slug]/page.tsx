@@ -3,7 +3,7 @@ import { fetchCPT, fetchCPTBySlug } from '@/lib/wp-api';
 import { mapMovingImage } from '@/lib/wp-mappers';
 import { bkkkMetadata } from '@/lib/seo';
 import { MovingImageDetailClientPage } from '@/components/bkkk/MovingImageDetailClientPage';
-
+import { movingImagePrograms } from '@/components/bkkk/utils/movingImageData';
 
 function str(v: string | { en: string; th: string } | undefined | null): string {
   if (!v) return '';
@@ -13,7 +13,8 @@ function str(v: string | { en: string; th: string } | undefined | null): string 
 
 export async function generateStaticParams() {
   const posts = await fetchCPT('moving-images', 'bkkk');
-  return posts.map(p => ({ slug: p.slug }));
+  if (posts.length > 0) return posts.map(p => ({ slug: p.slug }));
+  return movingImagePrograms.map(p => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {

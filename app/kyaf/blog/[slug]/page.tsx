@@ -2,17 +2,12 @@ import type { Metadata } from 'next';
 import { fetchCPT, fetchCPTBySlug } from '@/lib/wp-api';
 import { kyafMetadata } from '@/lib/seo';
 import { BlogDetailClientPage } from '@/components/kyaf/BlogDetailClientPage';
-
-
-function str(v: string | { en: string; th: string } | undefined | null): string {
-  if (!v) return '';
-  if (typeof v === 'string') return v;
-  return v.en ?? '';
-}
+import { MOCK_POSTS_BILINGUAL } from '@/components/bkkk/utils/mockDataBilingual';
 
 export async function generateStaticParams() {
   const posts = await fetchCPT('posts', 'kyaf');
-  return posts.map(p => ({ slug: p.slug }));
+  if (posts.length > 0) return posts.map(p => ({ slug: p.slug }));
+  return Object.keys(MOCK_POSTS_BILINGUAL).map(slug => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
