@@ -4,7 +4,7 @@ import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useLanguage } from '@/utils/languageContext';
-import { useExhibitionBySlug } from '@/lib/useWPData';
+import { useKyafExhibitionBySlug } from '@/lib/useWPData';
 import { Reveal } from '../ui/Reveal';
 import {
   Carousel,
@@ -25,7 +25,7 @@ interface ExhibitionDetailPageProps {
 
 export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionDetailPageProps) {
   const { language, t } = useLanguage();
-  const { data: exhibitionData, loading, error } = useExhibitionBySlug(slug ?? '');
+  const { data: exhibitionData, loading, error } = useKyafExhibitionBySlug(slug ?? '');
   const { isScrolling } = useScrollHide();
 
   const plugin = useRef(

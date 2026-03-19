@@ -102,7 +102,8 @@ export const useResidencyArtists = () => useWPList('residency-artists', 'bkkk', 
 export const useBkkkTeamMembers = () => useWPList('team-members', 'bkkk', mapBkkkTeamMember);
 export const useKyafTeamMembers = () => useWPList('team-members', 'kyaf', mapKyafTeamMember);
 
-export const useExhibitionBySlug    = (slug: string) => useWPItem('exhibitions', slug, mapBkkkExhibition);
+export const useExhibitionBySlug        = (slug: string) => useWPItem('exhibitions', slug, mapBkkkExhibition);
+export const useKyafExhibitionBySlug    = (slug: string) => useWPItem('exhibitions', slug, mapKyafExhibition);
 export const useActivityBySlug      = (slug: string) => useWPItem('activities', slug, mapActivity);
 export const useMovingImageBySlug   = (slug: string) => useWPItem('moving-images', slug, mapMovingImage);
 export const useResidencyArtistBySlug = (slug: string) => useWPItem('residency-artists', slug, mapResidencyArtist);
