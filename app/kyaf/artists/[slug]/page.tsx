@@ -8,7 +8,8 @@ import { ARTISTS_DATA } from '@/components/kyaf/utils/residencyData';
 export async function generateStaticParams() {
   const posts = await fetchCPT('residency-artists', 'kyaf');
   if (posts.length > 0) return posts.map(p => ({ slug: p.slug }));
-  return ARTISTS_DATA.map(a => ({ slug: a.slug }));
+  if (ARTISTS_DATA.length > 0) return ARTISTS_DATA.map(a => ({ slug: a.slug }));
+  return [{ slug: 'placeholder' }];
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
