@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return kyafMetadata(
     data?.name ?? slug,
     data?.bio?.replace(/<[^>]+>/g, '').slice(0, 160) ?? '',
-    { path: `/kyaf/artists/${slug}`, type: 'article' },
+    { path: `/kyaf/artists/${slug}`, image: data?.featuredImage, type: 'article' },
   );
 }
 
