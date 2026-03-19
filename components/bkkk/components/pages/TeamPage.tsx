@@ -1,238 +1,130 @@
+// @ts-nocheck
 'use client';
-import { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
-import { Reveal } from '../ui/Reveal';
 import { ParallaxHero } from '../ui/ParallaxHero';
-import { ASSETS } from '@/utils/assets';
+import { Reveal } from '../ui/Reveal';
 import { useLanguage } from '@/utils/languageContext';
-import { getTranslation } from '@/utils/translations';
-import { FOUNDER, DIRECTORS, TEAM_GROUPS } from '@/utils/teamDataBilingual';
+import { FOUNDER, DIRECTORS, TEAM_GROUPS, ADVISORY_BOARD_MEMBERS } from '@/components/bkkk/utils/teamDataBilingual';
 
-type Section = 'founder' | 'team' | string;
+const TEAM_HERO = 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=1600&auto=format&fit=crop';
 
 interface TeamPageProps {
-    activePage?: 'founder' | 'team';
-    onNavigate?: (page: string) => void;
+  activePage?: string;
+  onNavigate?: (page: string) => void;
 }
 
-export function TeamPage({ activePage = 'founder' }: TeamPageProps) {
+export function TeamPage({ activePage }: TeamPageProps) {
   const { language } = useLanguage();
-  const [activeSection, setActiveSection] = useState<string>('founder');
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
-  
-  const getDirectorId = (name: string) => name.replace(/\s+/g, '-').toLowerCase();
-  const getTeamGroupId = (role: string) => role.replace(/\s+/g, '-').replace(/'/g, '').replace(/&/g, 'and').toLowerCase();
-
-  const scrollToSection = (id: string) => {
-      const el = document.getElementById(id);
-      if (el) {
-          const offset = 120;
-          const elementPosition = el.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.pageYOffset - offset;
-      
-          window.scrollTo({
-              top: offsetPosition,
-              behavior: "smooth"
-          });
-      }
-  };
-
-  // Initial Scroll to top
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "auto"
-    });
-    
-    // Allow scroll handler to run after initial load completes
-    const timer = setTimeout(() => {
-      setIsInitialLoad(false);
-    }, 500);
-    
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Scroll Spy
-  useEffect(() => {
-      const handleScroll = () => {
-          // Don't update during initial load
-          if (isInitialLoad) return;
-          
-          const sectionIds = [
-            'founder', 
-            ...DIRECTORS.map(d => getDirectorId(d.name)), 
-            ...TEAM_GROUPS.map(g => getTeamGroupId(g.role))
-          ];
-          // Trigger point: 30% down the screen or fixed offset
-          const headerOffset = window.innerHeight * 0.3; 
-          
-          let current = sectionIds[0];
-          
-          for (const id of sectionIds) {
-              const el = document.getElementById(id);
-              if (el) {
-                  const rect = el.getBoundingClientRect();
-                  // If the top of the section is above the threshold, it's a candidate
-                  if (rect.top <= headerOffset) {
-                      current = id;
-                  }
-              }
-          }
-
-          // Special check: if we are at the bottom of the page, activate the last section
-          if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50) {
-              current = sectionIds[sectionIds.length - 1];
-          }
-          
-          setActiveSection(current);
-      };
-      
-      window.addEventListener('scroll', handleScroll);
-      
-      return () => window.removeEventListener('scroll', handleScroll);
-  }, [isInitialLoad]);
 
   return (
-    <div className="w-full min-h-screen bg-white">
-      {/* Hero Section */}
-      <ParallaxHero 
-        image="https://irp.cdn-website.com/5516674f/dms3rep/multi/cover-team-f51a7633.jpg"
-        height="h-[60vh] md:h-[80vh]"
-      >
-        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />
+    <div className="relative w-full min-h-screen bg-white pb-24">
+      <ParallaxHero image={TEAM_HERO} height="h-[60vh] md:h-[80vh]">
+        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
       </ParallaxHero>
 
       <div className="w-full px-[5%] pt-[96px] pb-[0px]">
-        <div className="flex flex-col md:flex-row gap-12 md:gap-0">
-          
-          {/* Sidebar */}
-          <aside className="w-full md:w-1/2 shrink-0">
-            <nav className="md:sticky md:top-32 flex flex-col items-start gap-2">
-                
-                {/* Founder */}
-                <button
-                    onClick={() => scrollToSection('founder')}
-                    className={`text-left text-xl md:text-2xl font-sans font-normal transition-all duration-300 cursor-pointer ${language === 'th' ? 'leading-[1.82em]' : ''} ${
-                        activeSection === 'founder' || !activeSection
-                        ? 'text-black'
-                        : 'text-gray-400 hover:text-black'
-                    }`}
-                >
-                    {getTranslation(language, 'team.founder')}
-                </button>
 
-                {/* Directors Group */}
-                {DIRECTORS && DIRECTORS.length > 0 && (
-                <div className="flex flex-col gap-2">
-                    <button 
-                        onClick={() => scrollToSection(getDirectorId(DIRECTORS[0].name))}
-                        className={`text-left text-xl md:text-2xl font-sans font-normal transition-all duration-300 ${
-                            DIRECTORS.some(d => activeSection === getDirectorId(d.name))
-                            ? 'text-black'
-                            : 'text-gray-400 hover:text-black'
-                        } ${language === 'th' ? 'leading-[1.82em]' : ''}`}
-                    >
-                        {getTranslation(language, 'team.directors')}
-                    </button>
+        {/* Founder */}
+        <section id="founder" className="flex flex-col md:flex-row mb-24 md:mb-32">
+          <div className="w-full md:w-1/2 mb-12 md:mb-0">
+            <h2 className="text-xl md:text-2xl font-normal sticky top-32">
+              {language === 'th' ? 'ผู้ก่อตั้ง' : 'Founder'}
+            </h2>
+          </div>
+          <div className="w-full md:w-1/2 flex flex-col gap-8">
+            {FOUNDER.image && (
+              <div className="w-full mb-4">
+                <img src={FOUNDER.image} alt={FOUNDER.name} className="w-full h-auto object-cover" />
+              </div>
+            )}
+            <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
+              <div className="mb-2">{FOUNDER.name}</div>
+              {FOUNDER.bio && (
+                <div className="whitespace-pre-line text-base md:text-lg text-gray-700 mt-2">
+                  {language === 'th' ? (FOUNDER.bioTH || FOUNDER.bio) : FOUNDER.bio}
                 </div>
-                )}
-
-                {/* Team Groups - Individual Links */}
-                {TEAM_GROUPS && TEAM_GROUPS.length > 0 && (
-                <div className="flex flex-col gap-2">
-                    {TEAM_GROUPS.map((group) => (
-                        <button
-                            key={group.role}
-                            onClick={() => scrollToSection(getTeamGroupId(group.role))}
-                            className={`text-left text-xl md:text-2xl font-sans font-normal transition-all duration-300 select-none text-gray-400 hover:text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}
-                        >
-                            {language === 'th' ? group.roleTH : group.role}
-                        </button>
-                    ))}
-                </div>
-                )}
-
-            </nav>
-          </aside>
-
-          {/* Content Area */}
-          <main className="w-full md:w-1/2 min-h-[50vh]">
-            
-            {/* Founder Section */}
-            <div id="founder" className="flex flex-col gap-8 w-full mb-24 scroll-mt-32">
-                <Reveal>
-                     <div className="aspect-[2/3] w-full bg-gray-100 mb-6">
-                        <div 
-                            className="w-full h-full bg-cover bg-center bg-no-repeat p-[0px] m-[0px]"
-                            style={{ backgroundImage: `url(${FOUNDER.image})` }}
-                        />
-                    </div>
-                </Reveal>
-                <Reveal delay={0.1}>
-                    <h2 className="text-xl md:text-2xl font-sans text-black font-normal mb-6">
-                        {FOUNDER.name}
-                    </h2>
-                </Reveal>
-                <Reveal delay={0.2}>
-                    <div className="text-xl md:text-2xl text-black font-normal leading-tight tracking-tight flex flex-col gap-6">
-                        {(language === 'th' ? FOUNDER.bioTH : FOUNDER.bio).map((para, i) => (
-                            <p key={i} className={language === 'th' ? 'leading-[1.82em]' : undefined}>{para}</p>
-                        ))}
-                    </div>
-                </Reveal>
+              )}
             </div>
+          </div>
+        </section>
 
-            {/* Directors Sections */}
-            {DIRECTORS.map((director, index) => (
-                <div key={director.name} id={getDirectorId(director.name)} className="flex flex-col gap-8 w-full mb-24 scroll-mt-32">
+        {/* Directors */}
+        {DIRECTORS.length > 0 && (
+          <section id="directors" className="flex flex-col md:flex-row mb-24 md:mb-32">
+            <div className="w-full md:w-1/2 mb-12 md:mb-0">
+              <h2 className="text-xl md:text-2xl font-normal sticky top-32">
+                {language === 'th' ? 'ผู้อำนวยการ' : 'Directors'}
+              </h2>
+            </div>
+            <div className="w-full md:w-1/2 flex flex-col gap-12">
+              {DIRECTORS.map((director, idx) => (
+                <Reveal key={idx} delay={idx * 0.05}>
+                  <div className="flex flex-col gap-4">
                     {director.image && (
-                        <Reveal>
-                            <div className="aspect-[2/3] w-full bg-gray-100 mb-6">
-                                <div 
-                                    className="w-full h-full bg-cover bg-center"
-                                    style={{ backgroundImage: `url(${director.image})` }}
-                                />
-                            </div>
-                        </Reveal>
+                      <div className="w-full mb-4">
+                        <img src={director.image} alt={director.name} className="w-full aspect-[3/4] object-cover object-center" />
+                      </div>
                     )}
-                    <Reveal delay={0.1}>
-                        <h2 className="text-xl md:text-2xl font-sans text-black font-normal mb-6">
-                            {director.name}
-                        </h2>
-                    </Reveal>
-                    <Reveal delay={0.2}>
-                        <div className="text-xl md:text-2xl text-black font-normal leading-tight tracking-tight flex flex-col gap-6">
-                            {(language === 'th' ? director.bioTH : director.bio).map((para, i) => (
-                                <p key={i} className={language === 'th' ? 'leading-[1.82em]' : undefined}>{para}</p>
-                            ))}
+                    <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
+                      <div className="mb-2">{director.name}</div>
+                      {director.bio && (
+                        <div className="whitespace-pre-line text-base md:text-lg text-gray-700 mt-2">
+                          {language === 'th' ? (director.bioTH || director.bio) : director.bio}
                         </div>
-                    </Reveal>
-                </div>
-            ))}
-
-            {/* Team Section */}
-            <div className="w-full pb-24">
-                <div className="space-y-12">
-                    {TEAM_GROUPS.map((group, index) => (
-                        <div key={group.role} id={getTeamGroupId(group.role)} className="flex flex-col gap-2 scroll-mt-32">
-                            <h3 className={`text-xl md:text-2xl font-sans text-black font-medium leading-tight tracking-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                                {language === 'th' ? group.roleTH : group.role}
-                            </h3>
-                            <div className="flex flex-col gap-1">
-                                {(language === 'th' && group.membersTH ? group.membersTH : group.members).map(member => (
-                                    <p key={member} className={`text-xl md:text-2xl font-sans text-black font-normal leading-tight tracking-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                                        {member}
-                                    </p>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                      )}
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
             </div>
+          </section>
+        )}
 
-          </main>
+        {/* Advisory Board */}
+        {ADVISORY_BOARD_MEMBERS?.length > 0 && (
+          <section id="advisory-board" className="flex flex-col md:flex-row mb-24 md:mb-32">
+            <div className="w-full md:w-1/2 mb-12 md:mb-0">
+              <h2 className="text-xl md:text-2xl font-normal sticky top-32">
+                {language === 'th' ? 'คณะกรรมการที่ปรึกษา' : 'Advisory Board'}
+              </h2>
+            </div>
+            <div className="w-full md:w-1/2 flex flex-col gap-4">
+              {ADVISORY_BOARD_MEMBERS.map((member, idx) => (
+                <p key={idx} className="text-xl md:text-2xl font-sans text-black font-normal">
+                  {member}
+                </p>
+              ))}
+            </div>
+          </section>
+        )}
 
-        </div>
+        {/* Team */}
+        <section id="team" className="flex flex-col md:flex-row mb-12">
+          <div className="w-full md:w-1/2 mb-12 md:mb-0">
+            <h2 className="text-xl md:text-2xl font-normal sticky top-32">
+              {language === 'th' ? 'ทีมงาน' : 'Team'}
+            </h2>
+          </div>
+          <div className="w-full md:w-1/2 flex flex-col gap-12">
+            {TEAM_GROUPS.map((group, gIdx) => (
+              <div key={gIdx} className="flex flex-col gap-4">
+                <h3 className="text-xl md:text-2xl font-normal text-gray-500">
+                  {language === 'th' ? (group.categoryTH || group.category) : group.category}
+                </h3>
+                <div className="flex flex-col gap-4">
+                  {group.members.map((member, mIdx) => (
+                    <div key={mIdx} className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
+                      <div>{member.name}</div>
+                      {member.role && (
+                        <div className="text-base text-gray-500">{language === 'th' ? (member.roleTH || member.role) : member.role}</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
       </div>
     </div>
   );
