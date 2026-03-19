@@ -220,7 +220,7 @@ export function ArchivesPage({ onNavigate }: ArchivesPageProps) {
                 >
                   <div className="w-full aspect-[3/4] bg-gray-100 overflow-hidden relative mb-4">
                     <ImageWithFallback
-                      src={item.featuredImage?.sourceUrl || ''}
+                      src={item.featuredImage || ''}
                       alt={item.title}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     />

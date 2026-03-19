@@ -87,7 +87,7 @@ export function ActivitiesPage({ onNavigate, activeSection }: ActivitiesPageProp
                         >
                             <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
                                 <ImageWithFallback 
-                                    src={activity.featuredImage?.sourceUrl} 
+                                    src={activity.featuredImage} 
                                     alt={language === 'th' ? activity.title.th : activity.title.en}
                                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                 />

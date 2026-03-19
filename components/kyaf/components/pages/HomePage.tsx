@@ -44,7 +44,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                   <div key={exhibition.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', exhibition.slug)}>
                       <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
                           <ImageWithFallback 
-                              src={exhibition.featuredImage?.sourceUrl} 
+                              src={exhibition.featuredImage} 
                               alt={language === 'th' ? exhibition.title.th : exhibition.title.en}
                               className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                           />
@@ -97,7 +97,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                     <div key={activity.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', activity.slug)}>
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
                             <ImageWithFallback 
-                                src={activity.featuredImage?.sourceUrl} 
+                                src={activity.featuredImage} 
                                 alt={language === 'th' ? activity.title.th : activity.title.en}
                                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                             />

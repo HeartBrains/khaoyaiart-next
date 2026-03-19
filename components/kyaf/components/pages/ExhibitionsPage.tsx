@@ -88,7 +88,7 @@ export function ExhibitionsPage({ onNavigate, activeSection }: ExhibitionsPagePr
                                 {/* Image */}
                                 <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
                                     <ImageWithFallback 
-                                        src={exhibition.featuredImage?.sourceUrl}
+                                        src={exhibition.featuredImage}
                                         alt={language === 'th' ? exhibition.title.th : exhibition.title.en}
                                         className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                     />
