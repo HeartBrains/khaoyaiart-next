@@ -1,11 +1,11 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.BKKK_BASE_URL || 'https://khaoyaiart.bkkkapp.com',
+  siteUrl: process.env.BKKK_BASE_URL || 'https://next.bkkapp.com/bkkk',
   generateRobotsTxt: true,
   outDir: 'out',
   robotsTxtOptions: {
     additionalSitemaps: [
-      `${process.env.KYAF_BASE_URL || 'https://khaoyaiartforest.com'}/sitemap.xml`,
+      `${process.env.KYAF_BASE_URL || 'https://next.bkkapp.com/kyaf'}/sitemap.xml`,
     ],
   },
 };

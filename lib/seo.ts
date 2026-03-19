@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
-const BKKK_BASE_URL = process.env.BKKK_BASE_URL ?? 'https://khaoyaiart.bkkkapp.com';
-const KYAF_BASE_URL = process.env.KYAF_BASE_URL ?? 'https://khaoyaiartforest.com';
+const BKKK_BASE_URL = process.env.BKKK_BASE_URL ?? 'https://next.bkkapp.com/bkkk';
+const KYAF_BASE_URL = process.env.KYAF_BASE_URL ?? 'https://next.bkkapp.com/kyaf';
 
 export const BKKK_DEFAULT_OG_IMAGE = `${BKKK_BASE_URL}/og-bkkk.jpg`;
 export const KYAF_DEFAULT_OG_IMAGE = `${KYAF_BASE_URL}/og-kyaf.jpg`;
