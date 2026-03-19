@@ -15,7 +15,7 @@
 
 # next.js
 /.next/
-/out/
+# /out/ — committed for Hostinger Git auto-deploy
 
 # production
 /build

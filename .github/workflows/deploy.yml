@@ -4,15 +4,15 @@ on:
   repository_dispatch:
     types: [wp_content_updated]
   workflow_dispatch:
-  push:
-    branches: [master]
 
 jobs:
-  build-and-deploy:
+  build-and-commit:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
 
       - uses: actions/setup-node@v4
         with:
@@ -27,13 +27,10 @@ jobs:
         env:
           NEXT_PUBLIC_WP_BASE_URL: ${{ secrets.NEXT_PUBLIC_WP_BASE_URL }}
 
-      - name: Deploy via rsync
+      - name: Commit build output
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
-          rsync -avz --delete \
-            -e "ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }}" \
-            out/ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:domains/khaoyai.bkkkapp.com/public_html/
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add out/
+          git commit -m "SSG rebuild $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || exit 0
+          git push
