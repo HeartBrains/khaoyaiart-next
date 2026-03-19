@@ -16,7 +16,12 @@ function m(post: WPRawPost, key: string): string {
 
 // Featured image: native WP media (resolved at fetch time) → meta text URL fallback
 function featuredImageUrl(post: WPRawPost): string {
-  return post.resolvedFeaturedImage || post.meta?.['featured_image_url'] as string || '';
+  if (post.resolvedFeaturedImage) return post.resolvedFeaturedImage;
+  if (post.meta?.['featured_image_url']) return post.meta['featured_image_url'] as string;
+  // Fall back to first gallery image if no dedicated featured image
+  const gallery = m(post, 'gallery');
+  if (gallery) return gallery.split('|||').filter(Boolean)[0] ?? '';
+  return '';
 }
 
 // Gallery: native WP media IDs (resolved at fetch time) merged with text URL fallback
