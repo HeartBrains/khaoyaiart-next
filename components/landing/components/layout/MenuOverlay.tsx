@@ -278,7 +278,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                           />
                         )}
                         <a 
-                            href="https://kyaf.thaicms.com"
+                            href="/kyaf"
                             className="text-[18px] text-white font-normal hover:text-gray-300 transition-colors uppercase tracking-wide"
                         >
                             KYAF

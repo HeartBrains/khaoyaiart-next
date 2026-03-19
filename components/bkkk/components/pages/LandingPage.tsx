@@ -71,7 +71,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
       >
         <h1 className={`text-right leading-tight select-none transition-all duration-700 whitespace-pre-line flex justify-end ${hovered === 'bangkok' ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
           <a 
-            href="https://kyaf.thaicms.com" 
+            href="/kyaf" 
             onClick={(e) => e.stopPropagation()}
             className="block hover:opacity-80 transition-opacity"
           >
