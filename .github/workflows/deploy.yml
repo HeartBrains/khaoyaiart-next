@@ -26,6 +26,7 @@ jobs:
         run: npm run build
         env:
           WP_BASE_URL: https://content.bkkkapp.com/wp-json/wp/v2
+          NEXT_PUBLIC_WP_BASE_URL: https://content.bkkkapp.com/wp-json/wp/v2
           BKKK_BASE_URL: https://next.bkkapp.com/bkkk
           KYAF_BASE_URL: https://next.bkkapp.com/kyaf
 
