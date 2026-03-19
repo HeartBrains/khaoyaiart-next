@@ -18,7 +18,13 @@ function m(post: WPRawPost, key: string): string {
 function featuredImageUrl(post: WPRawPost): string {
   if (post.resolvedFeaturedImage) return post.resolvedFeaturedImage;
   if (post.meta?.['featured_image_url']) return post.meta['featured_image_url'] as string;
-  // Fall back to first gallery image if no dedicated featured image
+  // Fall back to gallery_media URLs
+  const galleryMedia = post.meta?.['gallery_media'];
+  if (Array.isArray(galleryMedia)) {
+    const first = (galleryMedia as string[]).find(u => typeof u === 'string' && u.startsWith('http'));
+    if (first) return first;
+  }
+  // Fall back to pipe-separated gallery text field
   const gallery = m(post, 'gallery');
   if (gallery) return gallery.split('|||').filter(Boolean)[0] ?? '';
   return '';
@@ -27,10 +33,18 @@ function featuredImageUrl(post: WPRawPost): string {
 // Gallery: native WP media IDs (resolved at fetch time) merged with text URL fallback
 function galleryUrls(post: WPRawPost): string[] {
   const resolved = post.resolvedGallery ?? [];
+
+  // gallery_media may be an array of URLs (from JetEngine media field)
+  const galleryMedia = post.meta?.['gallery_media'];
+  const mediaUrls: string[] = Array.isArray(galleryMedia)
+    ? (galleryMedia as string[]).filter(u => typeof u === 'string' && u.startsWith('http'))
+    : [];
+
   const text = m(post, 'gallery') ? m(post, 'gallery').split('|||').filter(Boolean) : [];
-  // Merge: resolved first, then any text URLs not already included
+
+  // Merge all sources, deduplicated
   const merged = [...resolved];
-  for (const url of text) {
+  for (const url of [...mediaUrls, ...text]) {
     if (!merged.includes(url)) merged.push(url);
   }
   return merged;
