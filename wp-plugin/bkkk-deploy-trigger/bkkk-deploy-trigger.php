@@ -2,18 +2,21 @@
 /**
  * Plugin Name: BKKK Deploy Trigger
  * Description: Fires a GitHub Actions repository_dispatch event when content is published or updated.
- * Version:     1.1.0
+ * Version:     1.3.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // CPTs that should trigger a redeploy when saved
+// These are the registered post_type slugs (not REST base names)
 define( 'BKKK_WATCHED_POST_TYPES', [
-    'exhibitions',
-    'activities',
-    'moving-images',
-    'residency-artists',
-    'team-members',
+    'exhibition',
+    'activity',
+    'moving_image',
+    'residency_artist',
+    'team_member',
+    'blog_post',
+    'press_item',
     'post',
     'page',
 ] );

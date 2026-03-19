@@ -4,8 +4,7 @@ import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useLanguage } from '@/utils/languageContext';
-import { getExhibitionBySlug, type Exhibition } from '@/components/kyaf/utils/exhibitionsDataNew';
-import { getDetailContentByLanguage } from '@/components/kyaf/utils/detailContent';
+import { useExhibitionBySlug } from '@/lib/useWPData';
 import { Reveal } from '../ui/Reveal';
 import {
   Carousel,
@@ -26,9 +25,7 @@ interface ExhibitionDetailPageProps {
 
 export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionDetailPageProps) {
   const { language, t } = useLanguage();
-  const [exhibitionData, setExhibitionData] = useState<Exhibition | null>(null);
-  const [loading, setLoading] = useState(!!slug);
-  const [error, setError] = useState(false);
+  const { data: exhibitionData, loading, error } = useExhibitionBySlug(slug ?? '');
   const { isScrolling } = useScrollHide();
 
   const plugin = useRef(
@@ -36,21 +33,6 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
   )
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
-
-  useEffect(() => {
-    if (slug) {
-        setLoading(true);
-        // Use new data structure directly
-        const exhibition = getExhibitionBySlug(slug);
-        if (exhibition) {
-            setExhibitionData(exhibition);
-            setLoading(false);
-        } else {
-            setError(true);
-            setLoading(false);
-        }
-    }
-  }, [slug]);
 
   // Carousel logic
   useEffect(() => {
@@ -65,12 +47,14 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
   if (error || !exhibitionData) return <div className="min-h-screen flex items-center justify-center font-sans text-red-500">{language === 'th' ? 'ไม่พบนิทรรศการ' : 'Exhibition not found.'}</div>;
 
   // Use gallery from exhibition data or fallback to featured image
-  const galleryImages = exhibitionData.gallery && exhibitionData.gallery.length > 0 
-    ? exhibitionData.gallery 
-    : [exhibitionData.featuredImage];
+  const galleryImages = exhibitionData?.gallery && exhibitionData.gallery.length > 0
+    ? exhibitionData.gallery
+    : exhibitionData?.featuredImage ? [exhibitionData.featuredImage] : [];
 
-  // Get detailed content from detailContent files
-  const detailContent = slug ? getDetailContentByLanguage(slug, language) : undefined;
+  // Content from WP
+  const detailContent = language === 'th'
+    ? (exhibitionData?.contentTH || exhibitionData?.content)
+    : exhibitionData?.content;
 
   return (
     <div className="w-full bg-white pb-24 min-h-screen">
