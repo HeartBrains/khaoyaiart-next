@@ -1,14 +1,13 @@
 <?php
 /**
  * Plugin Name: BKKK Deploy Trigger
- * Description: Fires a GitHub Actions repository_dispatch event when content is published or updated.
- * Version:     1.3.0
+ * Description: Fires a GitHub Actions repository_dispatch event when content changes. Supports auto-trigger on save or manual trigger via a publish button.
+ * Version:     1.4.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // CPTs that should trigger a redeploy when saved
-// These are the registered post_type slugs (not REST base names)
 define( 'BKKK_WATCHED_POST_TYPES', [
     'exhibition',
     'activity',
@@ -21,20 +20,21 @@ define( 'BKKK_WATCHED_POST_TYPES', [
     'page',
 ] );
 
-// GitHub settings — set these in wp-config.php or the plugin settings below
-// define( 'BKKK_GH_TOKEN',  'ghp_xxxx' );   // fine-grained PAT, contents:read + actions:write
-// define( 'BKKK_GH_REPO',   'HeartBrains/kyaf-next' );
+// Trigger mode: 'auto' = on every publish/update, 'manual' = only via the "Publish to Site" button
+function bkkk_trigger_mode(): string {
+    return get_option( 'bkkk_trigger_mode', 'auto' );
+}
 
 /**
  * Send a repository_dispatch event to GitHub Actions.
  */
-function bkkk_dispatch( string $event_type, array $payload = [] ): void {
+function bkkk_dispatch( string $event_type, array $payload = [] ): bool {
     $token = defined( 'BKKK_GH_TOKEN' ) ? BKKK_GH_TOKEN : get_option( 'bkkk_gh_token', '' );
     $repo  = defined( 'BKKK_GH_REPO' )  ? BKKK_GH_REPO  : get_option( 'bkkk_gh_repo', 'HeartBrains/khaoyaiart-next' );
 
     if ( empty( $token ) ) {
         error_log( '[BKKK Deploy] No GitHub token configured — skipping dispatch.' );
-        return;
+        return false;
     }
 
     $body = [ 'event_type' => $event_type ];
@@ -58,26 +58,27 @@ function bkkk_dispatch( string $event_type, array $payload = [] ): void {
 
     if ( is_wp_error( $response ) ) {
         error_log( '[BKKK Deploy] Dispatch failed: ' . $response->get_error_message() );
-    } else {
-        $code = wp_remote_retrieve_response_code( $response );
-        if ( $code !== 204 ) {
-            error_log( "[BKKK Deploy] Unexpected response {$code}: " . wp_remote_retrieve_body( $response ) );
-        }
+        return false;
     }
+
+    $code = wp_remote_retrieve_response_code( $response );
+    if ( $code !== 204 ) {
+        error_log( "[BKKK Deploy] Unexpected response {$code}: " . wp_remote_retrieve_body( $response ) );
+        return false;
+    }
+
+    return true;
 }
 
-/**
- * Trigger on publish / update.
- */
+// ── Auto mode: trigger on publish / update / delete ───────────────────────────
+
 add_action( 'transition_post_status', 'bkkk_maybe_dispatch_on_publish', 10, 3 );
 
 function bkkk_maybe_dispatch_on_publish( string $new_status, string $old_status, WP_Post $post ): void {
-    if ( $new_status !== 'publish' ) {
-        return;
-    }
-    if ( ! in_array( $post->post_type, BKKK_WATCHED_POST_TYPES, true ) ) {
-        return;
-    }
+    if ( bkkk_trigger_mode() !== 'auto' ) return;
+    if ( $new_status !== 'publish' ) return;
+    if ( ! in_array( $post->post_type, BKKK_WATCHED_POST_TYPES, true ) ) return;
+
     bkkk_dispatch( 'wp_content_updated', [
         'action'    => 'publish',
         'post_type' => $post->post_type,
@@ -86,18 +87,49 @@ function bkkk_maybe_dispatch_on_publish( string $new_status, string $old_status,
     ] );
 }
 
-/**
- * Trigger on delete.
- */
 add_action( 'before_delete_post', 'bkkk_maybe_dispatch_on_delete', 10, 1 );
 
 function bkkk_maybe_dispatch_on_delete( int $post_id ): void {
+    if ( bkkk_trigger_mode() !== 'auto' ) return;
     $post = get_post( $post_id );
-    if ( ! $post || ! in_array( $post->post_type, BKKK_WATCHED_POST_TYPES, true ) ) {
-        return;
-    }
+    if ( ! $post || ! in_array( $post->post_type, BKKK_WATCHED_POST_TYPES, true ) ) return;
+
     bkkk_dispatch( 'wp_content_updated', [
         'action'    => 'delete',
+        'post_type' => $post->post_type,
+        'post_id'   => $post_id,
+        'slug'      => $post->post_name,
+    ] );
+}
+
+// ── Manual mode: "Publish to Site" button in post editor ─────────────────────
+
+add_action( 'post_submitbox_misc_actions', 'bkkk_publish_button' );
+
+function bkkk_publish_button( WP_Post $post ): void {
+    if ( bkkk_trigger_mode() !== 'manual' ) return;
+    if ( ! in_array( $post->post_type, BKKK_WATCHED_POST_TYPES, true ) ) return;
+    if ( $post->post_status !== 'publish' ) return;
+
+    wp_nonce_field( 'bkkk_publish_to_site_' . $post->ID, 'bkkk_publish_nonce' );
+    echo '<div class="misc-pub-section" style="padding-top:8px;border-top:1px solid #ddd;">';
+    echo '<button type="submit" name="bkkk_publish_to_site" value="1" class="button button-primary" style="width:100%;">Publish to Site</button>';
+    echo '<p class="description" style="margin-top:4px;font-size:11px;color:#666;">Triggers a full site rebuild on GitHub Actions.</p>';
+    echo '</div>';
+}
+
+add_action( 'save_post', 'bkkk_handle_publish_button', 10, 2 );
+
+function bkkk_handle_publish_button( int $post_id, WP_Post $post ): void {
+    if ( bkkk_trigger_mode() !== 'manual' ) return;
+    if ( ! isset( $_POST['bkkk_publish_to_site'] ) ) return;
+    if ( ! isset( $_POST['bkkk_publish_nonce'] ) ) return;
+    if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['bkkk_publish_nonce'] ) ), 'bkkk_publish_to_site_' . $post_id ) ) return;
+    if ( ! current_user_can( 'publish_posts' ) ) return;
+    if ( ! in_array( $post->post_type, BKKK_WATCHED_POST_TYPES, true ) ) return;
+
+    bkkk_dispatch( 'wp_content_updated', [
+        'action'    => 'manual_publish',
         'post_type' => $post->post_type,
         'post_id'   => $post_id,
         'slug'      => $post->post_name,
@@ -119,9 +151,16 @@ add_action( 'admin_menu', function () {
 add_action( 'admin_init', function () {
     register_setting( 'bkkk_deploy', 'bkkk_gh_token' );
     register_setting( 'bkkk_deploy', 'bkkk_gh_repo' );
+    register_setting( 'bkkk_deploy', 'bkkk_trigger_mode', [
+        'sanitize_callback' => function( $v ) {
+            return in_array( $v, [ 'auto', 'manual' ], true ) ? $v : 'auto';
+        },
+        'default' => 'auto',
+    ] );
 } );
 
 function bkkk_settings_page(): void {
+    $mode = bkkk_trigger_mode();
     ?>
     <div class="wrap">
         <h1>Deploy Trigger Settings</h1>
@@ -135,8 +174,7 @@ function bkkk_settings_page(): void {
                                value="<?php echo esc_attr( get_option( 'bkkk_gh_token' ) ); ?>"
                                class="regular-text" />
                         <p class="description">
-                            Fine-grained PAT with <code>Actions: Read and write</code> permission
-                            on the target repo.
+                            Classic PAT or fine-grained PAT with <code>Actions: Read and write</code> on the target repo.
                         </p>
                     </td>
                 </tr>
@@ -144,29 +182,48 @@ function bkkk_settings_page(): void {
                     <th>GitHub Repo</th>
                     <td>
                         <input type="text" name="bkkk_gh_repo"
-                               value="<?php echo esc_attr( get_option( 'bkkk_gh_repo', 'HeartBrains/kyaf-next' ) ); ?>"
+                               value="<?php echo esc_attr( get_option( 'bkkk_gh_repo', 'HeartBrains/khaoyaiart-next' ) ); ?>"
                                class="regular-text" placeholder="owner/repo" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>Trigger Mode</th>
+                    <td>
+                        <label style="display:block;margin-bottom:6px;">
+                            <input type="radio" name="bkkk_trigger_mode" value="auto"
+                                   <?php checked( $mode, 'auto' ); ?> />
+                            <strong>Auto</strong> &mdash; trigger on every publish / update / delete
+                        </label>
+                        <label style="display:block;">
+                            <input type="radio" name="bkkk_trigger_mode" value="manual"
+                                   <?php checked( $mode, 'manual' ); ?> />
+                            <strong>Manual</strong> &mdash; only trigger when &ldquo;Publish to Site&rdquo; button is clicked in the post editor
+                        </label>
                     </td>
                 </tr>
             </table>
             <?php submit_button(); ?>
         </form>
 
-        <h2>Manual trigger</h2>
+        <h2>Force Trigger</h2>
+        <p>Trigger a full site rebuild immediately, regardless of trigger mode.</p>
         <form method="post">
             <?php wp_nonce_field( 'bkkk_manual_dispatch' ); ?>
             <input type="hidden" name="bkkk_action" value="manual_dispatch" />
             <?php submit_button( 'Trigger deploy now', 'secondary' ); ?>
         </form>
         <?php
-
         if (
             isset( $_POST['bkkk_action'] ) &&
             $_POST['bkkk_action'] === 'manual_dispatch' &&
             check_admin_referer( 'bkkk_manual_dispatch' )
         ) {
-            bkkk_dispatch( 'wp_content_updated', [ 'action' => 'manual' ] );
-            echo '<div class="notice notice-success"><p>Deploy triggered.</p></div>';
+            $ok = bkkk_dispatch( 'wp_content_updated', [ 'action' => 'manual' ] );
+            if ( $ok ) {
+                echo '<div class="notice notice-success"><p>Deploy triggered.</p></div>';
+            } else {
+                echo '<div class="notice notice-error"><p>Dispatch failed — check error log and token.</p></div>';
+            }
         }
         ?>
     </div>
