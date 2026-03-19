@@ -6,9 +6,8 @@ import {
   mapActivity, mapResidencyArtist, mapBkkkTeamMember, mapKyafTeamMember,
 } from './wp-mappers';
 
-const WP_BASE = (
-  process.env.NEXT_PUBLIC_WP_BASE_URL ?? 'https://content.bkkkapp.com/wp-json/wp/v2'
-).replace(/\/$/, '');
+const _WP_URL = (process.env.NEXT_PUBLIC_WP_BASE_URL ?? 'https://content.bkkkapp.com').replace(/\/$/, '');
+const WP_BASE = _WP_URL.endsWith('/wp-json/wp/v2') ? _WP_URL : `${_WP_URL}/wp-json/wp/v2`;
 
 async function batchResolveMedia(ids: number[]): Promise<Map<number, string>> {
   const unique = [...new Set(ids.filter(id => id > 0))];
