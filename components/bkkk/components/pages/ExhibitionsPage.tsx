@@ -137,7 +137,7 @@ export function ExhibitionsPage({ onNavigate, targetSectionId }: ExhibitionsPage
               loading="lazy"
               onError={() => setImgError(true)}
               crossOrigin="anonymous"
-            />
+                    />
           </div>
         )}
         <div className="flex flex-col gap-1">
@@ -207,7 +207,6 @@ export function ExhibitionsPage({ onNavigate, targetSectionId }: ExhibitionsPage
                     <EmptyState
                       className="w-full text-left"
                       message={getEmptyStateMessage('noUpcomingExhibitions', language)}
-                      className="w-full text-left"
                     />
                   )}
                 </div>
