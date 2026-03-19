@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return kyafMetadata(
     post?.title?.rendered ?? slug,
     post?.content?.rendered?.replace(/<[^>]+>/g, '').slice(0, 160) ?? '',
-    { path: `/kyaf/blog/${slug}`, type: 'article' },
+    { path: `/kyaf/blog/${slug}`, image: post?.resolvedFeaturedImage || String(post?.meta?.featured_image_url ?? ''), type: 'article' },
   );
 }
 

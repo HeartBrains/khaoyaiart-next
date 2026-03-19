@@ -1,55 +1,65 @@
 /**
- * Site Configuration
- * Centralized configuration for editable site-wide messages and settings
+ * BKKK Site Configuration
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Toggle menu items and anchor sections here.
+ * true  = visible / enabled
+ * false = hidden / disabled
  */
 
 export const siteConfig = {
-  // Main menu visibility controls - toggle menu items
+
+  // ── Main navigation menu items ──────────────────────────────────────────────
+  // Controls which items appear in the hamburger menu
   menu: {
-    home: true,
-    visit: true,
-    exhibitions: true,
-    movingImage: true,
-    activities: false,
-    residency: true,
-    blog: false,
-    about: true,
-    team: true,
-    shop: false,
-    archives: false,
-    contact: true,
-    languageSwitcher: false,
-    search: true,
+    home:            true,
+    visit:           true,
+    exhibitions:     true,
+    movingImage:     true,
+    activities:      false,   // ← set true to show Activities in menu
+    residency:       true,
+    blog:            false,   // ← set true to show Blog in menu
+    about:           true,
+    team:            true,
+    shop:            false,   // ← set true to show Shop in menu
+    archives:        false,   // ← set true to show Archives in menu
+    contact:         true,
+    search:          true,
+    languageSwitcher: false,  // ← set true to show EN/TH switcher
   },
 
-  // Home page anchor menu visibility controls
+  // ── Home page anchor sections (left-column sticky nav) ──────────────────────
+  // Controls which sections appear as anchors on the home page
   homeAnchors: {
-    currentExhibitions: true,
-    upcomingExhibitions: true,
+    currentExhibitions:       true,
+    upcomingExhibitions:      true,
     currentMovingImageProgram: true,
-    currentActivities: false,
+    currentActivities:        false,  // ← set true to show Activities anchor
   },
 
-  // Section visibility controls - toggle submenu items and listing pages
+  // ── Section / submenu visibility ────────────────────────────────────────────
+  // Controls submenu items and listing page sections
   visibility: {
     exhibitions: {
       upcoming: true,
-      current: true,
-      past: true,
+      current:  true,
+      past:     true,
     },
     movingImage: {
       upcoming: true,
-      current: true,
-      past: true,
+      current:  true,
+      past:     true,
     },
     activities: {
+      upcoming:      true,
+      current:       true,
+      past:          true,
       publicProgram: true,
-      screenings: true,
+      screenings:    true,
     },
     residency: {
       upcoming: true,
-      current: true,
-      past: true,
+      current:  true,
+      past:     true,
     },
     shop: {
       bookings: true,
@@ -57,60 +67,53 @@ export const siteConfig = {
     },
     archives: {
       pastExhibitions: true,
-      pastActivities: true,
-    }
+      pastActivities:  true,
+    },
   },
-  
-  // Empty state messages - editable from here
+
+  // ── Empty state messages ─────────────────────────────────────────────────────
   emptyStates: {
-    comingSoon: {
-      th: 'เร็วๆ นี้',
-      en: 'Coming Soon'
-    },
-    noCurrentActivities: {
-      th: 'ไม่มีกิจกรรมปัจจุบัน',
-      en: 'No current activities'
-    },
-    noCurrentExhibitions: {
-      th: 'ไม่มีนิทรรศการในขณะนี้',
-      en: 'No current exhibitions'
-    },
-    noUpcomingExhibitions: {
-      th: 'เร็วๆ นี้',
-      en: 'Coming Soon'
-    },
-    noPastExhibitions: {
-      th: 'เร็วๆ นี้',
-      en: 'Coming Soon'
-    },
-    noCurrentMovingImage: {
-      th: 'เร็วๆ นี้',
-      en: 'Coming Soon'
-    },
-    noUpcomingMovingImage: {
-      th: 'เร็วๆ นี้',
-      en: 'Coming Soon'
-    },
-    noPastMovingImage: {
-      th: 'เร็วๆ นี้',
-      en: 'Coming Soon'
-    },
-    noCurrentResidency: {
-      th: 'เร็วๆ นี้',
-      en: 'Coming Soon'
-    }
-  }
+    comingSoon:             { th: 'เร็วๆ นี้',                              en: 'Coming soon' },
+    noCurrentExhibitions:   { th: 'เร็วๆ นี้',                              en: 'Coming soon' },
+    noUpcomingExhibitions:  { th: 'เร็วๆ นี้',                              en: 'Coming soon' },
+    noPastExhibitions:      { th: 'เร็วๆ นี้',                              en: 'Coming soon' },
+    noCurrentActivities:    { th: 'ไม่มีกิจกรรมในขณะนี้',                   en: 'No current activities' },
+    noCurrentMovingImage:   { th: 'ไม่มีโปรแกรมภาพเคลื่อนไหวในขณะนี้',     en: 'No current moving image programme' },
+    noUpcomingMovingImage:  { th: 'ไม่มีโปรแกรมภาพเคลื่อนไหวที่กำลังจะมาถึง', en: 'No upcoming moving image programme' },
+    noPastMovingImage:      { th: 'ไม่มีโปรแกรมภาพเคลื่อนไหวที่ผ่านมา',    en: 'No past moving image programme' },
+    noCurrentResidency:     { th: 'ไม่มีโปรแกรมพำนักในขณะนี้',              en: 'No current residency programme' },
+  },
+
+  // ── External links ───────────────────────────────────────────────────────────
+  links: {
+    booking:  'https://www.tickettailor.com/events/bangkokkunsthalle',
+    location: 'https://maps.app.goo.gl/88XLQBeDFaC1wvuQA',
+  },
+
 };
 
-/**
- * Helper function to get empty state message
- * @param key - The key for the empty state message
- * @param language - The current language ('th' or 'en')
- * @returns The translated message
- */
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
 export function getEmptyStateMessage(
-  key: keyof typeof siteConfig.emptyStates, 
-  language: 'th' | 'en'
+  key: keyof typeof siteConfig.emptyStates,
+  language: 'en' | 'th'
 ): string {
   return siteConfig.emptyStates[key][language];
+}
+
+export function isMenuVisible(key: keyof typeof siteConfig.menu): boolean {
+  return siteConfig.menu[key];
+}
+
+export function isSectionVisible(
+  category: keyof typeof siteConfig.visibility,
+  section: string
+): boolean {
+  return (siteConfig.visibility[category] as Record<string, boolean>)?.[section] ?? false;
+}
+
+export function isHomeSectionVisible(
+  section: keyof typeof siteConfig.homeAnchors
+): boolean {
+  return siteConfig.homeAnchors[section];
 }

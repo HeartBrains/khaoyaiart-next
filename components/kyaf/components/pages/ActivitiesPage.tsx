@@ -1,107 +1,120 @@
 // @ts-nocheck
 'use client';
-import { useState } from 'react';
-import { ImageWithFallback } from '../figma/ImageWithFallback';
-import { Reveal } from '../ui/Reveal';
+import { useState, useEffect } from 'react';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { useLanguage } from '@/utils/languageContext';
 import { useKyafActivities } from '@/lib/useWPData';
-import { ACTIVITY_HERO_IMAGE } from '@/utils/imageConstants';
-
-type StatusFilter = 'all' | 'upcoming' | 'current' | 'past';
+import { ImageWithFallback } from '../figma/ImageWithFallback';
+import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 
 interface ActivitiesPageProps {
-  onNavigate: (page: string, slug?: string) => void;
+  onNavigate?: (page: string, slug?: string) => void;
   targetSectionId?: string;
 }
 
-export function ActivitiesPage({ onNavigate }: ActivitiesPageProps) {
-  const { language, t } = useLanguage();
+export function ActivitiesPage({ onNavigate, targetSectionId }: ActivitiesPageProps) {
+  const { language } = useLanguage();
+  const [activeSection, setActiveSection] = useState('current-activities');
   const { data: rawActivities } = useKyafActivities();
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
 
-  const activities = rawActivities.map(a => ({
-    id: a.id,
-    slug: a.slug,
-    title: language === 'th' ? a.title.th : a.title.en,
-    date: language === 'th' ? a.dateDisplay.th : a.dateDisplay.en,
-    featuredImage: a.featuredImage,
-    status: a.status as StatusFilter,
-  }));
+  const currentActivities  = rawActivities.filter(a => a.status === 'current');
+  const upcomingActivities = rawActivities.filter(a => a.status === 'upcoming');
+  const pastActivities     = rawActivities.filter(a => a.status === 'past');
 
-  const filtered = statusFilter === 'all'
-    ? activities
-    : activities.filter(a => a.status === statusFilter);
+  const sections = [
+    ...(siteConfig.visibility.activities.upcoming ? [{ id: 'upcoming-activities', label: language === 'th' ? 'กิจกรรมที่กำลังจะมาถึง' : 'Upcoming Activities' }] : []),
+    ...(siteConfig.visibility.activities.current  ? [{ id: 'current-activities',  label: language === 'th' ? 'กิจกรรมปัจจุบัน' : 'Current Activities' }] : []),
+    ...(siteConfig.visibility.activities.past     ? [{ id: 'past-activities',     label: language === 'th' ? 'กิจกรรมที่ผ่านมา' : 'Past Activities' }] : []),
+  ];
 
-  const statusLabels: Record<StatusFilter, { en: string; th: string }> = {
-    all:      { en: 'All Activities',      th: 'กิจกรรมทั้งหมด' },
-    upcoming: { en: 'Upcoming Activities', th: 'กิจกรรมที่กำลังจะมาถึง' },
-    current:  { en: 'Current Activities',  th: 'กิจกรรมปัจจุบัน' },
-    past:     { en: 'Past Activities',     th: 'กิจกรรมที่ผ่านมา' },
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const pos = window.scrollY + 200;
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i].id);
+        if (el && el.offsetTop <= pos) { setActiveSection(sections[i].id); break; }
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [sections]);
+
+  useEffect(() => {
+    if (targetSectionId) setTimeout(() => scrollToSection(targetSectionId), 100);
+  }, [targetSectionId]);
+
+  const ActivityCard = ({ item }) => (
+    <div className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', item.slug)}>
+      {item.featuredImage && (
+        <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
+          <ImageWithFallback src={item.featuredImage} alt={item.title[language] || item.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" loading="lazy" />
+        </div>
+      )}
+      <div className="flex flex-col gap-1">
+        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title[language] || item.title.en}</h3>
+        {(item.artist?.[language] || item.artist?.en) && (
+          <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.artist[language] || item.artist.en}</p>
+        )}
+        {(item.dateDisplay?.[language] || item.dateDisplay?.en) && (
+          <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.dateDisplay[language] || item.dateDisplay.en}</p>
+        )}
+      </div>
+    </div>
+  );
+
+  const EmptyState = ({ message }) => (
+    <div className="py-20 text-gray-400 font-sans text-xl md:text-2xl w-full text-left">{message}</div>
+  );
+
   return (
-    <div className="w-full bg-white pb-24 min-h-screen font-sans text-black">
-      <ParallaxHero
-        image={ACTIVITY_HERO_IMAGE}
-        height="h-[80vh]"
-      >
+    <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
+      <ParallaxHero image="https://irp.cdn-website.com/5516674f/dms3rep/multi/cover-for-Exhibitions-list-83b680a4.jpg" height="h-[80vh]">
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />
       </ParallaxHero>
 
       <div className="w-full px-[5%] pt-[96px] pb-[0px]">
         <div className="flex flex-col md:flex-row gap-12 md:gap-0">
-          {/* Left Sidebar */}
+
           <aside className="w-full md:w-1/2 shrink-0">
             <nav className="md:sticky md:top-32 flex flex-col items-start gap-2">
-              <h2 className="text-xl md:text-2xl font-sans font-medium text-black mb-8">
-                {t('nav.activities')}
-              </h2>
-              {(['all', 'upcoming', 'current', 'past'] as StatusFilter[]).map(s => (
-                <button
-                  key={s}
-                  onClick={() => setStatusFilter(s)}
-                  className={`text-left text-xl md:text-2xl font-sans transition-all duration-300 ${
-                    statusFilter === s
-                      ? 'text-black font-medium'
-                      : 'text-gray-400 hover:text-black font-normal'
-                  }`}
-                >
-                  {language === 'th' ? statusLabels[s].th : statusLabels[s].en}
+              {sections.map(s => (
+                <button key={s.id} onClick={() => scrollToSection(s.id)}
+                  className={`text-left text-xl md:text-2xl font-sans font-normal transition-all duration-300 ${activeSection === s.id ? 'text-black' : 'text-gray-400 hover:text-black'}`}>
+                  {s.label}
                 </button>
               ))}
             </nav>
           </aside>
 
-          {/* Right Content */}
-          <main className="w-full md:w-1/2 flex flex-col gap-16">
-            {filtered.map((item, idx) => (
-              <Reveal key={item.id} delay={idx * 0.1}>
-                <div
-                  className="flex flex-col gap-6 w-full cursor-pointer group"
-                  onClick={() => onNavigate('activity-detail', item.slug)}
-                >
-                  <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden">
-                    <ImageWithFallback
-                      src={item.featuredImage}
-                      alt={item.title}
-                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <h3 className={`text-xl md:text-2xl font-normal text-black leading-tight whitespace-pre-wrap ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                      {item.title}
-                    </h3>
-                    {item.date && (
-                      <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                        {item.date}
-                      </p>
-                    )}
-                  </div>
+          <div className="w-full md:w-1/2 flex flex-col md:items-end">
+            {siteConfig.visibility.activities.upcoming && (
+              <section id="upcoming-activities" className="mb-32 md:mb-40 scroll-mt-32 w-full">
+                <div className="flex flex-col gap-12 md:gap-16 md:items-end">
+                  {upcomingActivities.length > 0 ? upcomingActivities.map(item => <ActivityCard key={item.id} item={item} />) : <EmptyState message={getEmptyStateMessage('noCurrentActivities', language)} />}
                 </div>
-              </Reveal>
-            ))}
-          </main>
+              </section>
+            )}
+            {siteConfig.visibility.activities.current && (
+              <section id="current-activities" className="mb-32 md:mb-40 scroll-mt-32 w-full">
+                <div className="flex flex-col gap-12 md:gap-16 md:items-end">
+                  {currentActivities.length > 0 ? currentActivities.map(item => <ActivityCard key={item.id} item={item} />) : <EmptyState message={getEmptyStateMessage('noCurrentActivities', language)} />}
+                </div>
+              </section>
+            )}
+            {siteConfig.visibility.activities.past && (
+              <section id="past-activities" className="mb-32 md:mb-40 scroll-mt-32 w-full">
+                <div className="flex flex-col gap-12 md:gap-16 md:items-end">
+                  {pastActivities.length > 0 ? pastActivities.map(item => <ActivityCard key={item.id} item={item} />) : <EmptyState message={getEmptyStateMessage('noCurrentActivities', language)} />}
+                </div>
+              </section>
+            )}
+          </div>
+
         </div>
       </div>
     </div>

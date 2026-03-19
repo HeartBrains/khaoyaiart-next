@@ -6,7 +6,7 @@ import { ParallaxHero } from '../ui/ParallaxHero';
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/utils/languageContext';
-import { exhibitions, type Exhibition } from '@/components/kyaf/utils/exhibitionsDataNew';
+import { useKyafExhibitions } from '@/lib/useWPData';
 import { EXHIBITIONS_HERO_IMAGE } from '@/utils/imageConstants';
 
 interface ExhibitionsPageProps {
@@ -17,6 +17,7 @@ interface ExhibitionsPageProps {
 type Category = 'current' | 'upcoming' | 'past';
 
 export function ExhibitionsPage({ onNavigate, activeSection }: ExhibitionsPageProps) {
+  const { data: exhibitions } = useKyafExhibitions();
   const [activeCategory, setActiveCategory] = useState<Category>(
     (activeSection as Category) || 'current'
   );

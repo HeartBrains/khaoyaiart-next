@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { fetchCPT, fetchCPTBySlug } from '@/lib/wp-api';
 import { mapActivity } from '@/lib/wp-mappers';
 import { kyafMetadata } from '@/lib/seo';
+import { JsonLd, exhibitionJsonLd, breadcrumbJsonLd } from '@/lib/JsonLd';
 import { ActivityDetailClientPage } from '@/components/kyaf/ActivityDetailClientPage';
 import { getMockKyafActivities } from '@/lib/mock-data';
 
@@ -24,11 +25,36 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return kyafMetadata(
     str(data?.title) ?? slug,
     str(data?.content)?.replace(/<[^>]+>/g, '').slice(0, 160) ?? '',
-    { path: `/kyaf/activities/${slug}`, type: 'article' },
+    { path: `/kyaf/activities/${slug}`, image: data?.featuredImage, type: 'article' },
   );
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  return <ActivityDetailClientPage site="kyaf" slug={slug} />;
+  const post = await fetchCPTBySlug('activities', slug);
+  const data = post ? mapActivity(post) : null;
+  const BASE = 'https://next.bkkapp.com/kyaf';
+
+  return (
+    <>
+      {data && (
+        <>
+          <JsonLd data={exhibitionJsonLd({
+            name: str(data.title),
+            description: str(data.content)?.replace(/<[^>]+>/g, '').slice(0, 300),
+            image: data.featuredImage,
+            url: `${BASE}/activities/${slug}`,
+            location: { name: 'Khao Yai Art Forest', address: 'Khao Yai, Thailand' },
+            organizer: { name: 'Khao Yai Art Forest', url: BASE },
+          })} />
+          <JsonLd data={breadcrumbJsonLd([
+            { name: 'Khao Yai Art Forest', url: BASE },
+            { name: 'Activities', url: `${BASE}/activities` },
+            { name: str(data.title), url: `${BASE}/activities/${slug}` },
+          ])} />
+        </>
+      )}
+      <ActivityDetailClientPage site="kyaf" slug={slug} />
+    </>
+  );
 }

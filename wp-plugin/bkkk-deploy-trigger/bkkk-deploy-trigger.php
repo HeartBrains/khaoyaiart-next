@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BKKK Deploy Trigger
  * Description: Fires a GitHub Actions repository_dispatch event when content is published or updated.
- * Version:     1.0.0
+ * Version:     1.1.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -23,25 +23,20 @@ define( 'BKKK_WATCHED_POST_TYPES', [
 // define( 'BKKK_GH_REPO',   'HeartBrains/kyaf-next' );
 
 /**
- * Trigger a GitHub Actions repository_dispatch after a post transitions
- * to 'publish' (covers new publish and re-publish after edit).
+ * Send a repository_dispatch event to GitHub Actions.
  */
-add_action( 'transition_post_status', 'bkkk_maybe_dispatch', 10, 3 );
-
-function bkkk_maybe_dispatch( string $new_status, string $old_status, WP_Post $post ): void {
-    if ( $new_status !== 'publish' ) {
-        return;
-    }
-    if ( ! in_array( $post->post_type, BKKK_WATCHED_POST_TYPES, true ) ) {
-        return;
-    }
-
+function bkkk_dispatch( string $event_type, array $payload = [] ): void {
     $token = defined( 'BKKK_GH_TOKEN' ) ? BKKK_GH_TOKEN : get_option( 'bkkk_gh_token', '' );
-    $repo  = defined( 'BKKK_GH_REPO' )  ? BKKK_GH_REPO  : get_option( 'bkkk_gh_repo', 'HeartBrains/kyaf-next' );
+    $repo  = defined( 'BKKK_GH_REPO' )  ? BKKK_GH_REPO  : get_option( 'bkkk_gh_repo', 'HeartBrains/khaoyaiart-next' );
 
     if ( empty( $token ) ) {
         error_log( '[BKKK Deploy] No GitHub token configured — skipping dispatch.' );
         return;
+    }
+
+    $body = [ 'event_type' => $event_type ];
+    if ( ! empty( $payload ) ) {
+        $body['client_payload'] = $payload;
     }
 
     $response = wp_remote_post(
@@ -49,19 +44,12 @@ function bkkk_maybe_dispatch( string $new_status, string $old_status, WP_Post $p
         [
             'timeout' => 10,
             'headers' => [
-                'Authorization' => "Bearer {$token}",
-                'Accept'        => 'application/vnd.github+json',
-                'Content-Type'  => 'application/json',
+                'Authorization'        => "Bearer {$token}",
+                'Accept'               => 'application/vnd.github+json',
+                'Content-Type'         => 'application/json',
                 'X-GitHub-Api-Version' => '2022-11-28',
             ],
-            'body' => wp_json_encode( [
-                'event_type'     => 'wp_content_updated',
-                'client_payload' => [
-                    'post_type' => $post->post_type,
-                    'post_id'   => $post->ID,
-                    'slug'      => $post->post_name,
-                ],
-            ] ),
+            'body' => wp_json_encode( $body ),
         ]
     );
 
@@ -73,6 +61,44 @@ function bkkk_maybe_dispatch( string $new_status, string $old_status, WP_Post $p
             error_log( "[BKKK Deploy] Unexpected response {$code}: " . wp_remote_retrieve_body( $response ) );
         }
     }
+}
+
+/**
+ * Trigger on publish / update.
+ */
+add_action( 'transition_post_status', 'bkkk_maybe_dispatch_on_publish', 10, 3 );
+
+function bkkk_maybe_dispatch_on_publish( string $new_status, string $old_status, WP_Post $post ): void {
+    if ( $new_status !== 'publish' ) {
+        return;
+    }
+    if ( ! in_array( $post->post_type, BKKK_WATCHED_POST_TYPES, true ) ) {
+        return;
+    }
+    bkkk_dispatch( 'wp_content_updated', [
+        'action'    => 'publish',
+        'post_type' => $post->post_type,
+        'post_id'   => $post->ID,
+        'slug'      => $post->post_name,
+    ] );
+}
+
+/**
+ * Trigger on delete.
+ */
+add_action( 'before_delete_post', 'bkkk_maybe_dispatch_on_delete', 10, 1 );
+
+function bkkk_maybe_dispatch_on_delete( int $post_id ): void {
+    $post = get_post( $post_id );
+    if ( ! $post || ! in_array( $post->post_type, BKKK_WATCHED_POST_TYPES, true ) ) {
+        return;
+    }
+    bkkk_dispatch( 'wp_content_updated', [
+        'action'    => 'delete',
+        'post_type' => $post->post_type,
+        'post_id'   => $post_id,
+        'slug'      => $post->post_name,
+    ] );
 }
 
 // ── Settings page ─────────────────────────────────────────────────────────────
@@ -136,30 +162,8 @@ function bkkk_settings_page(): void {
             $_POST['bkkk_action'] === 'manual_dispatch' &&
             check_admin_referer( 'bkkk_manual_dispatch' )
         ) {
-            // Reuse the dispatch logic with a dummy post object
-            $dummy = new WP_Post( (object) [
-                'post_type' => 'manual',
-                'ID'        => 0,
-                'post_name' => 'manual',
-            ] );
-            // Call directly without the status gate
-            $token = defined( 'BKKK_GH_TOKEN' ) ? BKKK_GH_TOKEN : get_option( 'bkkk_gh_token', '' );
-            $repo  = defined( 'BKKK_GH_REPO' )  ? BKKK_GH_REPO  : get_option( 'bkkk_gh_repo', 'HeartBrains/kyaf-next' );
-            $response = wp_remote_post(
-                "https://api.github.com/repos/{$repo}/dispatches",
-                [
-                    'timeout' => 10,
-                    'headers' => [
-                        'Authorization' => "Bearer {$token}",
-                        'Accept'        => 'application/vnd.github+json',
-                        'Content-Type'  => 'application/json',
-                        'X-GitHub-Api-Version' => '2022-11-28',
-                    ],
-                    'body' => wp_json_encode( [ 'event_type' => 'wp_content_updated' ] ),
-                ]
-            );
-            $code = is_wp_error( $response ) ? $response->get_error_message() : wp_remote_retrieve_response_code( $response );
-            echo '<div class="notice notice-' . ( $code === 204 ? 'success' : 'error' ) . '"><p>Response: ' . esc_html( $code ) . '</p></div>';
+            bkkk_dispatch( 'wp_content_updated', [ 'action' => 'manual' ] );
+            echo '<div class="notice notice-success"><p>Deploy triggered.</p></div>';
         }
         ?>
     </div>

@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return bkkkMetadata(
     str(data?.title) ?? slug,
     str(data?.content)?.replace(/<[^>]+>/g, '').slice(0, 160) ?? '',
-    { path: `/bkkk/moving-image/${slug}`, type: 'article' },
+    { path: `/bkkk/moving-image/${slug}`, image: data?.featuredImage, type: 'article' },
   );
 }
 

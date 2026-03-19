@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return bkkkMetadata(
     data?.name ?? slug,
     data?.bio?.replace(/<[^>]+>/g, '').slice(0, 160) ?? '',
-    { path: `/bkkk/artists/${slug}`, type: 'article' },
+    { path: `/bkkk/artists/${slug}`, image: data?.featuredImage, type: 'article' },
   );
 }
 

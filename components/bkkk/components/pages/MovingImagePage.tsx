@@ -2,7 +2,7 @@
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { useLanguage } from '@/utils/languageContext';
 import { useState, useEffect, useMemo } from 'react';
-import { fetchRecords, RecordItem } from '@/utils/records';
+import { useMovingImages } from '@/lib/useWPData';
 import { getEmptyStateMessage } from '@/utils/siteConfig';
 const movingImageHero = '/assets/429c8ad61cdb4d502462d129e377fe4faf35abf2.png';
 
@@ -13,44 +13,12 @@ interface MovingImagePageProps {
 
 export function MovingImagePage({ onNavigate, targetSectionId }: MovingImagePageProps) {
   const { language } = useLanguage();
-  const [movingImageRecords, setMovingImageRecords] = useState<RecordItem[]>([]);
+  const { data: movingImageRecords } = useMovingImages();
   const [activeSection, setActiveSection] = useState('current-programs');
 
-  // Fetch moving image programs
-  useEffect(() => {
-    const loadMovingImagePrograms = async () => {
-      try {
-        const records = await fetchRecords({ category: 'moving-image', status: 'all', language });
-        // Sort by date - newest first (2026, 2025, 2024...)
-        const sortedRecords = records.sort((a, b) => {
-          // Extract year from date string
-          const yearA = parseInt(a.date.match(/\b20\d{2}\b/)?.[0] || '0');
-          const yearB = parseInt(b.date.match(/\b20\d{2}\b/)?.[0] || '0');
-          return yearB - yearA; // Descending order
-        });
-        setMovingImageRecords(sortedRecords);
-      } catch (error) {
-        console.error('Failed to fetch moving image programs', error);
-      }
-    };
-    loadMovingImagePrograms();
-  }, [language]);
-
-  // Filter programs based on today's date
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // Reset time to midnight for accurate date comparison
-
-  const upcomingPrograms = movingImageRecords.filter(record => {
-    return record.status === 'upcoming';
-  });
-
-  const currentPrograms = movingImageRecords.filter(record => {
-    return record.status === 'current';
-  });
-
-  const pastPrograms = movingImageRecords.filter(record => {
-    return record.status === 'past';
-  });
+  const upcomingPrograms = movingImageRecords.filter(r => r.status === 'upcoming');
+  const currentPrograms  = movingImageRecords.filter(r => r.status === 'current');
+  const pastPrograms     = movingImageRecords.filter(r => r.status === 'past');
 
   // Anchor sections - memoized to prevent recreation on every render
   const sections = useMemo(() => {
@@ -146,26 +114,20 @@ export function MovingImagePage({ onNavigate, targetSectionId }: MovingImagePage
               <div className="flex flex-col gap-12 md:gap-16">
                 {upcomingPrograms.length > 0 ? (
                   upcomingPrograms.map((record) => (
-                    <div 
-                      key={record.id} 
-                      className="flex flex-col gap-6 w-full cursor-pointer group" 
+                    <div
+                      key={record.id}
+                      className="flex flex-col gap-6 w-full cursor-pointer group"
                       onClick={() => onNavigate?.('moving-image-detail', record.slug)}
                     >
-                      {record.image && (
+                      {record.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-200 overflow-hidden relative transition-colors duration-300 group-hover:bg-gray-300">
-                          <ImageWithFallback
-                            src={record.image}
-                            alt={record.title}
-                            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                          />
+                          <ImageWithFallback src={record.featuredImage} alt={record.title[language] || record.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
-                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.title}</h3>
-                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                          {record.description}
-                        </p>
-                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.date}</p>
+                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.title[language] || record.title.en}</h3>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.curator?.[language] || record.curator?.en}</p>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.dateDisplay?.[language] || record.dateDisplay?.en}</p>
                       </div>
                     </div>
                   ))
@@ -182,26 +144,20 @@ export function MovingImagePage({ onNavigate, targetSectionId }: MovingImagePage
               <div className="flex flex-col gap-12 md:gap-16">
                 {currentPrograms.length > 0 ? (
                   currentPrograms.map((record) => (
-                    <div 
-                      key={record.id} 
-                      className="flex flex-col gap-6 w-full cursor-pointer group" 
+                    <div
+                      key={record.id}
+                      className="flex flex-col gap-6 w-full cursor-pointer group"
                       onClick={() => onNavigate?.('moving-image-detail', record.slug)}
                     >
-                      {record.image && (
+                      {record.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-200 overflow-hidden relative transition-colors duration-300 group-hover:bg-gray-300">
-                          <ImageWithFallback
-                            src={record.image}
-                            alt={record.title}
-                            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                          />
+                          <ImageWithFallback src={record.featuredImage} alt={record.title[language] || record.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
-                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.title}</h3>
-                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                          {record.description}
-                        </p>
-                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.date}</p>
+                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.title[language] || record.title.en}</h3>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.curator?.[language] || record.curator?.en}</p>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.dateDisplay?.[language] || record.dateDisplay?.en}</p>
                       </div>
                     </div>
                   ))
@@ -218,26 +174,20 @@ export function MovingImagePage({ onNavigate, targetSectionId }: MovingImagePage
               <div className="flex flex-col gap-12 md:gap-16">
                 {pastPrograms.length > 0 ? (
                   pastPrograms.map((record) => (
-                    <div 
-                      key={record.id} 
-                      className="flex flex-col gap-6 w-full cursor-pointer group" 
+                    <div
+                      key={record.id}
+                      className="flex flex-col gap-6 w-full cursor-pointer group"
                       onClick={() => onNavigate?.('moving-image-detail', record.slug)}
                     >
-                      {record.image && (
+                      {record.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-200 overflow-hidden relative transition-colors duration-300 group-hover:bg-gray-300">
-                          <ImageWithFallback
-                            src={record.image}
-                            alt={record.title}
-                            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                          />
+                          <ImageWithFallback src={record.featuredImage} alt={record.title[language] || record.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
-                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.title}</h3>
-                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                          {record.description}
-                        </p>
-                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.date}</p>
+                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.title[language] || record.title.en}</h3>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.curator?.[language] || record.curator?.en}</p>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.dateDisplay?.[language] || record.dateDisplay?.en}</p>
                       </div>
                     </div>
                   ))
