@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BKKK Deploy Trigger
  * Description: Fires a GitHub Actions repository_dispatch event when content is published or updated.
- * Version:     1.0.0
+ * Version:     1.1.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
