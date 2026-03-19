@@ -27,12 +27,13 @@ jobs:
         env:
           NEXT_PUBLIC_WP_BASE_URL: ${{ secrets.NEXT_PUBLIC_WP_BASE_URL }}
 
-      - name: Deploy out/ to deploy branch
+      - name: Deploy via rsync
         run: |
-          cd out
-          git init
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "deploy: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
-          git push -f https://x-access-token:${{ secrets.GH_PAT }}@github.com/HeartBrains/khaoyaiart-next.git HEAD:deploy
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }}" \
+            out/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:domains/khaoyai.bkkkapp.com/public_html/
