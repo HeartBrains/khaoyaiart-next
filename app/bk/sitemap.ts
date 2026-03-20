@@ -5,39 +5,47 @@ export const dynamic = 'force-static';
 
 const BASE = 'https://bkkk.bkkkapp.com/bk';
 
-const staticRoutes = [
-  '',
-  '/exhibitions',
-  '/activities',
-  '/residency',
-  '/moving-image',
-  '/press',
-  '/team',
-  '/about',
-  '/visit',
-  '/contact',
-  '/support',
+const staticRoutes: { path: string; priority: number; changeFreq: MetadataRoute.Sitemap[number]['changeFrequency'] }[] = [
+  { path: '',               priority: 1.0, changeFreq: 'daily' },
+  { path: '/exhibitions',   priority: 0.9, changeFreq: 'daily' },
+  { path: '/activities',    priority: 0.9, changeFreq: 'daily' },
+  { path: '/moving-image',  priority: 0.8, changeFreq: 'weekly' },
+  { path: '/residency',     priority: 0.8, changeFreq: 'weekly' },
+  { path: '/about',         priority: 0.8, changeFreq: 'monthly' },
+  { path: '/about/history', priority: 0.6, changeFreq: 'monthly' },
+  { path: '/about/vision',  priority: 0.6, changeFreq: 'monthly' },
+  { path: '/team',          priority: 0.7, changeFreq: 'monthly' },
+  { path: '/visit',         priority: 0.8, changeFreq: 'monthly' },
+  { path: '/contact',       priority: 0.7, changeFreq: 'monthly' },
+  { path: '/press',         priority: 0.6, changeFreq: 'weekly' },
+  { path: '/blog',          priority: 0.7, changeFreq: 'weekly' },
+  { path: '/archives',      priority: 0.6, changeFreq: 'monthly' },
+  { path: '/support',       priority: 0.5, changeFreq: 'monthly' },
+  { path: '/shop',          priority: 0.5, changeFreq: 'weekly' },
+  { path: '/news',          priority: 0.6, changeFreq: 'weekly' },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const entries: MetadataRoute.Sitemap = staticRoutes.map(path => ({
+  const entries: MetadataRoute.Sitemap = staticRoutes.map(({ path, priority, changeFreq }) => ({
     url: `${BASE}${path}`,
-    changeFrequency: 'weekly',
-    priority: path === '' ? 1 : 0.8,
+    changeFrequency: changeFreq,
+    priority,
+    lastModified: new Date(),
   }));
 
-  // Dynamic routes
-  const [exhibitions, activities, movingImages, residencyArtists] = await Promise.all([
+  const [exhibitions, activities, movingImages, residencyArtists, blogPosts] = await Promise.all([
     fetchCPT('exhibitions', 'bkkk').catch(() => []),
     fetchCPT('activities', 'bkkk').catch(() => []),
     fetchCPT('moving-images', 'bkkk').catch(() => []),
     fetchCPT('residency-artists', 'bkkk').catch(() => []),
+    fetchCPT('posts', 'bkkk').catch(() => []),
   ]);
 
-  for (const p of exhibitions) entries.push({ url: `${BASE}/exhibitions/${p.slug}`, changeFrequency: 'monthly', priority: 0.7 });
-  for (const p of activities) entries.push({ url: `${BASE}/activities/${p.slug}`, changeFrequency: 'monthly', priority: 0.7 });
-  for (const p of movingImages) entries.push({ url: `${BASE}/moving-image/${p.slug}`, changeFrequency: 'monthly', priority: 0.7 });
-  for (const p of residencyArtists) entries.push({ url: `${BASE}/artists/${p.slug}`, changeFrequency: 'monthly', priority: 0.6 });
+  for (const p of exhibitions)      entries.push({ url: `${BASE}/exhibitions/${p.slug}`,  changeFrequency: 'monthly', priority: 0.7, lastModified: new Date() });
+  for (const p of activities)       entries.push({ url: `${BASE}/activities/${p.slug}`,   changeFrequency: 'monthly', priority: 0.7, lastModified: new Date() });
+  for (const p of movingImages)     entries.push({ url: `${BASE}/moving-image/${p.slug}`, changeFrequency: 'monthly', priority: 0.6, lastModified: new Date() });
+  for (const p of residencyArtists) entries.push({ url: `${BASE}/artists/${p.slug}`,      changeFrequency: 'monthly', priority: 0.6, lastModified: new Date() });
+  for (const p of blogPosts)        entries.push({ url: `${BASE}/blog/${p.slug}`,          changeFrequency: 'monthly', priority: 0.6, lastModified: new Date() });
 
   return entries;
 }
