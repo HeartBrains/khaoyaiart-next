@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BKKK Deploy Trigger
  * Description: Fires a GitHub Actions repository_dispatch event when content changes. Supports auto-trigger on save or manual trigger via a publish button.
- * Version:     1.4.0
+ * Version:     1.5.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -23,6 +23,17 @@ define( 'BKKK_WATCHED_POST_TYPES', [
 // Trigger mode: 'auto' = on every publish/update, 'manual' = only via the "Publish to Site" button
 function bkkk_trigger_mode(): string {
     return get_option( 'bkkk_trigger_mode', 'auto' );
+}
+
+/**
+ * Debounce guard — returns true if a dispatch already fired within the last 10 seconds.
+ * Prevents double-triggers when WP/JetEngine saves the post and its meta in separate passes.
+ */
+function bkkk_already_dispatched( int $post_id ): bool {
+    $key = 'bkkk_dispatched_' . $post_id;
+    if ( get_transient( $key ) ) return true;
+    set_transient( $key, 1, 10 );
+    return false;
 }
 
 /**
@@ -78,6 +89,7 @@ function bkkk_maybe_dispatch_on_publish( string $new_status, string $old_status,
     if ( bkkk_trigger_mode() !== 'auto' ) return;
     if ( $new_status !== 'publish' ) return;
     if ( ! in_array( $post->post_type, BKKK_WATCHED_POST_TYPES, true ) ) return;
+    if ( bkkk_already_dispatched( $post->ID ) ) return;
 
     bkkk_dispatch( 'wp_content_updated', [
         'action'    => 'publish',
@@ -93,6 +105,7 @@ function bkkk_maybe_dispatch_on_delete( int $post_id ): void {
     if ( bkkk_trigger_mode() !== 'auto' ) return;
     $post = get_post( $post_id );
     if ( ! $post || ! in_array( $post->post_type, BKKK_WATCHED_POST_TYPES, true ) ) return;
+    if ( bkkk_already_dispatched( $post_id ) ) return;
 
     bkkk_dispatch( 'wp_content_updated', [
         'action'    => 'delete',
@@ -127,6 +140,7 @@ function bkkk_handle_publish_button( int $post_id, WP_Post $post ): void {
     if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['bkkk_publish_nonce'] ) ), 'bkkk_publish_to_site_' . $post_id ) ) return;
     if ( ! current_user_can( 'publish_posts' ) ) return;
     if ( ! in_array( $post->post_type, BKKK_WATCHED_POST_TYPES, true ) ) return;
+    if ( bkkk_already_dispatched( $post_id ) ) return;
 
     bkkk_dispatch( 'wp_content_updated', [
         'action'    => 'manual_publish',
