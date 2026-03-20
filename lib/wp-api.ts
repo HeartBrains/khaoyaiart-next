@@ -86,6 +86,10 @@ export async function fetchCPT(cpt: string, site: WPSite): Promise<WPRawPost[]> 
       if (post.featured_media && post.featured_media > 0) {
         mediaIds.push(post.featured_media);
       }
+      // featured_image_url may be an attachment ID from JetEngine image upload field
+      const fiu = post.meta?.featured_image_url;
+      if (typeof fiu === 'number' && fiu > 0) mediaIds.push(fiu);
+      if (typeof fiu === 'string' && /^\d+$/.test(fiu)) mediaIds.push(Number(fiu));
       const galleryIds = post.meta?.gallery_media;
       if (Array.isArray(galleryIds)) {
         galleryIds.forEach(id => { const n = Number(id); if (n > 0) mediaIds.push(n); });
@@ -97,9 +101,12 @@ export async function fetchCPT(cpt: string, site: WPSite): Promise<WPRawPost[]> 
 
     // Attach resolved URLs to each post
     return filtered.map(post => {
+      // Resolve featured_media (WP native) or featured_image_url if it's an ID
+      const fiu = post.meta?.featured_image_url;
+      const fiuId = typeof fiu === 'number' ? fiu : (typeof fiu === 'string' && /^\d+$/.test(fiu) ? Number(fiu) : 0);
       const featuredUrl = post.featured_media && post.featured_media > 0
         ? (mediaMap.get(post.featured_media) ?? '')
-        : '';
+        : fiuId > 0 ? (mediaMap.get(fiuId) ?? '') : '';
 
       const galleryIds = post.meta?.gallery_media;
       const galleryUrls = Array.isArray(galleryIds)
