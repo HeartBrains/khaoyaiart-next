@@ -51,9 +51,15 @@ async function batchResolveMedia(ids: number[]): Promise<Map<number, string>> {
 }
 
 // Fetch a single URL with up to `retries` attempts, waiting `delayMs` between each
+const WP_AUTH_USER = process.env.WP_AUTH_USER ?? '';
+const WP_AUTH_PASS = process.env.WP_AUTH_PASS ?? '';
+const WP_AUTH_HEADER = WP_AUTH_USER && WP_AUTH_PASS
+  ? { Authorization: 'Basic ' + Buffer.from(`${WP_AUTH_USER}:${WP_AUTH_PASS}`).toString('base64') }
+  : {};
+
 async function fetchWithRetry(url: string, retries = 3, delayMs = 2000): Promise<Response | null> {
   for (let attempt = 1; attempt <= retries; attempt++) {
-    const res = await fetch(url, { cache: 'force-cache' });
+    const res = await fetch(url, { cache: 'force-cache', headers: WP_AUTH_HEADER });
     if (res.ok) return res;
     console.error(`[wp-api] HTTP ${res.status} on attempt ${attempt}/${retries}: ${url}`);
     if (attempt < retries) await new Promise(r => setTimeout(r, delayMs));
