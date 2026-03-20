@@ -4,6 +4,8 @@ import { bkkkMetadata } from '@/lib/seo';
 import { BlogDetailClientPage } from '@/components/bkkk/BlogDetailClientPage';
 import { MOCK_POSTS_BILINGUAL } from '@/components/bkkk/utils/mockDataBilingual';
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const posts = await fetchCPT('posts', 'bkkk');
   if (posts.length > 0) return posts.map(p => ({ slug: p.slug }));

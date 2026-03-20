@@ -5,6 +5,8 @@ import { kyafMetadata } from '@/lib/seo';
 import { ArtistDetailClientPage } from '@/components/kyaf/ArtistDetailClientPage';
 import { ARTISTS_DATA } from '@/components/kyaf/utils/residencyData';
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const posts = await fetchCPT('residency-artists', 'kyaf');
   if (posts.length > 0) return posts.map(p => ({ slug: p.slug }));

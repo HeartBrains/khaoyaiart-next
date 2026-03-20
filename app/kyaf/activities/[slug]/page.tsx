@@ -10,8 +10,11 @@ function str(v: string | { en: string; th: string } | undefined | null): string 
   return v.en ?? '';
 }
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const posts = await fetchCPT('activities', 'kyaf');
+  if (posts.length === 0) return [{ slug: '_placeholder' }];
   return posts.map(p => ({ slug: p.slug }));
 }
 

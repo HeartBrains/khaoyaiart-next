@@ -4,6 +4,8 @@ import { kyafMetadata } from '@/lib/seo';
 import { BlogDetailClientPage } from '@/components/kyaf/BlogDetailClientPage';
 import { MOCK_POSTS_BILINGUAL } from '@/components/bkkk/utils/mockDataBilingual';
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const posts = await fetchCPT('posts', 'kyaf');
   if (posts.length > 0) return posts.map(p => ({ slug: p.slug }));
