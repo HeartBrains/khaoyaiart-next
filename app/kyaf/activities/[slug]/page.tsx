@@ -4,8 +4,6 @@ import { mapActivity } from '@/lib/wp-mappers';
 import { kyafMetadata } from '@/lib/seo';
 import { JsonLd, exhibitionJsonLd, breadcrumbJsonLd } from '@/lib/JsonLd';
 import { ActivityDetailClientPage } from '@/components/kyaf/ActivityDetailClientPage';
-import { getMockKyafActivities } from '@/lib/mock-data';
-
 function str(v: string | { en: string; th: string } | undefined | null): string {
   if (!v) return '';
   if (typeof v === 'string') return v;
@@ -14,8 +12,7 @@ function str(v: string | { en: string; th: string } | undefined | null): string 
 
 export async function generateStaticParams() {
   const posts = await fetchCPT('activities', 'kyaf');
-  if (posts.length > 0) return posts.map(p => ({ slug: p.slug }));
-  return getMockKyafActivities().map(a => ({ slug: str(a.slug) }));
+  return posts.map(p => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
