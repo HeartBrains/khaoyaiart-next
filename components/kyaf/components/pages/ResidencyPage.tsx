@@ -55,7 +55,7 @@ export function ResidencyPage({ onNavigate: onNavigateProp, activeSection }: Res
         <section className="flex flex-col md:flex-row mb-32 md:mb-40">
             {/* Left Column */}
             <div className="w-full md:w-1/2 mb-12 md:mb-0">
-                <div className="sticky top-32 flex flex-col items-start gap-4">
+                <div className="sticky top-32 flex flex-col items-start gap-4 z-10">
                     <Reveal>
                         <button 
                             onClick={() => setActiveCategory('current')}

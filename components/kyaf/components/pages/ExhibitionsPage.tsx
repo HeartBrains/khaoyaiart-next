@@ -53,7 +53,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, activeSection }: E
             
             {/* Left Sidebar - Navigation */}
             <div className="w-full md:w-1/2 mb-12 md:mb-0">
-                <div className="sticky top-32 flex flex-col items-start gap-4">
+                <div className="sticky top-32 flex flex-col items-start gap-4 z-10">
                     <button 
                         onClick={() => setActiveCategory('current')}
                         className={`text-xl md:text-2xl font-normal text-left transition-colors duration-300 flex flex-col items-start cursor-pointer ${

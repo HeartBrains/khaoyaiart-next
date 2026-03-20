@@ -1,2 +1,0 @@
-:HL["/_next/static/chunks/0osk2pq7t3pqp.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"bkkk","param":null,"prefetchHints":0,"slots":{"children":{"name":"blog","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"textile-narratives","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}}}},"staleTime":300,"buildId":"ekEJWWViC8dwQCEE7RWm8"}
