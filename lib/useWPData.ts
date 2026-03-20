@@ -44,14 +44,22 @@ async function clientFetchCPT(cpt: string, site: 'bkkk' | 'kyaf'): Promise<WPRaw
     const mediaIds: number[] = [];
     for (const post of filtered) {
       if (post.featured_media && post.featured_media > 0) mediaIds.push(post.featured_media);
+      // featured_image_url may be an attachment ID from JetEngine image upload field
+      const fiu = post.meta?.featured_image_url;
+      if (typeof fiu === 'number' && fiu > 0) mediaIds.push(fiu);
+      if (typeof fiu === 'string' && /^\d+$/.test(fiu)) mediaIds.push(Number(fiu));
       const gm = post.meta?.gallery_media;
       if (Array.isArray(gm)) gm.forEach(id => { const n = Number(id); if (n > 0) mediaIds.push(n); });
     }
     const mediaMap = await batchResolveMedia(mediaIds);
 
     return filtered.map(post => {
+      // WP native featured image takes priority, then featured_image_url if it's an ID
+      const fiu = post.meta?.featured_image_url;
+      const fiuId = typeof fiu === 'number' ? fiu : (typeof fiu === 'string' && /^\d+$/.test(fiu) ? Number(fiu) : 0);
       const featuredUrl = post.featured_media && post.featured_media > 0
-        ? (mediaMap.get(post.featured_media) ?? '') : '';
+        ? (mediaMap.get(post.featured_media) ?? '')
+        : fiuId > 0 ? (mediaMap.get(fiuId) ?? '') : '';
       const gm = post.meta?.gallery_media;
       const galleryUrls = Array.isArray(gm)
         ? gm.map(id => mediaMap.get(Number(id)) ?? '').filter(Boolean) : [];
