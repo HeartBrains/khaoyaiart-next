@@ -100,22 +100,22 @@ function useWPItem<T>(cpt: string, slug: string, mapper: (p: WPRawPost) => T) {
   return { data, loading, error };
 }
 
-export const useBkkkExhibitions = () => useWPList('exhibitions', 'bkkk', mapBkkkExhibition);
-export const useKyafExhibitions = () => useWPList('exhibitions', 'kyaf', mapKyafExhibition);
-export const useBkkkActivities  = () => useWPList('activities', 'bkkk', mapActivity);
-export const useKyafActivities  = () => useWPList('activities', 'kyaf', mapActivity);
-export const useMovingImages    = () => useWPList('moving-images', 'bkkk', mapMovingImage);
-export const useResidencyArtists     = () => useWPList('residency-artists', 'bkkk', mapResidencyArtist);
-export const useKyafResidencyArtists = () => useWPList('residency-artists', 'kyaf', mapResidencyArtist);
+export const useBkkkExhibitions = () => useWPList('exhibition', 'bkkk', mapBkkkExhibition);
+export const useKyafExhibitions = () => useWPList('exhibition', 'kyaf', mapKyafExhibition);
+export const useBkkkActivities  = () => useWPList('activity', 'bkkk', mapActivity);
+export const useKyafActivities  = () => useWPList('activity', 'kyaf', mapActivity);
+export const useMovingImages    = () => useWPList('moving_image', 'bkkk', mapMovingImage);
+export const useResidencyArtists     = () => useWPList('residency_artist', 'bkkk', mapResidencyArtist);
+export const useKyafResidencyArtists = () => useWPList('residency_artist', 'kyaf', mapResidencyArtist);
 
 export const useBkkkTeamMembers = () => useWPList('team-members', 'bkkk', mapBkkkTeamMember);
 export const useKyafTeamMembers = () => useWPList('team-members', 'kyaf', mapKyafTeamMember);
 
-export const useExhibitionBySlug        = (slug: string) => useWPItem('exhibitions', slug, mapBkkkExhibition);
-export const useKyafExhibitionBySlug    = (slug: string) => useWPItem('exhibitions', slug, mapKyafExhibition);
-export const useActivityBySlug      = (slug: string) => useWPItem('activities', slug, mapActivity);
-export const useMovingImageBySlug   = (slug: string) => useWPItem('moving-images', slug, mapMovingImage);
-export const useResidencyArtistBySlug = (slug: string) => useWPItem('residency-artists', slug, mapResidencyArtist);
+export const useExhibitionBySlug        = (slug: string) => useWPItem('exhibition', slug, mapBkkkExhibition);
+export const useKyafExhibitionBySlug    = (slug: string) => useWPItem('exhibition', slug, mapKyafExhibition);
+export const useActivityBySlug      = (slug: string) => useWPItem('activity', slug, mapActivity);
+export const useMovingImageBySlug   = (slug: string) => useWPItem('moving_image', slug, mapMovingImage);
+export const useResidencyArtistBySlug = (slug: string) => useWPItem('residency_artist', slug, mapResidencyArtist);
 
 // ─── Menu config ─────────────────────────────────────────────────────────────
 

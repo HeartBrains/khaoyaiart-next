@@ -3,10 +3,10 @@ const WP_BASE =
 
 // Maps registered post_type slugs to their WP REST API base paths
 const REST_BASE: Record<string, string> = {
-  exhibition:       'exhibitions',
-  activity:         'activities',
-  moving_image:     'moving-images',
-  residency_artist: 'residency-artists',
+  exhibition:       'exhibition',
+  activity:         'activity',
+  moving_image:     'moving_image',
+  residency_artist: 'residency_artist',
   team_member:      'team-members',
   blog_post:        'blog-posts',
   press_item:       'press-items',
