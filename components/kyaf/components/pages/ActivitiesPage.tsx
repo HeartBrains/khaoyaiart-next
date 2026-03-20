@@ -2,6 +2,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { ParallaxHero } from '../ui/ParallaxHero';
+import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import type { ActivityItem } from '@/lib/wp-mappers';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
@@ -18,6 +19,7 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
   const internalNavigate = useAppNavigate();
   const onNavigate = onNavigateProp ?? internalNavigate;
   const { language } = useLanguage();
+  const covers = useCovers();
   const [activeSection, setActiveSection] = useState('current-activities');
   const { data: rawActivities } = useKyafActivities();
 

@@ -3,6 +3,7 @@ import { ParallaxHero } from '../ui/ParallaxHero';
 import { Reveal } from '../ui/Reveal';
 import { useEffect, useRef } from 'react';
 
+import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import { getTranslation } from '@/utils/translations';
 
@@ -17,6 +18,7 @@ interface AboutPageProps {
 
 export function AboutPage({ onNavigate, activePage = 'about' }: AboutPageProps) {
   const { language } = useLanguage();
+  const covers = useCovers();
   const isScrolling = useRef(false);
 
   // Handle auto-scroll to section
@@ -59,7 +61,7 @@ export function AboutPage({ onNavigate, activePage = 'about' }: AboutPageProps) 
     <div className="w-full min-h-screen bg-white pb-24">
       {/* Hero Section */}
       <ParallaxHero 
-        image={ABOUT_HERO_IMAGE}
+        image={covers.about || ABOUT_HERO_IMAGE}
         height="h-[80vh]"
       >
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />

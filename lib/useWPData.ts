@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { fetchCPTBySlug, fetchMenuConfig, type WPRawPost, type MenuConfig, type MenuConfigMap } from './wp-api';
+import { fetchCPTBySlug, fetchMenuConfig, type WPRawPost, type MenuConfig, type MenuConfigMap, type CoverConfigMap } from './wp-api';
 import {
   mapBkkkExhibition, mapKyafExhibition, mapMovingImage,
   mapActivity, mapResidencyArtist, mapBkkkTeamMember, mapKyafTeamMember,
@@ -125,6 +125,19 @@ export { type MenuConfigMap, type MenuConfig } from './wp-api';
  * Fetches menu visibility config from WP options.
  * Returns null while loading or if the endpoint is unreachable (caller falls back to siteConfig).
  */
+export function useSiteConfig(site: 'bkkk' | 'kyaf'): { menu: MenuConfigMap; covers: CoverConfigMap; css: string } | null {
+  const [config, setConfig] = useState<MenuConfig | null>(null);
+  useEffect(() => {
+    fetchMenuConfig().then(data => { if (data) setConfig(data); });
+  }, []);
+  if (!config) return null;
+  return {
+    menu:   site === 'bkkk' ? config.bkkk       : config.kyaf,
+    covers: site === 'bkkk' ? config.bkkkCovers  : config.kyafCovers,
+    css:    site === 'bkkk' ? config.bkkkCss      : config.kyafCss,
+  };
+}
+
 export function useMenuConfig(site: 'bkkk' | 'kyaf'): MenuConfigMap | null {
   const [config, setConfig] = useState<MenuConfigMap | null>(null);
   useEffect(() => {

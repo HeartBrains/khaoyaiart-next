@@ -1,12 +1,14 @@
 'use client';
 import { Reveal } from '../ui/Reveal';
 import { ParallaxHero } from '../ui/ParallaxHero';
+import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import { getTranslation } from '@/utils/translations';
 import { PRESS_ITEMS } from '@/utils/pressDataBilingual';
 
 export function PressPage() {
   const { language } = useLanguage();
+  const covers = useCovers();
 
   return (
     <div className="w-full bg-white min-h-screen pb-12">

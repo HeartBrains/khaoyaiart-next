@@ -2,18 +2,20 @@
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { Reveal } from '../ui/Reveal';
+import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import { VISIT_HERO_IMAGE } from '@/utils/imageConstants';
 import { siteConfig } from '@/utils/siteConfig';
 
 export function VisitPage() {
     const { language } = useLanguage();
+  const covers = useCovers();
 
     return (
         <div className="w-full bg-white pb-24 min-h-screen">
             {/* Hero Section */}
             <ParallaxHero 
-                image={VISIT_HERO_IMAGE}
+                image={covers.visit || VISIT_HERO_IMAGE}
                 height="h-[80vh]"
             >
                 <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />

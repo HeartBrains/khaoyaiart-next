@@ -25,7 +25,7 @@ export function Header({ onMenuClick, onLogoClick, isTransparent = false }: Head
       
       <div 
         onClick={onLogoClick}
-        className={`w-[180px] h-[77px] md:w-[200px] md:h-[86px] cursor-pointer transition-opacity duration-300 ${
+        className={`w-[180px] h-[77px] md:w-[200px] md:h-[86px] transition-opacity duration-300 ${onLogoClick ? 'cursor-pointer' : 'cursor-default'} ${
           isTransparent ? 'opacity-100' : 'opacity-0'
         }`}
         style={{ 

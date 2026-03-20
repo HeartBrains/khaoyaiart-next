@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { Reveal } from '../ui/Reveal';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { useLanguage } from '@/utils/languageContext';
+import { useCovers } from '@/lib/coversContext';
 
 export type AboutPageType = 'about' | 'history';
 
@@ -13,6 +14,7 @@ interface AboutPageProps {
 
 export function AboutPage({ activePage = 'about' }: AboutPageProps) {
   const { language } = useLanguage();
+  const covers = useCovers();
   const didScroll = useRef(false);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export function AboutPage({ activePage = 'about' }: AboutPageProps) {
   return (
     <div className="w-full min-h-screen bg-white pb-24">
       <ParallaxHero
-        image="https://irp.cdn-website.com/5516674f/dms3rep/multi/cover-for-history-34e22018.jpg"
+        image={covers.about || "https://irp.cdn-website.com/5516674f/dms3rep/multi/cover-for-history-34e22018.jpg"}
         height="h-[80vh]"
       >
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />

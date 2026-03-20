@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
+import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import { getTranslation } from '@/utils/translations';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
@@ -18,6 +19,7 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
   const internalNavigate = useAppNavigate();
   const onNavigate = onNavigateProp ?? internalNavigate;
   const { language } = useLanguage();
+  const covers = useCovers();
   const { data: ARTISTS_DATA } = useKyafResidencyArtists();
 
   const firstSectionId = siteConfig.visibility.residency.upcoming
@@ -126,7 +128,7 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
 
   return (
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
-      <ParallaxHero image={IMG_FOG_SRC} height="h-[80vh]">
+      <ParallaxHero image={covers.residency || IMG_FOG_SRC} height="h-[80vh]">
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />
       </ParallaxHero>
 

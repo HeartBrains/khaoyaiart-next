@@ -4,9 +4,11 @@ import { useBkkkTeamMembers } from '@/lib/useWPData';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { Reveal } from '../ui/Reveal';
 import { useLanguage } from '@/utils/languageContext';
+import { useCovers } from '@/lib/coversContext';
 import type { TeamMemberItem } from '@/lib/wp-mappers';
 
 const TEAM_HERO = 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=1600&auto=format&fit=crop';
+
 
 interface TeamPageProps {
   activePage?: string;
@@ -15,6 +17,7 @@ interface TeamPageProps {
 
 export function TeamPage({ activePage }: TeamPageProps) {
   const { language } = useLanguage();
+  const covers = useCovers();
   const { data: members } = useBkkkTeamMembers();
 
   // Group members by their 'group' field, sorted by 'order'
@@ -37,7 +40,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
 
   return (
     <div className="relative w-full min-h-screen bg-white pb-24">
-      <ParallaxHero image={TEAM_HERO} height="h-[60vh] md:h-[80vh]">
+      <ParallaxHero image={covers.team || TEAM_HERO} height="h-[60vh] md:h-[80vh]">
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
       </ParallaxHero>
 

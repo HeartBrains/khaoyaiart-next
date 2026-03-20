@@ -5,6 +5,7 @@ import { Reveal } from '../ui/Reveal';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
+import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
 import { useKyafExhibitions } from '@/lib/useWPData';
@@ -26,6 +27,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, activeSection }: E
     (activeSection as Category) || 'current'
   );
   const { language } = useLanguage();
+  const covers = useCovers();
 
   // Update activeCategory when activeSection prop changes
   useEffect(() => {

@@ -5,6 +5,7 @@ import { ASSETS } from '@/utils/assets';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { Reveal } from '../ui/Reveal';
 import { ParallaxHero } from '../ui/ParallaxHero';
+import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import { IMG_FOG_SRC } from '@/utils/imageConstants';
 
@@ -55,7 +56,7 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
     <div className="w-full min-h-screen bg-white pb-24">
        {/* Hero Section */}
        <ParallaxHero 
-          image={IMG_FOG_SRC}
+          image={covers.blog || IMG_FOG_SRC}
           height="h-[80vh]"
        >
           <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />

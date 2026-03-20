@@ -6,6 +6,8 @@ import { Footer } from '@/components/bkkk/components/layout/Footer';
 import { MenuOverlay } from '@/components/bkkk/components/layout/MenuOverlay';
 import { BackToTop } from '@/components/bkkk/components/ui/BackToTop';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
+import { useSiteConfig } from '@/lib/useWPData';
+import { CoversContext } from '@/lib/coversContext';
 
 export default function BkkkLayout({ children }: { children: React.ReactNode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,6 +15,7 @@ export default function BkkkLayout({ children }: { children: React.ReactNode }) 
   const navigate = useAppNavigate();
   const router = useRouter();
   const pathname = usePathname();
+  const siteConfig = useSiteConfig('bkkk');
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -26,9 +29,11 @@ export default function BkkkLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="min-h-screen bg-white font-sans text-black selection:bg-black selection:text-white">
+      {siteConfig?.css && <style dangerouslySetInnerHTML={{ __html: siteConfig.css }} />}
+      <CoversContext.Provider value={siteConfig?.covers ?? {}}>
       <Header
         onMenuClick={() => setIsMenuOpen(!isMenuOpen)}
-        onLogoClick={() => router.push('/')}
+        onLogoClick={scrolled ? undefined : () => router.push('/')}
         isTransparent={!scrolled}
         isScrolled={scrolled}
       />
@@ -41,6 +46,7 @@ export default function BkkkLayout({ children }: { children: React.ReactNode }) 
       <main>{children}</main>
       <Footer onNavigate={navigate} />
       <BackToTop />
+      </CoversContext.Provider>
     </div>
   );
 }

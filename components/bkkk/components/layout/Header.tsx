@@ -17,7 +17,7 @@ export function Header({ onMenuClick, onLogoClick, isTransparent = false, isScro
     >
       <div 
         onClick={onLogoClick}
-        className="cursor-pointer mt-0 mr-0 mb-0 ml-0 p-0 overflow-visible"
+        className={`mt-0 mr-0 mb-0 ml-0 p-0 overflow-visible ${onLogoClick ? 'cursor-pointer' : 'cursor-default'}`}
       >
         <Logo 
           className={`h-[40px] md:h-[60px] w-auto transition-all duration-300 ${isTransparent ? 'text-white' : 'text-black'} ${isScrolled ? 'opacity-0 invisible' : 'opacity-100 visible'} mx-[-8px] my-[0px]`}

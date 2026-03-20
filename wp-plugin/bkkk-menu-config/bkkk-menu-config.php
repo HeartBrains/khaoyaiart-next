@@ -1,195 +1,146 @@
 <?php
 /**
  * Plugin Name: BKKK Menu Config
- * Description: Options page to toggle top-level menu items for BKKK and KYAF sites. Exposes settings via a public REST endpoint.
- * Version: 1.0.0
+ * Description: Options page to toggle menu items, set page cover images, and inject custom CSS for BKKK and KYAF sites.
+ * Version: 2.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-// ─── Option keys ─────────────────────────────────────────────────────────────
-
-const BKKK_MENU_OPTION = 'bkkk_menu_config';
+const BKKK_MENU_OPTION   = 'bkkk_menu_config';
+const BKKK_COVERS_OPTION = 'bkkk_covers_config';
+const BKKK_CSS_OPTION    = 'bkkk_css_config';
 
 function bkkk_menu_defaults(): array {
     return [
-        // BKKK
-        'bkkk_home'        => true,
-        'bkkk_exhibitions' => true,
-        'bkkk_activities'  => true,
-        'bkkk_residency'   => true,
-        'bkkk_moving_image'=> true,
-        'bkkk_blog'        => false,
-        'bkkk_press'       => true,
-        'bkkk_team'        => true,
-        'bkkk_about'       => true,
-        'bkkk_visit'       => true,
-        'bkkk_contact'     => true,
-        'bkkk_shop'        => false,
-        'bkkk_support'     => true,
-        // KYAF
-        'kyaf_home'        => true,
-        'kyaf_exhibitions' => true,
-        'kyaf_activities'  => true,
-        'kyaf_residency'   => true,
-        'kyaf_blog'        => true,
-        'kyaf_press'       => false,
-        'kyaf_team'        => true,
-        'kyaf_about'       => true,
-        'kyaf_visit'       => true,
-        'kyaf_contact'     => true,
-        'kyaf_shop'        => false,
-        'kyaf_archives'    => false,
-        'kyaf_booking'     => true,
+        'bkkk_home'=>true,'bkkk_exhibitions'=>true,'bkkk_activities'=>true,'bkkk_residency'=>true,
+        'bkkk_moving_image'=>true,'bkkk_blog'=>false,'bkkk_press'=>true,'bkkk_team'=>true,
+        'bkkk_about'=>true,'bkkk_visit'=>true,'bkkk_contact'=>true,'bkkk_shop'=>false,'bkkk_support'=>true,
+        'kyaf_home'=>true,'kyaf_exhibitions'=>true,'kyaf_activities'=>true,'kyaf_residency'=>true,
+        'kyaf_blog'=>true,'kyaf_press'=>false,'kyaf_team'=>true,'kyaf_about'=>true,
+        'kyaf_visit'=>true,'kyaf_contact'=>true,'kyaf_shop'=>false,'kyaf_archives'=>false,'kyaf_booking'=>true,
     ];
+}
+
+function bkkk_covers_defaults(): array {
+    $pages = ['exhibitions','activities','moving_image','residency','blog','press','team','about','visit','contact','archives'];
+    $out = [];
+    foreach ($pages as $p) { $out['bkkk_'.$p]=''; $out['kyaf_'.$p]=''; }
+    return $out;
 }
 
 function bkkk_menu_get(): array {
-    $saved = get_option( BKKK_MENU_OPTION, [] );
-    return array_merge( bkkk_menu_defaults(), is_array( $saved ) ? $saved : [] );
+    $saved = get_option(BKKK_MENU_OPTION,[]);
+    return array_merge(bkkk_menu_defaults(), is_array($saved)?$saved:[]);
+}
+function bkkk_covers_get(): array {
+    $saved = get_option(BKKK_COVERS_OPTION,[]);
+    return array_merge(bkkk_covers_defaults(), is_array($saved)?$saved:[]);
+}
+function bkkk_css_get(): array {
+    $saved = get_option(BKKK_CSS_OPTION,[]);
+    return ['bkkk'=>(string)($saved['bkkk']??''),'kyaf'=>(string)($saved['kyaf']??'')];
 }
 
-// ─── Admin options page ───────────────────────────────────────────────────────
+add_action('admin_menu', function() {
+    add_options_page('Site Config','Site Config','manage_options','bkkk-menu-config','bkkk_menu_render_page');
+});
+add_action('admin_init', function() {
+    register_setting('bkkk_menu_config_group',BKKK_MENU_OPTION,['sanitize_callback'=>'bkkk_menu_sanitize']);
+    register_setting('bkkk_menu_config_group',BKKK_COVERS_OPTION,['sanitize_callback'=>'bkkk_covers_sanitize']);
+    register_setting('bkkk_menu_config_group',BKKK_CSS_OPTION,['sanitize_callback'=>'bkkk_css_sanitize']);
+});
 
-add_action( 'admin_menu', function () {
-    add_options_page(
-        'Menu Config',
-        'Menu Config',
-        'manage_options',
-        'bkkk-menu-config',
-        'bkkk_menu_render_page'
-    );
-} );
-
-add_action( 'admin_init', function () {
-    register_setting( 'bkkk_menu_config_group', BKKK_MENU_OPTION, [
-        'sanitize_callback' => 'bkkk_menu_sanitize',
-    ] );
-} );
-
-function bkkk_menu_sanitize( $input ): array {
-    $defaults = bkkk_menu_defaults();
-    $clean    = [];
-    foreach ( array_keys( $defaults ) as $key ) {
-        $clean[ $key ] = ! empty( $input[ $key ] );
-    }
+function bkkk_menu_sanitize($input): array {
+    $clean=[];
+    foreach(array_keys(bkkk_menu_defaults()) as $key) $clean[$key]=!empty($input[$key]);
     return $clean;
+}
+function bkkk_covers_sanitize($input): array {
+    $clean=[];
+    foreach(array_keys(bkkk_covers_defaults()) as $key) $clean[$key]=isset($input[$key])?esc_url_raw(trim($input[$key])):'';
+    return $clean;
+}
+function bkkk_css_sanitize($input): array {
+    return ['bkkk'=>wp_strip_all_tags($input['bkkk']??''),'kyaf'=>wp_strip_all_tags($input['kyaf']??'')];
 }
 
 function bkkk_menu_render_page(): void {
-    if ( ! current_user_can( 'manage_options' ) ) return;
-    $config = bkkk_menu_get();
-
-    $sections = [
-        'Bangkok Kunsthalle (BKKK)' => [
-            'bkkk_home'         => 'Home',
-            'bkkk_exhibitions'  => 'Exhibitions',
-            'bkkk_activities'   => 'Activities',
-            'bkkk_residency'    => 'Residency',
-            'bkkk_moving_image' => 'Moving Image',
-            'bkkk_blog'         => 'Blog',
-            'bkkk_press'        => 'Press',
-            'bkkk_team'         => 'Team',
-            'bkkk_about'        => 'About',
-            'bkkk_visit'        => 'Visit',
-            'bkkk_contact'      => 'Contact',
-            'bkkk_shop'         => 'Shop',
-            'bkkk_support'      => 'Support',
-        ],
-        'Khao Yai Art Forest (KYAF)' => [
-            'kyaf_home'        => 'Home',
-            'kyaf_exhibitions' => 'Exhibitions',
-            'kyaf_activities'  => 'Activities',
-            'kyaf_residency'   => 'Residency',
-            'kyaf_blog'        => 'Blog',
-            'kyaf_press'       => 'Press',
-            'kyaf_team'        => 'Team',
-            'kyaf_about'       => 'About',
-            'kyaf_visit'       => 'Visit',
-            'kyaf_contact'     => 'Contact',
-            'kyaf_shop'        => 'Shop',
-            'kyaf_archives'    => 'Archives',
-            'kyaf_booking'     => 'Booking',
-        ],
+    if(!current_user_can('manage_options')) return;
+    $menu=bkkk_menu_get(); $covers=bkkk_covers_get(); $css=bkkk_css_get();
+    $menu_sections=[
+        'Bangkok Kunsthalle (BK)'=>['bkkk_home'=>'Home','bkkk_exhibitions'=>'Exhibitions','bkkk_activities'=>'Activities','bkkk_residency'=>'Residency','bkkk_moving_image'=>'Moving Image','bkkk_blog'=>'Blog','bkkk_press'=>'Press','bkkk_team'=>'Team','bkkk_about'=>'About','bkkk_visit'=>'Visit','bkkk_contact'=>'Contact','bkkk_shop'=>'Shop','bkkk_support'=>'Support'],
+        'Khao Yai Art Forest (KYAF)'=>['kyaf_home'=>'Home','kyaf_exhibitions'=>'Exhibitions','kyaf_activities'=>'Activities','kyaf_residency'=>'Residency','kyaf_blog'=>'Blog','kyaf_press'=>'Press','kyaf_team'=>'Team','kyaf_about'=>'About','kyaf_visit'=>'Visit','kyaf_contact'=>'Contact','kyaf_shop'=>'Shop','kyaf_archives'=>'Archives','kyaf_booking'=>'Booking'],
     ];
+    $cover_labels=['exhibitions'=>'Exhibitions','activities'=>'Activities','moving_image'=>'Moving Image','residency'=>'Residency','blog'=>'Blog','press'=>'Press','team'=>'Team','about'=>'About','visit'=>'Visit','contact'=>'Contact','archives'=>'Archives'];
     ?>
-    <div class="wrap">
-        <h1>Menu Config</h1>
-        <p>Toggle top-level menu items for each site. Changes take effect immediately on the next page load.</p>
-        <form method="post" action="options.php">
-            <?php settings_fields( 'bkkk_menu_config_group' ); ?>
-            <?php foreach ( $sections as $heading => $items ) : ?>
-                <h2><?php echo esc_html( $heading ); ?></h2>
-                <table class="form-table" role="presentation">
-                    <tbody>
-                    <?php foreach ( $items as $key => $label ) : ?>
-                        <tr>
-                            <th scope="row"><?php echo esc_html( $label ); ?></th>
-                            <td>
-                                <input
-                                    type="checkbox"
-                                    name="<?php echo esc_attr( BKKK_MENU_OPTION ); ?>[<?php echo esc_attr( $key ); ?>]"
-                                    value="1"
-                                    <?php checked( ! empty( $config[ $key ] ) ); ?>
-                                />
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php endforeach; ?>
-            <?php submit_button(); ?>
-        </form>
-    </div>
+    <div class="wrap"><h1>Site Config</h1>
+    <form method="post" action="options.php">
+    <?php settings_fields('bkkk_menu_config_group'); ?>
+
+    <h2>Menu Visibility</h2>
+    <?php foreach($menu_sections as $heading=>$items): ?>
+        <h3><?php echo esc_html($heading); ?></h3>
+        <table class="form-table"><tbody>
+        <?php foreach($items as $key=>$label): ?>
+        <tr><th><?php echo esc_html($label); ?></th><td>
+        <input type="checkbox" name="<?php echo esc_attr(BKKK_MENU_OPTION); ?>[<?php echo esc_attr($key); ?>]" value="1" <?php checked(!empty($menu[$key])); ?> />
+        </td></tr>
+        <?php endforeach; ?>
+        </tbody></table>
+    <?php endforeach; ?>
+
+    <hr><h2>Page Cover Images</h2>
+    <p>Full image URL for each page hero. Leave blank to use the default.</p>
+    <?php foreach(['bkkk'=>'Bangkok Kunsthalle (BK)','kyaf'=>'Khao Yai Art Forest (KYAF)'] as $site=>$heading): ?>
+        <h3><?php echo esc_html($heading); ?></h3>
+        <table class="form-table"><tbody>
+        <?php foreach($cover_labels as $snake=>$label): $key=$site.'_'.$snake; ?>
+        <tr><th><?php echo esc_html($label); ?></th><td>
+        <input type="url" name="<?php echo esc_attr(BKKK_COVERS_OPTION); ?>[<?php echo esc_attr($key); ?>]"
+            value="<?php echo esc_attr($covers[$key]??''); ?>" class="regular-text" placeholder="https://..." />
+        </td></tr>
+        <?php endforeach; ?>
+        </tbody></table>
+    <?php endforeach; ?>
+
+    <hr><h2>Custom CSS</h2>
+    <p>Injected into every page of each site.</p>
+    <?php foreach(['bkkk'=>'Bangkok Kunsthalle (BK)','kyaf'=>'Khao Yai Art Forest (KYAF)'] as $site=>$heading): ?>
+        <h3><?php echo esc_html($heading); ?></h3>
+        <textarea name="<?php echo esc_attr(BKKK_CSS_OPTION); ?>[<?php echo esc_attr($site); ?>]"
+            rows="10" class="large-text code"><?php echo esc_textarea($css[$site]); ?></textarea>
+    <?php endforeach; ?>
+
+    <?php submit_button(); ?>
+    </form></div>
     <?php
 }
 
-// ─── Public REST endpoint ─────────────────────────────────────────────────────
-
-add_action( 'rest_api_init', function () {
-    register_rest_route( 'bkkk/v1', '/menu-config', [
-        'methods'             => 'GET',
-        'callback'            => function () {
-            $config = bkkk_menu_get();
-
-            // Split into per-site maps with camelCase keys matching siteConfig.menu
-            $key_map = [
-                'home'        => 'home',
-                'exhibitions' => 'exhibitions',
-                'activities'  => 'activities',
-                'residency'   => 'residency',
-                'moving_image'=> 'movingImage',
-                'blog'        => 'blog',
-                'press'       => 'press',
-                'team'        => 'team',
-                'about'       => 'about',
-                'visit'       => 'visit',
-                'contact'     => 'contact',
-                'shop'        => 'shop',
-                'support'     => 'support',
-                'archives'    => 'archives',
-                'booking'     => 'booking',
-            ];
-
-            $bkkk = [];
-            $kyaf = [];
-
-            foreach ( $key_map as $snake => $camel ) {
-                $bkkk_key = 'bkkk_' . $snake;
-                $kyaf_key = 'kyaf_' . $snake;
-                if ( array_key_exists( $bkkk_key, $config ) ) {
-                    $bkkk[ $camel ] = (bool) $config[ $bkkk_key ];
-                }
-                if ( array_key_exists( $kyaf_key, $config ) ) {
-                    $kyaf[ $camel ] = (bool) $config[ $kyaf_key ];
-                }
+add_action('rest_api_init', function() {
+    register_rest_route('bkkk/v1','/menu-config',[
+        'methods'=>'GET',
+        'callback'=>function() {
+            $menu=bkkk_menu_get(); $covers=bkkk_covers_get(); $css=bkkk_css_get();
+            $key_map=['home'=>'home','exhibitions'=>'exhibitions','activities'=>'activities','residency'=>'residency',
+                'moving_image'=>'movingImage','blog'=>'blog','press'=>'press','team'=>'team','about'=>'about',
+                'visit'=>'visit','contact'=>'contact','shop'=>'shop','support'=>'support','archives'=>'archives','booking'=>'booking'];
+            $cover_keys=['exhibitions','activities','moving_image','residency','blog','press','team','about','visit','contact','archives'];
+            $bkkk_menu=[]; $kyaf_menu=[]; $bkkk_covers=[]; $kyaf_covers=[];
+            foreach($key_map as $snake=>$camel) {
+                if(array_key_exists('bkkk_'.$snake,$menu)) $bkkk_menu[$camel]=(bool)$menu['bkkk_'.$snake];
+                if(array_key_exists('kyaf_'.$snake,$menu)) $kyaf_menu[$camel]=(bool)$menu['kyaf_'.$snake];
             }
-
-            $response = new WP_REST_Response( [ 'bkkk' => $bkkk, 'kyaf' => $kyaf ] );
-            $response->header( 'Cache-Control', 'public, max-age=60' );
-            $response->header( 'Access-Control-Allow-Origin', '*' );
-            return $response;
+            foreach($cover_keys as $snake) {
+                $camel=lcfirst(str_replace('_','',ucwords($snake,'_')));
+                $bkkk_covers[$camel]=$covers['bkkk_'.$snake]??'';
+                $kyaf_covers[$camel]=$covers['kyaf_'.$snake]??'';
+            }
+            $r=new WP_REST_Response(['bkkk'=>$bkkk_menu,'kyaf'=>$kyaf_menu,'bkkkCovers'=>$bkkk_covers,'kyafCovers'=>$kyaf_covers,'bkkkCss'=>$css['bkkk'],'kyafCss'=>$css['kyaf']]);
+            $r->header('Cache-Control','public, max-age=60');
+            $r->header('Access-Control-Allow-Origin','*');
+            return $r;
         },
-        'permission_callback' => '__return_true',
-    ] );
-} );
+        'permission_callback'=>'__return_true',
+    ]);
+});

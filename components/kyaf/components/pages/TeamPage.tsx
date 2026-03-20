@@ -5,6 +5,7 @@ import { useKyafTeamMembers } from '@/lib/useWPData';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { Reveal } from '../ui/Reveal';
+import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import type { TeamMemberItem } from '@/lib/wp-mappers';
 import { TEAM_HERO_IMAGE } from '@/utils/imageConstants';
@@ -16,6 +17,7 @@ interface TeamPageProps {
 
 export function TeamPage({ activePage }: TeamPageProps) {
   const { language } = useLanguage();
+  const covers = useCovers();
   const { data: members } = useKyafTeamMembers();
 
   const sorted = members.slice().sort((a, b) => a.order - b.order);
@@ -58,7 +60,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
     <div className="relative w-full min-h-screen bg-white pb-24">
       {/* Hero Section */}
       <ParallaxHero 
-        image={TEAM_HERO_IMAGE}
+        image={covers.team || TEAM_HERO_IMAGE}
         height="h-[60vh] md:h-[80vh]"
       >
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />

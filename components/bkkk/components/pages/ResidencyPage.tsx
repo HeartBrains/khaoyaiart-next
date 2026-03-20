@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
+import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
@@ -17,6 +18,7 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
   const internalNavigate = useAppNavigate();
   const onNavigate = onNavigateProp ?? internalNavigate;
   const { language } = useLanguage();
+  const covers = useCovers();
   const { data: ARTISTS_DATA } = useResidencyArtists();
 
   const firstSectionId = siteConfig.visibility.residency.upcoming
