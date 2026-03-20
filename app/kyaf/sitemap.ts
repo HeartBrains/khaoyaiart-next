@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next';
 import { fetchCPT } from '@/lib/wp-api';
 
+export const dynamic = 'force-static';
+
 const BASE = 'https://khaoyai.bkkkapp.com/kyaf';
 
 const staticRoutes = [
