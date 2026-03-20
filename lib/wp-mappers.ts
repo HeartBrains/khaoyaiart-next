@@ -31,22 +31,7 @@ function splitUrls(value: string): string[] {
 // Featured image: native WP media (resolved at fetch time) → meta text URL fallback
 function featuredImageUrl(post: WPRawPost): string {
   if (post.resolvedFeaturedImage) return post.resolvedFeaturedImage;
-
-  // featured_image_url: JetEngine image upload field — may return a URL string,
-  // an object {id, url}, or an array [{id, url}]
-  const raw = post.meta?.['featured_image_url'];
-  if (raw) {
-    if (typeof raw === 'string' && raw.startsWith('http')) return raw;
-    if (Array.isArray(raw) && raw.length > 0) {
-      const first = raw[0];
-      if (typeof first === 'string' && first.startsWith('http')) return first;
-      if (first && typeof first === 'object' && 'url' in first) return (first as { url: string }).url;
-    }
-    if (typeof raw === 'object' && !Array.isArray(raw) && 'url' in (raw as object)) {
-      return (raw as { url: string }).url;
-    }
-  }
-
+  if (post.meta?.['featured_image_url']) return post.meta['featured_image_url'] as string;
   // Fall back to gallery_media URLs
   const galleryMedia = post.meta?.['gallery_media'];
   if (Array.isArray(galleryMedia)) {
