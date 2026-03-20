@@ -8,6 +8,7 @@ import { ParallaxHero } from '../ui/ParallaxHero';
 import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import { getMockPostsByType } from '@/utils/mockDataBilingual';
+import { IMG_FOG_SRC } from '@/utils/imageConstants';
 
 interface BlogPageProps {
   onNavigate: (page: string, slug?: string) => void;
@@ -15,6 +16,7 @@ interface BlogPageProps {
 
 export function BlogPage({ onNavigate }: BlogPageProps) {
   const { language, t } = useLanguage();
+  const covers = useCovers();
   const [selectedYear, setSelectedYear] = useState<string>('all');
 
   // Get all blog posts in current language
@@ -56,7 +58,7 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
     <div className="w-full min-h-screen bg-white pb-24">
        {/* Hero Section */}
        <ParallaxHero 
-          image="https://images.unsplash.com/photo-1698881826220-a4fc847a0493?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcnRpc3RpYyUyMGJsb2clMjBwaG90b2dyYXBoeXxlbnwxfHx8fDE3NzI5NzY2ODh8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+          image={covers.blog || IMG_FOG_SRC}
           height="h-[80vh]"
        >
           <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />
