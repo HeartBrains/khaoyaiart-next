@@ -15,6 +15,7 @@ interface BlogPageProps {
 
 export function BlogPage({ onNavigate }: BlogPageProps) {
   const { language, t } = useLanguage();
+  const covers = useCovers();
   const [selectedYear, setSelectedYear] = useState<string>('all');
 
   // Get all blog posts in current language (will be empty for now)
