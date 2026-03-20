@@ -10,7 +10,7 @@ export default function Page() {
     <>
       <JsonLd data={organizationJsonLd({
         name: 'Khao Yai Art Forest',
-        url: 'https://khaoyai.bkkkapp.com/kyaf',
+        url: 'https://khaoyaiart.org/kyaf',
         description: 'Contemporary art space in the forests of Khao Yai, Thailand.',
         address: 'Khao Yai, Thailand',
         sameAs: ['https://www.instagram.com/khaoyaiartforest'],

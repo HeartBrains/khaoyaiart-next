@@ -35,7 +35,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const { slug } = await params;
   const post = await fetchCPTBySlug('activities', slug);
   const data = post ? mapActivity(post) : null;
-  const BASE = 'https://khaoyai.bkkkapp.com/kyaf';
+  const BASE = 'https://khaoyaiart.org/kyaf';
 
   return (
     <>

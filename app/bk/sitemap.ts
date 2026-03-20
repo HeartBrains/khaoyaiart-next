@@ -3,7 +3,7 @@ import { fetchCPT } from '@/lib/wp-api';
 
 export const dynamic = 'force-static';
 
-const BASE = 'https://bkkk.bkkkapp.com/bk';
+const BASE = 'https://khaoyaiart.org/bk';
 
 const staticRoutes: { path: string; priority: number; changeFreq: MetadataRoute.Sitemap[number]['changeFrequency'] }[] = [
   { path: '',               priority: 1.0, changeFreq: 'daily' },

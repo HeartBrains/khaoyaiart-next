@@ -1,9 +1,10 @@
-name: Build & Deploy
+name: Build & Deploy (dev)
 
 on:
-  repository_dispatch:
-    types: [wp_content_updated]
+  push:
+    branches: [dev]
   workflow_dispatch:
+    branches: [dev]
 
 jobs:
   build-and-commit:
@@ -12,6 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: dev
           token: ${{ secrets.GH_PAT }}
 
       - uses: actions/setup-node@v4
@@ -29,17 +31,17 @@ jobs:
           NEXT_PUBLIC_WP_BASE_URL: ${{ secrets.NEXT_PUBLIC_WP_BASE_URL }}
           WP_AUTH_USER: ${{ secrets.WP_AUTH_USER }}
           WP_AUTH_PASS: ${{ secrets.WP_AUTH_PASS }}
-          BKKK_BASE_URL: ${{ secrets.BKKK_BASE_URL || 'https://khaoyaiart.org/bk' }}
-          KYAF_BASE_URL: ${{ secrets.KYAF_BASE_URL || 'https://khaoyaiart.org/kyaf' }}
-          SITE_URL: ${{ secrets.SITE_URL || 'https://khaoyaiart.org' }}
+          BKKK_BASE_URL: https://dev.khaoyaiart.org/bk
+          KYAF_BASE_URL: https://dev.khaoyaiart.org/kyaf
+          SITE_URL: https://dev.khaoyaiart.org
 
       - name: Commit build output
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin
-          git reset --soft origin/master
+          git reset --soft origin/dev
           git add out/
           git diff --cached --quiet && exit 0
-          git commit -m "SSG rebuild $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-          git push
+          git commit -m "SSG rebuild (dev) $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          git push origin dev

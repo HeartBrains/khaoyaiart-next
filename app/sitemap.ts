@@ -5,7 +5,7 @@ export const dynamic = 'force-static';
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: 'https://khaoyai.bkkkapp.com',
+      url: 'https://khaoyaiart.org',
       changeFrequency: 'daily',
       priority: 1.0,
       lastModified: new Date(),
