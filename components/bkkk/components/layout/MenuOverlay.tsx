@@ -6,6 +6,7 @@ import { ASSETS } from '@/utils/assets';
 import { ExpandingSearch } from '../search/ExpandingSearch';
 import { useLanguage } from '@/utils/languageContext';
 import { siteConfig } from '@/utils/siteConfig';
+import { useMenuConfig } from '@/lib/useWPData';
 
 interface MenuOverlayProps {
   isOpen: boolean;
@@ -39,6 +40,10 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
     console.warn('LanguageContext not available, using defaults');
   }
 
+  // WP-driven menu visibility — merges over siteConfig.menu; falls back to siteConfig while loading
+  const wpMenu = useMenuConfig('bkkk');
+  const menu = { ...siteConfig.menu, ...(wpMenu ?? {}) };
+
   const toggleExpand = (label: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setExpandedItems(prev => 
@@ -50,9 +55,9 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
 
   // Dynamic sitemap based on current language
   const sitemap: MenuItem[] = [
-    ...(siteConfig.menu.home ? [{ label: t('nav.home'), page: 'home' }] : []),
-    ...(siteConfig.menu.visit ? [{ label: t('nav.visit'), page: 'visit' }] : []),
-    ...(siteConfig.menu.exhibitions ? [{ 
+    ...(menu.home ? [{ label: t('nav.home'), page: 'home' }] : []),
+    ...(menu.visit ? [{ label: t('nav.visit'), page: 'visit' }] : []),
+    ...(menu.exhibitions ? [{ 
       label: t('nav.exhibitions'), 
       page: 'exhibitions',
       children: [
@@ -61,7 +66,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
           ...(siteConfig.visibility.exhibitions.past ? [{ label: t('exhibitions.past'), page: 'exhibitions', sectionId: 'past-exhibitions' }] : []),
       ]
     }] : []),
-    ...(siteConfig.menu.movingImage ? [{ 
+    ...(menu.movingImage ? [{ 
       label: language === 'th' ? 'โปรแกรมภาพเคลื่อนไหว' : 'Moving Image Program', 
       page: 'moving-image',
       children: [
@@ -70,7 +75,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
           ...(siteConfig.visibility.movingImage.past ? [{ label: language === 'th' ? 'โปรแกรมภาพเคลื่อนไหวที่ผ่านมา' : 'Past Moving Image Program', page: 'moving-image', sectionId: 'past-programs' }] : []),
       ]
     }] : []),
-    ...(siteConfig.menu.activities ? [{
+    ...(menu.activities ? [{
         label: t('nav.activities'),
         page: 'activities',
         children: [
@@ -78,7 +83,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
             ...(siteConfig.visibility.activities.screenings ? [{ label: t('activities.screenings'), page: 'activities', sectionId: 'screenings' }] : []),
         ]
     }] : []),
-    ...(siteConfig.menu.residency ? [{
+    ...(menu.residency ? [{
         label: t('nav.residency'),
         page: 'residency',
         children: [
@@ -87,10 +92,10 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
             ...(siteConfig.visibility.residency.past ? [{ label: t('residency.pastArtists'), page: 'residency', sectionId: 'past-artists' }] : []),
         ]
     }] : []),
-    ...(siteConfig.menu.blog ? [{ label: t('nav.blog'), page: 'blog' }] : []),
-    ...(siteConfig.menu.about ? [{ label: t('nav.aboutUs'), page: 'about' }] : []),
-    ...(siteConfig.menu.team ? [{ label: t('nav.team'), page: 'team' }] : []),
-    ...(siteConfig.menu.shop ? [{
+    ...(menu.blog ? [{ label: t('nav.blog'), page: 'blog' }] : []),
+    ...(menu.about ? [{ label: t('nav.aboutUs'), page: 'about' }] : []),
+    ...(menu.team ? [{ label: t('nav.team'), page: 'team' }] : []),
+    ...(menu.shop ? [{
         label: t('nav.shop'),
         page: 'shop',
         children: [
@@ -98,7 +103,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
             ...(siteConfig.visibility.shop.products ? [{ label: 'Products', page: 'shop', sectionId: 'products' }] : []),
         ]
     }] : []),
-    ...(siteConfig.menu.archives ? [{
+    ...(menu.archives ? [{
         label: t('nav.archives'),
         page: 'archives',
         children: [
@@ -106,7 +111,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
             ...(siteConfig.visibility.archives.pastActivities ? [{ label: 'Past Activities', page: 'archives', sectionId: 'past-activities' }] : []),
         ]
     }] : []),
-    ...(siteConfig.menu.contact ? [{ label: t('nav.contact'), page: 'contact' }] : []),
+    ...(menu.contact ? [{ label: t('nav.contact'), page: 'contact' }] : []),
   ];
 
   const isItemActive = (itemPage: string, currentPage: string) => {

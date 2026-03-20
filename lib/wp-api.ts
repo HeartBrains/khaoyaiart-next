@@ -137,6 +137,27 @@ export async function resolveMediaIds(ids: string): Promise<string[]> {
   return results.filter((u): u is string => u !== null);
 }
 
+// ─── Menu config ─────────────────────────────────────────────────────────────
+
+export type MenuConfigMap = Partial<Record<string, boolean>>;
+
+export interface MenuConfig {
+  bkkk: MenuConfigMap;
+  kyaf: MenuConfigMap;
+}
+
+const MENU_CONFIG_URL = `${WP_BASE.replace('/wp-json/wp/v2', '')}/wp-json/bkkk/v1/menu-config`;
+
+export async function fetchMenuConfig(): Promise<MenuConfig | null> {
+  try {
+    const res = await fetch(MENU_CONFIG_URL, { cache: 'no-store' });
+    if (!res.ok) return null;
+    return await res.json() as MenuConfig;
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchCPTBySlug(cpt: string, slug: string): Promise<WPRawPost | null> {
   try {
     const url = `${WP_BASE}/${restBase(cpt)}?slug=${slug}&_fields=id,slug,title,content,date,modified,meta,featured_media&_=${Date.now()}`;

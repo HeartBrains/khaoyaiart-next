@@ -31,6 +31,27 @@ export const siteConfig = {
     languageSwitcher: false,
   },
 
+  // KYAF-specific menu overrides (takes precedence over menu.* for the KYAF site)
+  kyafMenu: {
+    home: true,
+    exhibitions: true,
+    activities: true,
+    residency: false,
+    blog: true,
+    press: false,
+    team: true,
+    about: true,
+    visit: true,
+    contact: true,
+    shop: false,
+    archives: false,
+    booking: true,
+    movingImage: false,
+    support: false,
+    search: true,
+    languageSwitcher: false,
+  },
+
   // Section visibility (affects submenus AND listing pages)
   visibility: {
     exhibitions: {

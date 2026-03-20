@@ -6,7 +6,8 @@ import { ASSETS as ROOT_ASSETS } from '@/utils/assets';
 import { ASSETS } from '@/components/kyaf/utils/assets';
 import { ExpandingSearch } from '../search/ExpandingSearch';
 import { useLanguage } from '@/utils/languageContext';
-import { siteConfig, isMenuVisible, isSectionVisible } from '@/utils/siteConfig';
+import { siteConfig, isSectionVisible } from '@/utils/siteConfig';
+import { useMenuConfig } from '@/lib/useWPData';
 
 interface MenuOverlayProps {
   isOpen: boolean;
@@ -26,6 +27,11 @@ interface MenuItem {
 export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOverlayProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const { language, setLanguage, t } = useLanguage();
+
+  // WP-driven menu visibility — merges over siteConfig.kyafMenu; falls back to kyafMenu while loading
+  const wpMenu = useMenuConfig('kyaf');
+  const menu = { ...siteConfig.kyafMenu, ...(wpMenu ?? {}) };
+  const isVisible = (key: string) => (menu as Record<string, boolean>)[key] ?? (siteConfig.kyafMenu as Record<string, boolean>)[key] ?? true;
 
   const toggleExpand = (label: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -107,17 +113,12 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
 
   // Filter sitemap based on visibility settings
   const visibleSitemap = sitemap.filter(item => {
-    // For external links (like Booking), check if we should show it
-    // Booking is shown when menu.shop is true (as per requirements)
     if (item.externalUrl && item.label === t('nav.booking')) {
-      // Show booking link separately - it's always visible when configured
-      return true; 
+      return isVisible('booking');
     }
-    
     const menuKey = pageToMenuKey[item.page];
-    if (menuKey === null) return true; // Show external links
-    
-    return isMenuVisible(menuKey);
+    if (menuKey === null) return true;
+    return isVisible(menuKey);
   });
 
   return (
@@ -289,7 +290,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                         </a>
                     </div>
 
-                    {isMenuVisible('languageSwitcher') && (
+                    {isVisible('languageSwitcher') && (  
                         <div className="text-xl md:text-2xl font-normal text-gray-500 select-none tracking-wide flex items-center">
                             <button 
                                 className={`cursor-pointer transition-colors ${language === 'en' ? 'text-white' : 'hover:text-white'}`}
