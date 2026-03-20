@@ -19,7 +19,7 @@ export function Header({ onMenuClick, onLogoClick, isTransparent = false }: Head
       {/* Gradient Overlay for Desktop */}
       <div 
         className={`absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-black/50 to-transparent -z-10 pointer-events-none transition-opacity duration-300 ${
-          isTransparent ? 'opacity-100' : 'opacity-0 sm:opacity-100'
+          isTransparent ? 'opacity-100' : 'opacity-0'
         }`}
       />
       

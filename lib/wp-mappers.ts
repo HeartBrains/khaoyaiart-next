@@ -21,6 +21,13 @@ function m(post: WPRawPost, key: string): string {
   return val ?? '';
 }
 
+// Split a pipe- or comma-separated URL string, supporting both legacy ||| and new , format
+function splitUrls(value: string): string[] {
+  if (!value) return [];
+  const sep = value.includes('|||') ? '|||' : ',';
+  return value.split(sep).map(u => u.trim()).filter(Boolean);
+}
+
 // Featured image: native WP media (resolved at fetch time) → meta text URL fallback
 function featuredImageUrl(post: WPRawPost): string {
   if (post.resolvedFeaturedImage) return post.resolvedFeaturedImage;
@@ -33,7 +40,7 @@ function featuredImageUrl(post: WPRawPost): string {
   }
   // Fall back to pipe-separated gallery text field
   const gallery = m(post, 'gallery');
-  if (gallery) return gallery.split('|||').filter(Boolean)[0] ?? '';
+  if (gallery) return splitUrls(gallery)[0] ?? '';
   return '';
 }
 
@@ -47,7 +54,7 @@ function galleryUrls(post: WPRawPost): string[] {
     ? (galleryMedia as string[]).filter(u => typeof u === 'string' && u.startsWith('http'))
     : [];
 
-  const text = m(post, 'gallery') ? m(post, 'gallery').split('|||').filter(Boolean) : [];
+  const text = splitUrls(m(post, 'gallery'));
 
   // Merge all sources, deduplicated
   const merged = [...resolved];
