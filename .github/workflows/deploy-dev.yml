@@ -4,11 +4,12 @@ on:
   push:
     branches: [dev]
   workflow_dispatch:
-    branches: [dev]
 
 jobs:
   build-and-commit:
     runs-on: ubuntu-latest
+    # Skip when the push was made by this workflow itself
+    if: github.actor != 'github-actions[bot]'
 
     steps:
       - uses: actions/checkout@v4
