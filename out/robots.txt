@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://bkkk.bkkkapp.com/bkkk/sitemap.xml
+Sitemap: https://bkkk.bkkkapp.com/bk/sitemap.xml
 Sitemap: https://khaoyai.bkkkapp.com/kyaf/sitemap.xml
