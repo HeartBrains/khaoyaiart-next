@@ -15,10 +15,12 @@ function str(v: string | { en: string; th: string } | undefined | null): string 
 
 export const dynamicParams = false;
 
+const FALLBACK_SLUGS = ['maman','pilgrimage-to-eternity','k-bar','pulsus-vitae','two-planets-series','god','khao-yai-fog-forrest','madrid-circle'];
+
 export async function generateStaticParams() {
   const posts = await fetchCPT('exhibitions', 'kyaf');
   if (posts.length > 0) return posts.map(p => ({ slug: p.slug }));
-  return exhibitions.map(e => ({ slug: e.slug }));
+  return FALLBACK_SLUGS.map(slug => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {

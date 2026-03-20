@@ -12,10 +12,12 @@ function str(v: string | { en: string; th: string } | undefined | null): string 
 
 export const dynamicParams = false;
 
+const FALLBACK_SLUGS = ['forest-table','bamboo-journey','forest-table-dinner','bamboo-journey-lunch','forest-print','k-bar-experience'];
+
 export async function generateStaticParams() {
   const posts = await fetchCPT('activities', 'kyaf');
-  if (posts.length === 0) return [{ slug: '_placeholder' }];
-  return posts.map(p => ({ slug: p.slug }));
+  if (posts.length > 0) return posts.map(p => ({ slug: p.slug }));
+  return FALLBACK_SLUGS.map(slug => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {

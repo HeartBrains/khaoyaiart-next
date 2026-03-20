@@ -13,10 +13,12 @@ function str(v: string | { en: string; th: string } | undefined | null): string 
 
 export const dynamicParams = false;
 
+const FALLBACK_SLUGS = ['mafalda-von-hessen','rolf-sachs','apichaya-wannakit','eduardo-williams','luca-lo-pinto','spencer-sweeney','anthony-huberman','nicolas-amato','cole-lu','natalie-bruck','emma-mccormick-goodhart'];
+
 export async function generateStaticParams() {
   const posts = await fetchCPT('residency-artists', 'bkkk');
   if (posts.length > 0) return posts.map(p => ({ slug: p.slug }));
-  return ARTISTS_DATA.map(a => ({ slug: a.slug }));
+  return FALLBACK_SLUGS.map(slug => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {

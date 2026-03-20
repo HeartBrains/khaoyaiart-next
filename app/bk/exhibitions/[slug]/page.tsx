@@ -15,10 +15,12 @@ function str(v: string | { en: string; th: string } | undefined | null): string 
 
 export const dynamicParams = false;
 
+const FALLBACK_SLUGS = ['dial-a-poem-thailand','a-bit-fountain-and-a-bit-not','splendor-in-the-city','soul-searching','blind-spots-panels-paravents-and-screens','forever-love-soul-engine','description-without-place','vernacular-objects','mitta-del-santi','this-page-is-intentionally-left-blank','poetics-of-horizontality','painting-as-event','calligraphic-abstraction','like-nouns-slipping-into-verbs','mend-piece','nostalgia-for-unity','nine-plus-five-works','inviting-you-to-die-with-me','seeds','we-gather','shapeshifting-spaces','search-for-life-i','infringes','upcoming-program-2026'];
+
 export async function generateStaticParams() {
   const posts = await fetchCPT('exhibitions', 'bkkk');
   if (posts.length > 0) return posts.map(p => ({ slug: p.slug }));
-  return exhibitions.map(e => ({ slug: e.slug }));
+  return FALLBACK_SLUGS.map(slug => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {

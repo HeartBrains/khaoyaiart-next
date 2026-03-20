@@ -12,12 +12,12 @@ function str(v: string | { en: string; th: string } | undefined | null): string 
 
 export const dynamicParams = false;
 
+const FALLBACK_SLUGS = ['concrete-ghosts','tagteams-2026','club-pluto','concrete-ghosts-white-building','concrete-ghosts-becoming-human'];
+
 export async function generateStaticParams() {
   const posts = await fetchCPT('activities', 'bkkk');
-  // If WP is unreachable at build time, return a placeholder so the export doesn't fail.
-  // The smart 404 fallback handles runtime slug resolution.
-  if (posts.length === 0) return [{ slug: '_placeholder' }];
-  return posts.map(p => ({ slug: p.slug }));
+  if (posts.length > 0) return posts.map(p => ({ slug: p.slug }));
+  return FALLBACK_SLUGS.map(slug => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
