@@ -3,6 +3,7 @@
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { RichContent } from '@/utils/richContent';
 import { useLanguage } from '@/utils/languageContext';
 import { useKyafExhibitionBySlug } from '@/lib/useWPData';
 import { Reveal } from '../ui/Reveal';
@@ -162,21 +163,20 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                     </div>
                 </Reveal>
 
-                {/* Specifications */}
-                {exhibitionData.specifications && (
+                {/* Additional Info (Specifications, Location, etc.) */}
+                {exhibitionData.additionalInfo && (
                     <Reveal delay={0.1}>
-                        <div className="flex flex-col gap-4 mt-4">
-                            <h3 className="text-lg uppercase tracking-wider text-gray-500">
-                                {language === 'th' ? 'รายละเอียด' : 'Specifications'}
-                            </h3>
-                            <div className="flex flex-col gap-2">
-                                {Object.entries(language === 'th' ? exhibitionData.specifications.th : exhibitionData.specifications.en).map(([key, value]) => (
-                                    <div key={key} className="flex flex-col">
-                                        <span className="text-sm text-gray-400 capitalize">{key.replace(/_/g, ' ')}</span>
-                                        <span className={`text-lg md:text-xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{String(value)}</span>
-                                    </div>
-                                ))}
-                            </div>
+                        <div className="mt-2 text-xl md:text-2xl text-black font-normal leading-tight">
+                            <RichContent content={exhibitionData.additionalInfo} />
+                        </div>
+                    </Reveal>
+                )}
+
+                {/* Image Credits — bottom of left column */}
+                {exhibitionData.imageCredits && (
+                    <Reveal delay={0.15}>
+                        <div className="mt-auto pt-4">
+                            <p className="text-gray-500 text-[12px]">{exhibitionData.imageCredits}</p>
                         </div>
                     </Reveal>
                 )}
@@ -185,9 +185,7 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
             {/* Right Column - Text Content */}
             <div className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                 <Reveal delay={0.2}>
-                    <div className="flex flex-col gap-6">
-                        <div className="[&>p]:mb-8 [&>p:last-child]:mb-0" dangerouslySetInnerHTML={{ __html: detailContent || '' }} />
-                    </div>
+                    <RichContent content={detailContent || ''} />
                 </Reveal>
             </div>
         </div>

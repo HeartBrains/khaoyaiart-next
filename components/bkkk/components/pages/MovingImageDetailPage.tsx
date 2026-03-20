@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/utils/languageContext';
+import { RichContent } from '@/utils/richContent';
 import { useMovingImageBySlug } from '@/lib/useWPData';
 import { ArrowLeft } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '../ui/carousel';
@@ -104,13 +105,20 @@ export function MovingImageDetailPage({ slug, onNavigate }: MovingImageDetailPag
               {dateDisplay && (
                 <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{dateDisplay}</p>
               )}
+              {data.additionalInfo && (
+                <div className="mt-6 text-xl md:text-2xl text-black font-normal leading-tight">
+                  <RichContent content={data.additionalInfo} />
+                </div>
+              )}
               {data.imageCredits && (
-                <p className="text-gray-500 text-[12px] mt-8">{data.imageCredits}</p>
+                <div className="mt-auto pt-8">
+                  <p className="text-gray-500 text-[12px]">{data.imageCredits}</p>
+                </div>
               )}
             </div>
           </div>
           <div className={`md:col-start-7 md:col-span-6 text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-            {content && <div className="[&>p]:mb-8" dangerouslySetInnerHTML={{ __html: content }} />}
+            {content && <RichContent content={content} />}
           </div>
         </div>
       </div>

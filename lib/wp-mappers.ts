@@ -129,6 +129,7 @@ export function mapKyafExhibition(post: WPRawPost) {
     featuredImage: featuredImageUrl(post),
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),
+    additionalInfo: m(post, 'additional_info'),
     tags: { en: m(post, 'tags_en').split(',').map(t => t.trim()).filter(Boolean), th: [] },
     listingSummary: {
       en: m(post, 'content_en').replace(/<[^>]+>/g, '').slice(0, 200),
@@ -241,6 +242,7 @@ export function mapActivity(post: WPRawPost, lang: Lang = 'en') {
     featuredImage: featuredImageUrl(post),
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),
+    additionalInfo: m(post, 'additional_info'),
     listingSummary: {
       en: m(post, 'content_en').replace(/<[^>]+>/g, '').slice(0, 200),
       th: (m(post, 'content_th') || m(post, 'content_en')).replace(/<[^>]+>/g, '').slice(0, 200),
