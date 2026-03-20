@@ -25,7 +25,7 @@ export interface WPRawPost {
   id: number;
   slug: string;
   title: { rendered: string };
-  content: { rendered: string };
+  content: { rendered: string } | null;
   date: string;
   modified: string;
   meta: Record<string, string | string[]>;

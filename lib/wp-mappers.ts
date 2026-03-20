@@ -101,8 +101,8 @@ export function mapBkkkExhibition(post: WPRawPost) {
     imageCredits: m(post, 'image_credits'),
     tags: m(post, 'tags_en'),
     content: {
-      en: m(post, 'content_en') || post.content.rendered,
-      th: m(post, 'content_th') || m(post, 'content_en') || post.content.rendered,
+      en: m(post, 'content_en') || post.content?.rendered || '',
+      th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
     },
     additionalInfo: m(post, 'additional_info'),
     site: m(post, 'site') as WPSite,
@@ -135,8 +135,8 @@ export function mapKyafExhibition(post: WPRawPost) {
       th: m(post, 'content_th').replace(/<[^>]+>/g, '').slice(0, 200),
     },
     content: {
-      en: m(post, 'content_en') || post.content.rendered,
-      th: m(post, 'content_th') || m(post, 'content_en') || post.content.rendered,
+      en: m(post, 'content_en') || post.content?.rendered || '',
+      th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
     },
     site: m(post, 'site') as WPSite,
   };
@@ -163,8 +163,8 @@ export function mapMovingImage(post: WPRawPost) {
     imageCredits: m(post, 'image_credits'),
     additionalInfo: m(post, 'additional_info'),
     content: {
-      en: m(post, 'content_en') || post.content.rendered,
-      th: m(post, 'content_th') || m(post, 'content_en') || post.content.rendered,
+      en: m(post, 'content_en') || post.content?.rendered || '',
+      th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
     },
     site: m(post, 'site') as WPSite,
   };
@@ -184,8 +184,8 @@ export function mapResidencyArtist(post: WPRawPost) {
     status: (m(post, 'status') || 'past') as 'current' | 'past' | 'upcoming',
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),
-    bio: m(post, 'bio_en') || post.content.rendered,
-    bioTH: m(post, 'bio_th') || m(post, 'bio_en') || post.content.rendered,
+    bio: m(post, 'bio_en') || post.content?.rendered || '',
+    bioTH: m(post, 'bio_th') || m(post, 'bio_en') || post.content?.rendered || '',
     site: m(post, 'site') as WPSite,
   };
 }
@@ -246,8 +246,8 @@ export function mapActivity(post: WPRawPost, lang: Lang = 'en') {
       th: (m(post, 'content_th') || m(post, 'content_en')).replace(/<[^>]+>/g, '').slice(0, 200),
     },
     content: {
-      en: m(post, 'content_en') || post.content.rendered,
-      th: m(post, 'content_th') || m(post, 'content_en') || post.content.rendered,
+      en: m(post, 'content_en') || post.content?.rendered || '',
+      th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
     },
     site: m(post, 'site') as WPSite,
   };
