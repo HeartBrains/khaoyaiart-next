@@ -60,9 +60,9 @@ export function TeamPage({ activePage }: TeamPageProps) {
               <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
                 <div className="mb-2">{FOUNDER.name}</div>
                 {FOUNDER.bio && (
-                  <div className="text-base md:text-lg text-gray-700 mt-2">
-                    <p>{language === 'th' ? (FOUNDER.bioTH || FOUNDER.bio) : FOUNDER.bio}</p>
-                  </div>
+                  <div className="text-base md:text-lg text-gray-700 mt-2 [&>p]:mb-4"
+                    dangerouslySetInnerHTML={{ __html: language === 'th' ? (FOUNDER.bioTH || FOUNDER.bio) : FOUNDER.bio }}
+                  />
                 )}
               </div>
             </div>
@@ -90,9 +90,9 @@ export function TeamPage({ activePage }: TeamPageProps) {
                       <div className="mb-2">{director.name}</div>
                       <div className="text-base md:text-lg text-gray-500">{language === 'th' ? (director.roleTH || director.role) : director.role}</div>
                       {director.bio && (
-                        <div className="text-base md:text-lg text-gray-700 mt-2">
-                          <p>{language === 'th' ? (director.bioTH || director.bio) : director.bio}</p>
-                        </div>
+                        <div className="text-base md:text-lg text-gray-700 mt-2 [&>p]:mb-4"
+                          dangerouslySetInnerHTML={{ __html: language === 'th' ? (director.bioTH || director.bio) : director.bio }}
+                        />
                       )}
                     </div>
                   </div>
