@@ -97,7 +97,8 @@ export const useKyafExhibitions = () => useWPList('exhibitions', 'kyaf', mapKyaf
 export const useBkkkActivities  = () => useWPList('activities', 'bkkk', mapActivity);
 export const useKyafActivities  = () => useWPList('activities', 'kyaf', mapActivity);
 export const useMovingImages    = () => useWPList('moving-images', 'bkkk', mapMovingImage);
-export const useResidencyArtists = () => useWPList('residency-artists', 'bkkk', mapResidencyArtist);
+export const useResidencyArtists     = () => useWPList('residency-artists', 'bkkk', mapResidencyArtist);
+export const useKyafResidencyArtists = () => useWPList('residency-artists', 'kyaf', mapResidencyArtist);
 
 export const useBkkkTeamMembers = () => useWPList('team-members', 'bkkk', mapBkkkTeamMember);
 export const useKyafTeamMembers = () => useWPList('team-members', 'kyaf', mapKyafTeamMember);

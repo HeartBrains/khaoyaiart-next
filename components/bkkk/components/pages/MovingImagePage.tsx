@@ -5,20 +5,19 @@ import { useState, useEffect, useMemo } from 'react';
 import type { MovingImageItem } from '@/lib/wp-mappers';
 import { getEmptyStateMessage } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
+import { useMovingImages } from '@/lib/useWPData';
 const movingImageHero = '/assets/429c8ad61cdb4d502462d129e377fe4faf35abf2.png';
 
 interface MovingImagePageProps {
-  initialData?: MovingImageItem[];
   onNavigate?: (page: string, slug?: string) => void;
   targetSectionId?: string;
 }
 
-export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId, initialData = [] }: MovingImagePageProps) {
+export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }: MovingImagePageProps) {
   const internalNavigate = useAppNavigate();
   const onNavigate = onNavigateProp ?? internalNavigate;
   const { language } = useLanguage();
-  const [movingImageRecords, setMovingImageRecords] = useState(initialData);
-  useEffect(() => { setMovingImageRecords(initialData); }, [initialData]);
+  const { data: movingImageRecords } = useMovingImages();
   const [activeSection, setActiveSection] = useState('current-programs');
 
   const upcomingPrograms = movingImageRecords.filter(r => r.status === 'upcoming');

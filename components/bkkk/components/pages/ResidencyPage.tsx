@@ -8,19 +8,18 @@ import { getTranslation } from '@/utils/translations';
 import { useState, useEffect } from 'react';
 import { getEmptyStateMessage } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
+import { useResidencyArtists } from '@/lib/useWPData';
 
 interface ResidencyPageProps {
-  initialData?: ResidencyArtistItem[];
   onNavigate?: (page: string, slug?: string) => void;
   targetSectionId?: string;
 }
 
-export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId, initialData = [] }: ResidencyPageProps) {
+export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: ResidencyPageProps) {
   const internalNavigate = useAppNavigate();
   const onNavigate = onNavigateProp ?? internalNavigate;
   const { language } = useLanguage();
-  const [ARTISTS_DATA, setArtistsData] = useState(initialData);
-  useEffect(() => { setArtistsData(initialData); }, [initialData]);
+  const { data: ARTISTS_DATA } = useResidencyArtists();
   const [activeSection, setActiveSection] = useState('current-artists');
 
   // Helper function to extract year and month from period string

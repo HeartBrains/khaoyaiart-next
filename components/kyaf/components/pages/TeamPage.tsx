@@ -1,6 +1,7 @@
 // @ts-nocheck
 'use client';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useKyafTeamMembers } from '@/lib/useWPData';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { Reveal } from '../ui/Reveal';
@@ -9,15 +10,13 @@ import type { TeamMemberItem } from '@/lib/wp-mappers';
 import { TEAM_HERO_IMAGE } from '@/utils/imageConstants';
 
 interface TeamPageProps {
-  initialData?: TeamMemberItem[];
-    activePage?: 'team' | 'advisory-board';
-    onNavigate?: (page: string) => void;
+  activePage?: 'team' | 'advisory-board';
+  onNavigate?: (page: string) => void;
 }
 
-export function TeamPage({ activePage, initialData = [] }: TeamPageProps) {
+export function TeamPage({ activePage }: TeamPageProps) {
   const { language } = useLanguage();
-  const [members, setMembers] = useState(initialData);
-  useEffect(() => { setMembers(initialData); }, [initialData]);
+  const { data: members } = useKyafTeamMembers();
 
   const sorted = members.slice().sort((a, b) => a.order - b.order);
   const grouped = sorted.reduce((acc, m) => {

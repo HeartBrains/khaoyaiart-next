@@ -6,6 +6,7 @@ import type { ExhibitionItem } from '@/lib/wp-mappers';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
+import { useBkkkExhibitions } from '@/lib/useWPData';
 
 // Categorize exhibition status using ISO dates
 function getExhibitionStatus(fromDate: string, toDate: string, explicitStatus: 'current' | 'upcoming' | 'past', referenceDate: Date): 'current' | 'upcoming' | 'past' | null {
@@ -40,18 +41,16 @@ function getExhibitionStatus(fromDate: string, toDate: string, explicitStatus: '
 }
 
 interface ExhibitionsPageProps {
-  initialData?: ExhibitionItem[];
   onNavigate?: (page: string, slug?: string) => void;
   targetSectionId?: string;
 }
 
-export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId, initialData = [] }: ExhibitionsPageProps) {
+export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }: ExhibitionsPageProps) {
   const internalNavigate = useAppNavigate();
   const onNavigate = onNavigateProp ?? internalNavigate;
   const { language } = useLanguage();
   const [activeSection, setActiveSection] = useState('current-exhibitions');
-  const [exhibitions, setExhibitions] = useState(initialData);
-  useEffect(() => { setExhibitions(initialData); }, [initialData]);
+  const { data: exhibitions } = useBkkkExhibitions();
 
   const today = new Date();
 

@@ -7,22 +7,21 @@ import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/utils/languageContext';
 import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
+import { useKyafExhibitions } from '@/lib/useWPData';
 import type { KyafExhibitionItem } from '@/lib/wp-mappers';
 import { EXHIBITIONS_HERO_IMAGE } from '@/utils/imageConstants';
 
 interface ExhibitionsPageProps {
-  initialData?: KyafExhibitionItem[];
-    onNavigate?: (page: string, slug?: string) => void;
-    activeSection?: string;
+  onNavigate?: (page: string, slug?: string) => void;
+  activeSection?: string;
 }
 
 type Category = 'current' | 'upcoming' | 'past';
 
-export function ExhibitionsPage({ onNavigate: onNavigateProp, activeSection, initialData = [] }: ExhibitionsPageProps) {
+export function ExhibitionsPage({ onNavigate: onNavigateProp, activeSection }: ExhibitionsPageProps) {
   const internalNavigate = useAppNavigate();
   const onNavigate = onNavigateProp ?? internalNavigate;
-  const [exhibitions, setExhibitions] = useState(initialData);
-  useEffect(() => { setExhibitions(initialData); }, [initialData]);
+  const { data: exhibitions } = useKyafExhibitions();
   const [activeCategory, setActiveCategory] = useState<Category>(
     (activeSection as Category) || 'current'
   );

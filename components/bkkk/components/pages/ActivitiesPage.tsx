@@ -6,20 +6,19 @@ import type { ActivityItem } from '@/lib/wp-mappers';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { getEmptyStateMessage, siteConfig } from '@/components/bkkk/utils/siteConfig';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
+import { useBkkkActivities } from '@/lib/useWPData';
 
 interface ActivitiesPageProps {
-  initialData?: ActivityItem[];
   onNavigate?: (page: string, slug?: string) => void;
   targetSectionId?: string;
 }
 
-export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId, initialData = [] }: ActivitiesPageProps) {
+export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: ActivitiesPageProps) {
   const internalNavigate = useAppNavigate();
   const onNavigate = onNavigateProp ?? internalNavigate;
   const { language } = useLanguage();
   const [activeSection, setActiveSection] = useState('current-activities');
-  const [rawActivities, setRawActivities] = useState(initialData);
-  useEffect(() => { setRawActivities(initialData); }, [initialData]);
+  const { data: rawActivities } = useBkkkActivities();
 
   const currentActivities  = rawActivities.filter(a => a.status === 'current');
   const upcomingActivities = rawActivities.filter(a => a.status === 'upcoming');
