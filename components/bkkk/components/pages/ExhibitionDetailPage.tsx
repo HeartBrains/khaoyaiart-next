@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/utils/languageContext';
+import { RichContent } from '@/utils/richContent';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '../ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import { ArrowLeft } from 'lucide-react';
@@ -43,7 +44,7 @@ export function ExhibitionDetailPage({ onNavigate, slug }: ExhibitionDetailPageP
             <CarouselContent className="-ml-0">
               {galleryImages.map((src, index) => (
                 <CarouselItem key={index} className="pl-0">
-                  <img src={src} alt={`${title} Gallery ${index + 1}`} className="w-full h-auto block"
+                  <img src={src} alt={`${title} Gallery ${index + 1}`} className="w-full h-auto max-h-[80vh] object-cover block"
                     loading={index === 0 ? 'eager' : 'lazy'}
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />
@@ -94,11 +95,20 @@ export function ExhibitionDetailPage({ onNavigate, slug }: ExhibitionDetailPageP
               {artist && <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{artist}</p>}
               {dateDisplay && <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{dateDisplay}</p>}
               {curator && <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{language === 'th' ? 'ภัณฑารักษ์: ' : 'Curated by '}{curator}</p>}
-              {data.imageCredits && <div className="mt-8 pt-6"><p className="text-gray-500 text-[12px]">{data.imageCredits}</p></div>}
+              {data.additionalInfo && (
+                <div className="mt-6 text-xl md:text-2xl text-black font-normal leading-tight">
+                  <RichContent content={data.additionalInfo} />
+                </div>
+              )}
+              {data.imageCredits && (
+                <div className="mt-auto pt-8">
+                  <p className="text-gray-500 text-[12px]">{data.imageCredits}</p>
+                </div>
+              )}
             </div>
           </div>
           <div className={`md:col-start-7 md:col-span-6 text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-            {content && <div className="[&>p]:mb-8" dangerouslySetInnerHTML={{ __html: content }} />}
+            {content && <RichContent content={content} />}
           </div>
         </div>
       </div>
