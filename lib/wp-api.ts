@@ -53,7 +53,7 @@ async function batchResolveMedia(ids: number[]): Promise<Map<number, string>> {
 // Fetch a single URL with up to `retries` attempts, waiting `delayMs` between each
 const WP_AUTH_USER = process.env.WP_AUTH_USER ?? '';
 const WP_AUTH_PASS = process.env.WP_AUTH_PASS ?? '';
-const WP_AUTH_HEADER = WP_AUTH_USER && WP_AUTH_PASS
+const WP_AUTH_HEADER: Record<string, string> = WP_AUTH_USER && WP_AUTH_PASS
   ? { Authorization: 'Basic ' + Buffer.from(`${WP_AUTH_USER}:${WP_AUTH_PASS}`).toString('base64') }
   : {};
 
