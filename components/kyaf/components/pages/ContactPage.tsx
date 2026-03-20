@@ -10,7 +10,7 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Button } from '../ui/button';
 
-const WP_CONTACT_URL = 'https://content.bkkkapp.com/wp-json/contact/email';
+const WP_CONTACT_URL = 'https://content.khaoyaiart.org/wp-json/contact/email';
 const WP_USER = process.env.NEXT_PUBLIC_WP_CONTACT_USER ?? '';
 const WP_PASS = process.env.NEXT_PUBLIC_WP_CONTACT_PASS ?? '';
 

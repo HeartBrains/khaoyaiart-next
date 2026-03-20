@@ -1,5 +1,5 @@
 const WP_BASE =
-  (process.env.WP_BASE_URL ?? 'https://content.bkkkapp.com/wp-json/wp/v2').replace(/\/$/, '');
+  (process.env.WP_BASE_URL ?? 'https://content.khaoyaiart.org/wp-json/wp/v2').replace(/\/$/, '');
 
 // Maps the keys used in useWPData calls to the actual WP REST API base paths
 const REST_BASE: Record<string, string> = {
