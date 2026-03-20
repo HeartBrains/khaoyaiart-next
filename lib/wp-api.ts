@@ -1,17 +1,18 @@
 const WP_BASE =
   (process.env.WP_BASE_URL ?? 'https://content.bkkkapp.com/wp-json/wp/v2').replace(/\/$/, '');
 
-// Maps registered post_type slugs to their WP REST API base paths
+// Maps the keys used in useWPData calls to the actual WP REST API base paths
 const REST_BASE: Record<string, string> = {
-  exhibition:       'exhibition',
-  activity:         'activity',
-  moving_image:     'moving_image',
-  residency_artist: 'residency_artist',
-  team_member:      'team-members',
-  blog_post:        'blog-posts',
-  press_item:       'press-items',
-  post:             'posts',
-  page:             'pages',
+  // Plural aliases used in useWPData → actual WP REST base
+  exhibitions:       'exhibition',
+  activities:        'activity',
+  'moving-images':   'moving_image',
+  'residency-artists': 'residency_artist',
+  'team-members':    'team-members',
+  'blog-posts':      'blog-posts',
+  'press-items':     'press-items',
+  posts:             'posts',
+  pages:             'pages',
 };
 
 function restBase(cpt: string): string {
