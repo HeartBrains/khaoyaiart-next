@@ -10,7 +10,7 @@ export default function Page() {
     <>
       <JsonLd data={organizationJsonLd({
         name: 'Bangkok Kunsthalle',
-        url: 'https://next.bkkapp.com/bkkk',
+        url: 'https://bkkk.bkkkapp.com/bkkk',
         description: 'Contemporary art space in Bangkok, Thailand.',
         address: 'Bangkok, Thailand',
         sameAs: ['https://www.instagram.com/bangkokkunsthalle'],

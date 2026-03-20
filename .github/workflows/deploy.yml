@@ -27,6 +27,8 @@ jobs:
         env:
           WP_BASE_URL: ${{ secrets.NEXT_PUBLIC_WP_BASE_URL }}
           NEXT_PUBLIC_WP_BASE_URL: ${{ secrets.NEXT_PUBLIC_WP_BASE_URL }}
+          BKKK_BASE_URL: https://bkkk.bkkkapp.com/bkkk
+          KYAF_BASE_URL: https://khaoyai.bkkkapp.com/kyaf
 
       - name: Commit build output
         run: |

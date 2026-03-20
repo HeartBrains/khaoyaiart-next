@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     template: '%s | Bangkok Kunsthalle / Khao Yai Art Forest',
   },
   description: 'Contemporary art spaces in Thailand — Bangkok Kunsthalle and Khao Yai Art Forest.',
-  metadataBase: new URL('https://next.bkkapp.com'),
+  metadataBase: new URL('https://khaoyai.bkkkapp.com'),
   openGraph: {
     siteName: 'Bangkok Kunsthalle / Khao Yai Art Forest',
     type: 'website',
