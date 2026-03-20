@@ -7,6 +7,7 @@ import { useLanguage } from '@/utils/languageContext';
 import { getTranslation } from '@/utils/translations';
 import { useState, useEffect } from 'react';
 import { getEmptyStateMessage } from '@/utils/siteConfig';
+import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
 
 interface ResidencyPageProps {
   initialData?: ResidencyArtistItem[];
@@ -14,7 +15,9 @@ interface ResidencyPageProps {
   targetSectionId?: string;
 }
 
-export function ResidencyPage({ onNavigate, targetSectionId, initialData = [] }: ResidencyPageProps) {
+export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId, initialData = [] }: ResidencyPageProps) {
+  const internalNavigate = useAppNavigate();
+  const onNavigate = onNavigateProp ?? internalNavigate;
   const { language } = useLanguage();
   const [ARTISTS_DATA, setArtistsData] = useState(initialData);
   useEffect(() => { setArtistsData(initialData); }, [initialData]);

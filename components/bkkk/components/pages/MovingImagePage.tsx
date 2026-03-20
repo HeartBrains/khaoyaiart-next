@@ -4,6 +4,7 @@ import { useLanguage } from '@/utils/languageContext';
 import { useState, useEffect, useMemo } from 'react';
 import type { MovingImageItem } from '@/lib/wp-mappers';
 import { getEmptyStateMessage } from '@/utils/siteConfig';
+import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
 const movingImageHero = '/assets/429c8ad61cdb4d502462d129e377fe4faf35abf2.png';
 
 interface MovingImagePageProps {
@@ -12,7 +13,9 @@ interface MovingImagePageProps {
   targetSectionId?: string;
 }
 
-export function MovingImagePage({ onNavigate, targetSectionId, initialData = [] }: MovingImagePageProps) {
+export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId, initialData = [] }: MovingImagePageProps) {
+  const internalNavigate = useAppNavigate();
+  const onNavigate = onNavigateProp ?? internalNavigate;
   const { language } = useLanguage();
   const [movingImageRecords, setMovingImageRecords] = useState(initialData);
   useEffect(() => { setMovingImageRecords(initialData); }, [initialData]);

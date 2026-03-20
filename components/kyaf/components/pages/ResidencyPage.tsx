@@ -9,6 +9,7 @@ import { useLanguage } from '@/utils/languageContext';
 import { getTranslation } from '@/utils/translations';
 import { IMG_FOG_SRC, IMG_PULSUS_SRC } from '@/utils/imageConstants';
 import type { ResidencyArtistItem } from '@/lib/wp-mappers';
+import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
 
 interface ResidencyPageProps {
   initialData?: ResidencyArtistItem[];
@@ -16,7 +17,9 @@ interface ResidencyPageProps {
   activeSection?: string;
 }
 
-export function ResidencyPage({ onNavigate, activeSection, initialData = [] }: ResidencyPageProps) {
+export function ResidencyPage({ onNavigate: onNavigateProp, activeSection, initialData = [] }: ResidencyPageProps) {
+  const internalNavigate = useAppNavigate();
+  const onNavigate = onNavigateProp ?? internalNavigate;
   const { language } = useLanguage();
   const [ARTISTS_DATA, setArtistsData] = useState(initialData);
   useEffect(() => { setArtistsData(initialData); }, [initialData]);

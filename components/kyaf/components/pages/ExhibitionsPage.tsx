@@ -6,6 +6,7 @@ import { ParallaxHero } from '../ui/ParallaxHero';
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/utils/languageContext';
+import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
 import type { KyafExhibitionItem } from '@/lib/wp-mappers';
 import { EXHIBITIONS_HERO_IMAGE } from '@/utils/imageConstants';
 
@@ -17,7 +18,9 @@ interface ExhibitionsPageProps {
 
 type Category = 'current' | 'upcoming' | 'past';
 
-export function ExhibitionsPage({ onNavigate, activeSection, initialData = [] }: ExhibitionsPageProps) {
+export function ExhibitionsPage({ onNavigate: onNavigateProp, activeSection, initialData = [] }: ExhibitionsPageProps) {
+  const internalNavigate = useAppNavigate();
+  const onNavigate = onNavigateProp ?? internalNavigate;
   const [exhibitions, setExhibitions] = useState(initialData);
   useEffect(() => { setExhibitions(initialData); }, [initialData]);
   const [activeCategory, setActiveCategory] = useState<Category>(
