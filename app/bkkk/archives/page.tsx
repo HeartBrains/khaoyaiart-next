@@ -1,9 +1,0 @@
-import type { Metadata } from 'next';
-import { bkkkMetadata } from '@/lib/seo';
-import { ClientPage } from '@/components/bkkk/ClientPage';
-
-export const metadata: Metadata = bkkkMetadata('Archives', 'Archive of past exhibitions and activities at Bangkok Kunsthalle.', { path: '/bkkk/archives' });
-
-export default function Page() {
-  return <ClientPage site="bkkk" component="ArchivesPage"  />;
-}

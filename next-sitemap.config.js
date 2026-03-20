@@ -8,7 +8,7 @@ module.exports = {
   priority: 0.7,
   transform: async (config, path) => {
     // Higher priority for home and listing pages
-    const highPriority = ['/', '/bkkk', '/kyaf', '/bkkk/exhibitions', '/kyaf/exhibitions'];
+    const highPriority = ['/', '/bk', '/kyaf', '/bk/exhibitions', '/kyaf/exhibitions'];
     return {
       loc: path,
       changefreq: highPriority.includes(path) ? 'daily' : 'weekly',

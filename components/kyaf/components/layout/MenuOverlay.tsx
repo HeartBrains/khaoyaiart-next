@@ -283,7 +283,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                             inputClassName="w-40 text-lg text-white placeholder:text-gray-500"
                         />
                         <a 
-                            href="/bkkk"
+                            href="/bk"
                             className="text-xl md:text-2xl text-white font-normal hover:text-gray-300 transition-colors uppercase tracking-wide cursor-pointer"
                         >
                             BKKK

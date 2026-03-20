@@ -3,35 +3,35 @@ import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 
 const PAGE_TO_PATH: Record<string, string> = {
-  home: '/bkkk',
+  home: '/bk',
   khaoyai: '/kyaf',
-  about: '/bkkk/about',
-  vision: '/bkkk/about/vision',
-  history: '/bkkk/about/history',
-  founder: '/bkkk/team',
-  team: '/bkkk/team',
-  support: '/bkkk/support',
-  visit: '/bkkk/visit',
-  news: '/bkkk/news',
-  activities: '/bkkk/activities',
-  'activity-detail': '/bkkk/activities/:slug',
-  blog: '/bkkk/blog',
-  'blog-detail': '/bkkk/blog/:slug',
-  exhibitions: '/bkkk/exhibitions',
-  'exhibition-detail': '/bkkk/exhibitions/:slug',
-  archives: '/bkkk/archives',
-  residency: '/bkkk/residency',
-  'artist-detail': '/bkkk/artists/:slug',
-  'moving-image': '/bkkk/moving-image',
-  'moving-image-detail': '/bkkk/moving-image/:slug',
-  shop: '/bkkk/shop',
-  press: '/bkkk/press',
-  contact: '/bkkk/contact',
-  'hidden-assets': '/bkkk/hidden-assets',
+  about: '/bk/about',
+  vision: '/bk/about/vision',
+  history: '/bk/about/history',
+  founder: '/bk/team',
+  team: '/bk/team',
+  support: '/bk/support',
+  visit: '/bk/visit',
+  news: '/bk/news',
+  activities: '/bk/activities',
+  'activity-detail': '/bk/activities/:slug',
+  blog: '/bk/blog',
+  'blog-detail': '/bk/blog/:slug',
+  exhibitions: '/bk/exhibitions',
+  'exhibition-detail': '/bk/exhibitions/:slug',
+  archives: '/bk/archives',
+  residency: '/bk/residency',
+  'artist-detail': '/bk/artists/:slug',
+  'moving-image': '/bk/moving-image',
+  'moving-image-detail': '/bk/moving-image/:slug',
+  shop: '/bk/shop',
+  press: '/bk/press',
+  contact: '/bk/contact',
+  'hidden-assets': '/bk/hidden-assets',
 };
 
 function pageToPath(page: string, slug?: string): string {
-  const template = PAGE_TO_PATH[page] || `/bkkk/${page}`;
+  const template = PAGE_TO_PATH[page] || `/bk/${page}`;
   if (slug && template.includes(':slug')) {
     return template.replace(':slug', slug);
   }

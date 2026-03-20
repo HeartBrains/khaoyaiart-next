@@ -6,7 +6,7 @@ export default function Page() {
   const router = useRouter();
   return (
     <LandingPage
-      onEnterBkkk={() => router.push('/bkkk')}
+      onEnterBkkk={() => router.push('/bk')}
       onEnterKyaf={() => router.push('/kyaf')}
     />
   );
