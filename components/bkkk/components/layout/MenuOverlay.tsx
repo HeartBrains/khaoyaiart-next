@@ -79,8 +79,9 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
         label: t('nav.activities'),
         page: 'activities',
         children: [
-            ...(siteConfig.visibility.activities.publicProgram ? [{ label: 'Public Program', page: 'activities', sectionId: 'public-program' }] : []),
-            ...(siteConfig.visibility.activities.screenings ? [{ label: t('activities.screenings'), page: 'activities', sectionId: 'screenings' }] : []),
+            ...(siteConfig.visibility.activities.upcoming ? [{ label: t('activities.upcoming'), page: 'activities', sectionId: 'upcoming-activities' }] : []),
+            ...(siteConfig.visibility.activities.current ? [{ label: t('activities.current'), page: 'activities', sectionId: 'current-activities' }] : []),
+            ...(siteConfig.visibility.activities.past ? [{ label: t('activities.past'), page: 'activities', sectionId: 'past-activities' }] : []),
         ]
     }] : []),
     ...(menu.residency ? [{

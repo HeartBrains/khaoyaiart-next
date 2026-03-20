@@ -85,6 +85,9 @@ export const translations = {
     
     // Activities
     'activities.title': 'Activities',
+    'activities.current': 'Current Activities',
+    'activities.upcoming': 'Upcoming Activities',
+    'activities.past': 'Past Activities',
     'activities.screenings': 'Screenings',
     'activities.talks': 'Talks',
     'activities.workshops': 'Workshops',
@@ -245,6 +248,9 @@ export const translations = {
     
     // Activities - Thai
     'activities.title': 'กิจกรรม',
+    'activities.current': 'กิจกรรมปัจจุบัน',
+    'activities.upcoming': 'กิจกรรมที่จะมาถึง',
+    'activities.past': 'กิจกรรมที่ผ่านมา',
     'activities.screenings': 'การฉายภาพยนตร์',
     'activities.talks': 'การพูดคุย',
     'activities.workshops': 'เวิร์คช็อป',

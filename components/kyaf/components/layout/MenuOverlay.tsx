@@ -286,7 +286,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                             href="/bk"
                             className="text-xl md:text-2xl text-white font-normal hover:text-gray-300 transition-colors uppercase tracking-wide cursor-pointer"
                         >
-                            BKKK
+                            BK
                         </a>
                     </div>
 

@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import { Reveal } from '../ui/Reveal';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
@@ -7,8 +8,37 @@ import { useLanguage } from '@/utils/languageContext';
 import { Facebook, Instagram, Globe } from 'lucide-react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 
+const WP_CONTACT_URL = 'https://content.bkkkapp.com/wp-json/contact/email';
+const WP_USER = process.env.NEXT_PUBLIC_WP_CONTACT_USER ?? '';
+const WP_PASS = process.env.NEXT_PUBLIC_WP_CONTACT_PASS ?? '';
+
 export function ContactPage() {
   const { language } = useLanguage();
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('sending');
+    try {
+      const res = await fetch(WP_CONTACT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Basic ' + btoa(`${WP_USER}:${WP_PASS}`),
+        },
+        body: JSON.stringify({ email, subject: null, message }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setStatus('success');
+      setEmail('');
+      setMessage('');
+    } catch {
+      setStatus('error');
+    }
+  };
   
   return (
     <div className="bg-white min-h-screen pb-24 font-sans text-black">
@@ -74,20 +104,36 @@ export function ContactPage() {
                 </Reveal>
 
                 <Reveal delay={0.2}>
-                    <form className="flex flex-col gap-6 w-full max-w-lg" onSubmit={(e) => e.preventDefault()}>
-                        <Input 
+                    <form className="flex flex-col gap-6 w-full max-w-lg" onSubmit={handleSubmit}>
+                        <Input
+                            type="email"
+                            required
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
                             placeholder={language === 'th' ? 'อีเมล' : 'Email'}
                             className="rounded-none border-gray-300 h-12 text-[19px] placeholder:text-gray-400 font-sans"
                         />
-                        <Textarea 
+                        <Textarea
+                            required
+                            value={message}
+                            onChange={e => setMessage(e.target.value)}
                             placeholder={language === 'th' ? 'ข้อความสอบถาม' : 'Inquiry Box'}
                             className={`rounded-none border-gray-300 min-h-[200px] text-[19px] placeholder:text-gray-400 resize-none font-sans ${language === 'th' ? 'leading-[1.82em]' : ''}`}
                         />
-                        <Button 
+                        {status === 'success' && (
+                            <p className="text-sm text-green-600">{language === 'th' ? 'ส่งข้อความเรียบร้อยแล้ว' : 'Message sent successfully.'}</p>
+                        )}
+                        {status === 'error' && (
+                            <p className="text-sm text-red-500">{language === 'th' ? 'เกิดข้อผิดพลาด กรุณาลองใหม่' : 'Something went wrong. Please try again.'}</p>
+                        )}
+                        <Button
                             type="submit"
-                            className="rounded-none bg-[#1A1A1A] hover:bg-black text-white px-8 py-6 text-lg w-fit font-sans"
+                            disabled={status === 'sending'}
+                            className="rounded-none bg-[#1A1A1A] hover:bg-black text-white px-8 py-6 text-lg w-fit font-sans disabled:opacity-50"
                         >
-                            {language === 'th' ? 'ส่ง' : 'Submit'}
+                            {status === 'sending'
+                                ? (language === 'th' ? 'กำลังส่ง...' : 'Sending...')
+                                : (language === 'th' ? 'ส่ง' : 'Submit')}
                         </Button>
                     </form>
                 </Reveal>
