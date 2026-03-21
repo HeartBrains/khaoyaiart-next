@@ -239,6 +239,7 @@ export function mapActivity(post: WPRawPost, lang: Lang = 'en') {
     categories: { en: tags, th: tags },
     typeLabel: { en: tags[0] ?? '', th: tags[0] ?? '' },
     artist: { en: m(post, 'artist_en'), th: m(post, 'artist_th') || m(post, 'artist_en') },
+    curator: { en: m(post, 'curator_en'), th: m(post, 'curator_th') || m(post, 'curator_en') },
     featuredImage: featuredImageUrl(post),
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),

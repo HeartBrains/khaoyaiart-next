@@ -102,6 +102,11 @@ export function ActivityDetailPage({ onNavigate, slug, backPage }: ActivityDetai
                 <p key={idx} className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{cat}</p>
               ))}
               {dateDisplay && <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{dateDisplay}</p>}
+              {data.curator?.en && (
+                <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                  Curated by {language === 'th' ? (data.curator.th || data.curator.en) : data.curator.en}
+                </p>
+              )}
               {data.additionalInfo && (
                 <div className="mt-6 text-xl md:text-2xl text-black font-normal leading-tight">
                   <RichContent content={data.additionalInfo} />
