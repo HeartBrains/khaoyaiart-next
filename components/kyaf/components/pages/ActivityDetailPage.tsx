@@ -99,6 +99,11 @@ export function ActivityDetailPage({ onNavigate, slug, backPage }: ActivityDetai
             <div className="flex flex-col gap-0 px-0 md:px-[28px] py-[0px]">
               <h1 className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{title}</h1>
               {dateDisplay && <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{dateDisplay}</p>}
+              {data.curator?.en && (
+                <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                  Curated by {language === 'th' ? (data.curator.th || data.curator.en) : data.curator.en}
+                </p>
+              )}
               {data.typeLabel?.en && (
                 <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                   {language === 'th' ? (data.typeLabel?.th || data.typeLabel?.en) : data.typeLabel?.en}

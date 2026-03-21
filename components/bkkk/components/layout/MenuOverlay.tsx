@@ -248,6 +248,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                                                         key={child.label}
                                                         onClick={() => {
                                                             onNavigate(child.page, undefined, child.sectionId);
+                                                            onClose();
                                                         }}
                                                         className={`block w-full text-left text-[18px] text-white hover:text-gray-300 transition-colors py-1 ${language === 'th' ? 'leading-[1.82em]' : 'leading-snug'}`}
                                                     >

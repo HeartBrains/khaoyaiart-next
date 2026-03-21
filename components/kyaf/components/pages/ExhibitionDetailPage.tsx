@@ -172,6 +172,15 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                     </Reveal>
                 )}
 
+                {/* Curated by */}
+                {exhibitionData.curator?.en && (
+                    <Reveal delay={0.12}>
+                        <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                            Curated by {language === 'th' ? (exhibitionData.curator.th || exhibitionData.curator.en) : exhibitionData.curator.en}
+                        </p>
+                    </Reveal>
+                )}
+
                 {/* Image Credits — bottom of left column */}
                 {exhibitionData.imageCredits && (
                     <Reveal delay={0.15}>
