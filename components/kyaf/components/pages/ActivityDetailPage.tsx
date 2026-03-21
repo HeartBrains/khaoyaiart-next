@@ -98,7 +98,9 @@ export function ActivityDetailPage({ onNavigate, slug, backPage }: ActivityDetai
           <div className="md:col-span-6 flex flex-col gap-8">
             <div className="flex flex-col gap-0 px-0 md:px-[28px] py-[0px]">
               <h1 className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{title}</h1>
-              {dateDisplay && <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{dateDisplay}</p>}
+              {dateDisplay && dateDisplay.split(',').map((d, i) => (
+                <p key={i} className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
+              ))}
               {data.curator?.en && (
                 <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                   Curated by {language === 'th' ? (data.curator.th || data.curator.en) : data.curator.en}

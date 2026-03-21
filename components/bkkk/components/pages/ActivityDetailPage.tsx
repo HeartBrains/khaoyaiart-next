@@ -101,7 +101,9 @@ export function ActivityDetailPage({ onNavigate, slug, backPage }: ActivityDetai
               {categories?.map((cat, idx) => (
                 <p key={idx} className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{cat}</p>
               ))}
-              {dateDisplay && <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{dateDisplay}</p>}
+              {dateDisplay && dateDisplay.split(',').map((d, i) => (
+                <p key={i} className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
+              ))}
               {data.curator?.en && (
                 <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                   Curated by {language === 'th' ? (data.curator.th || data.curator.en) : data.curator.en}

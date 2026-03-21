@@ -102,9 +102,9 @@ export function MovingImageDetailPage({ slug, onNavigate }: MovingImageDetailPag
                   {language === 'th' ? `ภัณฑารักษ์: ${curator}` : `Curated by ${curator}`}
                 </p>
               )}
-              {dateDisplay && (
-                <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{dateDisplay}</p>
-              )}
+              {dateDisplay && dateDisplay.split(',').map((d, i) => (
+                <p key={i} className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
+              ))}
               {data.additionalInfo && (
                 <div className="mt-6 text-xl md:text-2xl text-black font-normal leading-tight">
                   <RichContent content={data.additionalInfo} />

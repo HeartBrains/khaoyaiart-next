@@ -155,11 +155,12 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                             </p>
                         )}
 
-                        {exhibitionData.dateDisplay && (
-                            <p className={`text-xl md:text-2xl text-black font-normal leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                                {language === 'th' ? exhibitionData.dateDisplay.th : exhibitionData.dateDisplay.en}
-                            </p>
-                        )}
+                        {exhibitionData.dateDisplay && (() => {
+                            const d = language === 'th' ? exhibitionData.dateDisplay.th : exhibitionData.dateDisplay.en;
+                            return d.split(',').map((part: string, i: number) => (
+                                <p key={i} className={`text-xl md:text-2xl text-black font-normal leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{part.trim()}</p>
+                            ));
+                        })()}
                     </div>
                 </Reveal>
 

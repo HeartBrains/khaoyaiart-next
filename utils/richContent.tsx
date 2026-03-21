@@ -1,6 +1,17 @@
 'use client';
 import React from 'react';
 
+/** Decode HTML entities so WP-encoded content renders correctly. */
+function decodeEntities(str: string): string {
+  return str
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+}
+
 /**
  * Auto-link bare URLs in text content.
  */
@@ -26,10 +37,11 @@ export function RichContent({
 }) {
   if (!content) return null;
 
-  const isHtml = /<[a-z][\s\S]*>/i.test(content);
+  const decoded = decodeEntities(content);
+  const isHtml = /<[a-z][\s\S]*>/i.test(decoded);
 
   if (isHtml) {
-    const linked = autoLink(content);
+    const linked = autoLink(decoded);
     return (
       <div
         className={`rich-content ${bold ? '[&_a]:font-bold' : ''} ${className}`}
@@ -39,7 +51,7 @@ export function RichContent({
   }
 
   // Plain text — split on double newlines into paragraphs
-  const paragraphs = content
+  const paragraphs = decoded
     .split(/\n\n+/)
     .map(p => p.trim())
     .filter(Boolean);

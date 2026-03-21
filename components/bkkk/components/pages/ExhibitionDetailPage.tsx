@@ -93,7 +93,9 @@ export function ExhibitionDetailPage({ onNavigate, slug }: ExhibitionDetailPageP
             <div className="flex flex-col gap-0 px-0 md:px-[28px] py-[0px]">
               <h1 className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{title}</h1>
               {artist && <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{artist}</p>}
-              {dateDisplay && <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{dateDisplay}</p>}
+              {dateDisplay && dateDisplay.split(',').map((d, i) => (
+                <p key={i} className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
+              ))}
               {curator && <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{language === 'th' ? 'ภัณฑารักษ์: ' : 'Curated by '}{curator}</p>}
               {data.additionalInfo && (
                 <div className="mt-6 text-xl md:text-2xl text-black font-normal leading-tight">
