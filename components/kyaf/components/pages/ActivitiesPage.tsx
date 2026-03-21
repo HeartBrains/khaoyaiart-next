@@ -67,7 +67,11 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
           <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.artist[language] || item.artist.en}</p>
         )}
         {(item.dateDisplay?.[language] || item.dateDisplay?.en) && (
-          <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.dateDisplay[language] || item.dateDisplay.en}</p>
+          <div className="flex flex-col mt-2">
+            {(item.dateDisplay[language] || item.dateDisplay.en).split(',').map((d, i) => (
+              <p key={i} className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
+            ))}
+          </div>
         )}
       </div>
     </div>

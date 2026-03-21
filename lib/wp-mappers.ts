@@ -21,6 +21,17 @@ function m(post: WPRawPost, key: string): string {
   return val ?? '';
 }
 
+// Decode common HTML entities in plain-text fields (e.g. &amp; → &)
+function decode(str: string): string {
+  return str
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+}
+
 // Split a pipe- or comma-separated URL string, supporting both legacy ||| and new , format
 function splitUrls(value: string): string[] {
   if (!value) return [];
@@ -86,13 +97,13 @@ export function mapBkkkExhibition(post: WPRawPost) {
     id: String(post.id),
     slug: post.slug,
     title: { en: post.title.rendered, th: m(post, 'title_th') || post.title.rendered },
-    artist: { en: m(post, 'artist_en'), th: m(post, 'artist_th') || m(post, 'artist_en') },
-    curator: { en: m(post, 'curator_en'), th: m(post, 'curator_th') || m(post, 'curator_en') },
+    artist: { en: decode(m(post, 'artist_en')), th: decode(m(post, 'artist_th') || m(post, 'artist_en')) },
+    curator: { en: decode(m(post, 'curator_en')), th: decode(m(post, 'curator_th') || m(post, 'curator_en')) },
     fromDate: m(post, 'from_date'),
     toDate: m(post, 'to_date'),
     dateDisplay: {
-      en: m(post, 'date_display_en'),
-      th: m(post, 'date_display_th') || m(post, 'date_display_en'),
+      en: decode(m(post, 'date_display_en')),
+      th: decode(m(post, 'date_display_th') || m(post, 'date_display_en')),
     },
     year: m(post, 'year'),
     status: (m(post, 'status') || 'past') as 'current' | 'upcoming' | 'past',
@@ -116,13 +127,13 @@ export function mapKyafExhibition(post: WPRawPost) {
     id: String(post.id),
     slug: post.slug,
     title: { en: post.title.rendered, th: m(post, 'title_th') || post.title.rendered },
-    artist: { en: m(post, 'artist_en'), th: m(post, 'artist_th') || m(post, 'artist_en') },
-    curator: { en: m(post, 'curator_en'), th: m(post, 'curator_th') || m(post, 'curator_en') },
+    artist: { en: decode(m(post, 'artist_en')), th: decode(m(post, 'artist_th') || m(post, 'artist_en')) },
+    curator: { en: decode(m(post, 'curator_en')), th: decode(m(post, 'curator_th') || m(post, 'curator_en')) },
     fromDate: m(post, 'from_date'),
     toDate: m(post, 'to_date'),
     dateDisplay: {
-      en: m(post, 'date_display_en'),
-      th: m(post, 'date_display_th') || m(post, 'date_display_en'),
+      en: decode(m(post, 'date_display_en')),
+      th: decode(m(post, 'date_display_th') || m(post, 'date_display_en')),
     },
     year: m(post, 'year'),
     status: (m(post, 'status') || 'past') as 'current' | 'upcoming' | 'past',
@@ -150,12 +161,12 @@ export function mapMovingImage(post: WPRawPost) {
     id: String(post.id),
     slug: post.slug,
     title: { en: post.title.rendered, th: m(post, 'title_th') || post.title.rendered },
-    curator: { en: m(post, 'curator_en'), th: m(post, 'curator_th') || m(post, 'curator_en') },
+    curator: { en: decode(m(post, 'curator_en')), th: decode(m(post, 'curator_th') || m(post, 'curator_en')) },
     fromDate: m(post, 'from_date'),
     toDate: m(post, 'to_date'),
     dateDisplay: {
-      en: m(post, 'date_display_en'),
-      th: m(post, 'date_display_th') || m(post, 'date_display_en'),
+      en: decode(m(post, 'date_display_en')),
+      th: decode(m(post, 'date_display_th') || m(post, 'date_display_en')),
     },
     year: m(post, 'year'),
     status: (m(post, 'status') || 'past') as 'current' | 'upcoming' | 'past',
@@ -179,8 +190,8 @@ export function mapResidencyArtist(post: WPRawPost) {
     slug: post.slug,
     name: post.title.rendered,
     nameTH: m(post, 'title_th') || post.title.rendered,
-    period: m(post, 'date_display_en'),
-    periodTH: m(post, 'date_display_th') || m(post, 'date_display_en'),
+    period: decode(m(post, 'date_display_en')),
+    periodTH: decode(m(post, 'date_display_th') || m(post, 'date_display_en')),
     featuredImage: featuredImageUrl(post),
     status: (m(post, 'status') || 'past') as 'current' | 'past' | 'upcoming',
     gallery: galleryUrls(post),
@@ -232,8 +243,8 @@ export function mapActivity(post: WPRawPost, lang: Lang = 'en') {
     slug: post.slug,
     title: { en: post.title.rendered, th: m(post, 'title_th') || post.title.rendered },
     dateDisplay: {
-      en: m(post, 'date_display_en'),
-      th: m(post, 'date_display_th') || m(post, 'date_display_en'),
+      en: decode(m(post, 'date_display_en')),
+      th: decode(m(post, 'date_display_th') || m(post, 'date_display_en')),
     },
     status: (m(post, 'status') || 'upcoming') as 'current' | 'upcoming' | 'past',
     categories: { en: tags, th: tags },
