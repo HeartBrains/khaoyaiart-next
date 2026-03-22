@@ -30,15 +30,22 @@ export function SupportPage() {
             </ParallaxHero>
 
             {/* Content */}
-            <div className="w-full px-[6vw] py-16 md:py-24">
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-y-12 md:gap-x-16">
+            <div className="w-full px-[6vw] pt-[96px] pb-[0px]">
+                <div className="flex flex-col md:flex-row mb-32 md:mb-40">
 
-                    {/* Left column */}
-                    <div className="md:col-span-6 flex flex-col gap-8">
+                    {/* Left — sticky heading */}
+                    <div className="w-full md:w-1/2 mb-12 md:mb-0">
+                        <h1 className="text-xl md:text-2xl font-normal sticky top-32">
+                            {language === 'th' ? 'สนับสนุนเรา' : 'Support Us'}
+                        </h1>
+                    </div>
+
+                    {/* Right — all content */}
+                    <div className="w-full md:w-1/2 flex flex-col gap-8">
                         <Reveal>
-                            <h1 className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                            <p className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                                 Cultivating Art. Connecting Worlds.
-                            </h1>
+                            </p>
                             <p className={`text-xl md:text-2xl font-normal text-black mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                                 From forest to city, a living dialogue unfolds.
                             </p>
@@ -56,16 +63,12 @@ export function SupportPage() {
                                 <a href="mailto:membership@khaoyaiart.com" className="underline underline-offset-4 hover:opacity-60 transition-opacity">membership@khaoyaiart.com</a>
                             </p>
                         </Reveal>
-                    </div>
 
-                    {/* Right column */}
-                    <div className="md:col-start-7 md:col-span-6 flex flex-col gap-8">
-                        <Reveal delay={0.1}>
+                        <Reveal delay={0.2}>
                             <div className="flex flex-col gap-4">
                                 <p className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                                     Bank details:
                                 </p>
-                                {/* QR Code */}
                                 <img
                                     src="https://content.khaoyaiart.org/wp-content/uploads/2026/03/Screenshot_20260322-195733.png"
                                     alt="Donation QR Code"
@@ -81,13 +84,13 @@ export function SupportPage() {
                             </div>
                         </Reveal>
 
-                        <Reveal delay={0.2}>
+                        <Reveal delay={0.25}>
                             <p className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                                 We are profoundly grateful for your generosity. It is through your belief in our mission that Khao Yai Art can continue to thrive as a lasting, vibrant cultural home for everyone.
                             </p>
                         </Reveal>
 
-                        <Reveal delay={0.25}>
+                        <Reveal delay={0.3}>
                             <p className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                                 For any enquiries or to explore further involvement, please do not hesitate to contact us at{' '}
                                 <a href="mailto:claudia.k@khaoyaiart.com" className="underline underline-offset-4 hover:opacity-60 transition-opacity">claudia.k@khaoyaiart.com</a>

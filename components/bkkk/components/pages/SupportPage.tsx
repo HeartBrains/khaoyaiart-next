@@ -33,65 +33,84 @@ export function SupportPage() {
             </ParallaxHero>
 
             {/* Content */}
-            <div className="w-full px-[5%] py-16 md:py-24">
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-y-12 md:gap-x-16">
+            <div className="w-full px-[5%] pt-24">
 
-                    {/* Left column */}
-                    <div className="md:col-span-6 flex flex-col gap-8">
+                {/* Intro section */}
+                <div className="flex flex-col md:flex-row mb-32 md:mb-40">
+                    {/* Left — heading */}
+                    <div className="w-full md:w-1/2 mb-12 md:mb-0">
                         <Reveal>
-                            <h1 className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                                Cultivating Art. Connecting Worlds.
+                            <h1 className={`text-xl md:text-2xl font-normal md:ml-[24px] ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                                {language === 'th' ? 'สนับสนุนเรา' : 'Support Us'}
                             </h1>
-                            <p className={`text-xl md:text-2xl font-normal text-black mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                        </Reveal>
+                    </div>
+
+                    {/* Right — intro text */}
+                    <div className="w-full md:w-1/2 flex flex-col gap-8">
+                        <Reveal delay={0.1}>
+                            <p className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : 'leading-tight'}`}>
+                                Cultivating Art. Connecting Worlds.
+                            </p>
+                            <p className={`text-xl md:text-2xl font-normal text-black mt-2 ${language === 'th' ? 'leading-[1.82em]' : 'leading-tight'}`}>
                                 From forest to city, a living dialogue unfolds.
                             </p>
                         </Reveal>
 
-                        <Reveal delay={0.1}>
-                            <p className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                        <Reveal delay={0.15}>
+                            <p className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : 'leading-tight'}`}>
                                 We warmly invite you to support Khao Yai Art Social Enterprise, an institute for contemporary and experimental practices across Bangkok Kunsthalle and Khao Yai Art Forest, enriching Thailand's cultural landscape and extending its resonance beyond borders.
                             </p>
                         </Reveal>
 
-                        <Reveal delay={0.15}>
-                            <p className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                        <Reveal delay={0.2}>
+                            <p className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : 'leading-tight'}`}>
                                 If you wish to donate, please proceed via bank transfer using the QR code or bank details below and send proof of payment to:{' '}
                                 <a href="mailto:membership@khaoyaiart.com" className="underline underline-offset-4 hover:opacity-60 transition-opacity">membership@khaoyaiart.com</a>
                             </p>
                         </Reveal>
                     </div>
+                </div>
 
-                    {/* Right column */}
-                    <div className="md:col-start-7 md:col-span-6 flex flex-col gap-8">
+                {/* Bank details section */}
+                <div className="flex flex-col md:flex-row mb-32 md:mb-40">
+                    {/* Left — heading */}
+                    <div className="w-full md:w-1/2 mb-12 md:mb-0">
+                        <Reveal>
+                            <h2 className={`text-xl md:text-2xl font-normal md:ml-[24px] ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                                {language === 'th' ? 'รายละเอียดธนาคาร' : 'Bank Details'}
+                            </h2>
+                        </Reveal>
+                    </div>
+
+                    {/* Right — bank info */}
+                    <div className="w-full md:w-1/2 flex flex-col gap-8">
                         <Reveal delay={0.1}>
-                            <div className="flex flex-col gap-4">
-                                <p className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                                    Bank details:
-                                </p>
-                                {/* QR Code */}
-                                <img
-                                    src="https://content.khaoyaiart.org/wp-content/uploads/2026/03/Screenshot_20260322-195733.png"
-                                    alt="Donation QR Code"
-                                    className="w-48 h-48 object-contain"
-                                />
-                                <div className={`text-xl md:text-2xl font-normal text-black flex flex-col gap-1 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                                    <p>Bank Name: Siam Commercial Bank Public Company Limited</p>
-                                    <p>Account Name: Khaoyai Art Social Enterprise Co., Ltd</p>
-                                    <p>Account Number: 168-231447-3</p>
-                                    <p>Bank Branch: CP Tower (333 Silom Road, Bang Rak, Bangkok 10500, Thailand)</p>
-                                    <p>SWIFT Code: SICOTHBK</p>
-                                </div>
+                            <img
+                                src="https://content.khaoyaiart.org/wp-content/uploads/2026/03/Screenshot_20260322-195733.png"
+                                alt="Donation QR Code"
+                                className="w-48 h-48 object-contain"
+                            />
+                        </Reveal>
+
+                        <Reveal delay={0.15}>
+                            <div className={`text-xl md:text-2xl font-normal text-black flex flex-col gap-1 ${language === 'th' ? 'leading-[1.82em]' : 'leading-tight'}`}>
+                                <p>Bank Name: Siam Commercial Bank Public Company Limited</p>
+                                <p>Account Name: Khaoyai Art Social Enterprise Co., Ltd</p>
+                                <p>Account Number: 168-231447-3</p>
+                                <p>Bank Branch: CP Tower (333 Silom Road, Bang Rak, Bangkok 10500, Thailand)</p>
+                                <p>SWIFT Code: SICOTHBK</p>
                             </div>
                         </Reveal>
 
                         <Reveal delay={0.2}>
-                            <p className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                            <p className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : 'leading-tight'}`}>
                                 We are profoundly grateful for your generosity. It is through your belief in our mission that Khao Yai Art can continue to thrive as a lasting, vibrant cultural home for everyone.
                             </p>
                         </Reveal>
 
                         <Reveal delay={0.25}>
-                            <p className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                            <p className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : 'leading-tight'}`}>
                                 For any enquiries or to explore further involvement, please do not hesitate to contact us at{' '}
                                 <a href="mailto:claudia.k@khaoyaiart.com" className="underline underline-offset-4 hover:opacity-60 transition-opacity">claudia.k@khaoyaiart.com</a>
                                 {' '}or{' '}
@@ -99,8 +118,8 @@ export function SupportPage() {
                             </p>
                         </Reveal>
                     </div>
-
                 </div>
+
             </div>
         </div>
     );
