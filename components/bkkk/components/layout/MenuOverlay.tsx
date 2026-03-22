@@ -45,24 +45,24 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
   const wpSections = useSectionVisibility('bkkk');
   const secVis = {
     exhibitions: {
-      upcoming: wpSections?.exhibitions?.upcoming ?? secVis.exhibitions.upcoming,
-      current:  wpSections?.exhibitions?.current  ?? secVis.exhibitions.current,
-      past:     wpSections?.exhibitions?.past     ?? secVis.exhibitions.past,
+      upcoming: wpSections?.exhibitions?.upcoming ?? siteConfig.visibility.exhibitions.upcoming,
+      current:  wpSections?.exhibitions?.current  ?? siteConfig.visibility.exhibitions.current,
+      past:     wpSections?.exhibitions?.past     ?? siteConfig.visibility.exhibitions.past,
     },
     activities: {
-      upcoming: wpSections?.activities?.upcoming ?? secVis.activities.upcoming,
-      current:  wpSections?.activities?.current  ?? secVis.activities.current,
-      past:     wpSections?.activities?.past     ?? secVis.activities.past,
+      upcoming: wpSections?.activities?.upcoming ?? siteConfig.visibility.activities.upcoming,
+      current:  wpSections?.activities?.current  ?? siteConfig.visibility.activities.current,
+      past:     wpSections?.activities?.past     ?? siteConfig.visibility.activities.past,
     },
     movingImage: {
-      upcoming: wpSections?.movingImage?.upcoming ?? secVis.movingImage.upcoming,
-      current:  wpSections?.movingImage?.current  ?? secVis.movingImage.current,
-      past:     wpSections?.movingImage?.past     ?? secVis.movingImage.past,
+      upcoming: wpSections?.movingImage?.upcoming ?? siteConfig.visibility.movingImage.upcoming,
+      current:  wpSections?.movingImage?.current  ?? siteConfig.visibility.movingImage.current,
+      past:     wpSections?.movingImage?.past     ?? siteConfig.visibility.movingImage.past,
     },
     residency: {
-      upcoming: wpSections?.residency?.upcoming ?? secVis.residency.upcoming,
-      current:  wpSections?.residency?.current  ?? secVis.residency.current,
-      past:     wpSections?.residency?.past     ?? secVis.residency.past,
+      upcoming: wpSections?.residency?.upcoming ?? siteConfig.visibility.residency.upcoming,
+      current:  wpSections?.residency?.current  ?? siteConfig.visibility.residency.current,
+      past:     wpSections?.residency?.past     ?? siteConfig.visibility.residency.past,
     },
   };
   const menu = { ...siteConfig.menu, ...(wpMenu ?? {}) };
