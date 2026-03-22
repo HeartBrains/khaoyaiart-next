@@ -182,6 +182,18 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                     </Reveal>
                 )}
 
+                {/* CTA Left — below additional info */}
+                {exhibitionData.ctaLeft?.url && exhibitionData.ctaLeft?.label && (
+                    <Reveal delay={0.13}>
+                        <div className="mt-4">
+                            <a href={exhibitionData.ctaLeft.url} target="_blank" rel="noopener noreferrer"
+                                className="inline-block text-xl md:text-2xl text-black underline font-normal leading-tight">
+                                {exhibitionData.ctaLeft.label}
+                            </a>
+                        </div>
+                    </Reveal>
+                )}
+
                 {/* Image Credits — bottom of left column */}
                 {exhibitionData.imageCredits && (
                     <Reveal delay={0.15}>
@@ -197,6 +209,16 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                 <Reveal delay={0.2}>
                     <RichContent content={detailContent || ''} />
                 </Reveal>
+                {exhibitionData.ctaRight?.url && exhibitionData.ctaRight?.label && (
+                    <Reveal delay={0.25}>
+                        <div className="mt-8">
+                            <a href={exhibitionData.ctaRight.url} target="_blank" rel="noopener noreferrer"
+                                className="inline-block text-xl md:text-2xl text-black underline font-normal leading-tight">
+                                {exhibitionData.ctaRight.label}
+                            </a>
+                        </div>
+                    </Reveal>
+                )}
             </div>
         </div>
       </div>

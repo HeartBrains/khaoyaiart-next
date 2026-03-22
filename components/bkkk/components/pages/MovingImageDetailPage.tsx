@@ -110,6 +110,14 @@ export function MovingImageDetailPage({ slug, onNavigate }: MovingImageDetailPag
                   <RichContent content={data.additionalInfo} />
                 </div>
               )}
+              {data.ctaLeft?.url && data.ctaLeft?.label && (
+                <div className="mt-4">
+                  <a href={data.ctaLeft.url} target="_blank" rel="noopener noreferrer"
+                    className="inline-block text-xl md:text-2xl text-black underline font-normal leading-tight">
+                    {data.ctaLeft.label}
+                  </a>
+                </div>
+              )}
               {data.imageCredits && (
                 <div className="mt-auto pt-8">
                   <p className="text-gray-500 text-[12px]">{data.imageCredits}</p>
@@ -119,6 +127,14 @@ export function MovingImageDetailPage({ slug, onNavigate }: MovingImageDetailPag
           </div>
           <div className={`md:col-start-7 md:col-span-6 text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
             {content && <RichContent content={content} />}
+            {data.ctaRight?.url && data.ctaRight?.label && (
+              <div className="mt-8">
+                <a href={data.ctaRight.url} target="_blank" rel="noopener noreferrer"
+                  className="inline-block text-xl md:text-2xl text-black underline font-normal leading-tight">
+                  {data.ctaRight.label}
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>
