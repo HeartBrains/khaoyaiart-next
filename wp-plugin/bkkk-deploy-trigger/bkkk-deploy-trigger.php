@@ -10,8 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 // Register meta fields for all listing CPTs
 add_action( 'init', function () {
     $html_fields = [ 'content_en', 'content_th', 'additional_info', 'bio_en', 'bio_th' ];
-    $text_fields = [ 'cta_label', 'cta_url', 'cta2_label', 'cta2_url' ];
-    $post_types  = [ 'exhibition', 'activity', 'moving_image', 'residency_artist' ];
+    $text_fields = [ 'cta_label', 'cta_url', 'cta2_label', 'cta2_url', 'title_th', 'date_display_en', 'date_display_th', 'link_url', 'item_type', 'site' ];
+    $post_types  = [ 'exhibition', 'activity', 'moving_image', 'residency_artist', 'press_item' ];
 
     foreach ( $post_types as $post_type ) {
         foreach ( $html_fields as $field ) {

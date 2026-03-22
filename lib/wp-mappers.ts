@@ -10,6 +10,7 @@ export type MovingImageItem = ReturnType<typeof mapMovingImage>;
 export type ResidencyArtistItem = ReturnType<typeof mapResidencyArtist>;
 export type TeamMemberItem = ReturnType<typeof mapBkkkTeamMember>;
 export type ActivityItem = ReturnType<typeof mapActivity>;
+export type PressItem = ReturnType<typeof mapPressItem>;
 
 type Lang = 'en' | 'th';
 
@@ -281,3 +282,4 @@ export function mapActivity(post: WPRawPost, lang: Lang = 'en') {
     site: m(post, 'site') as WPSite,
   };
 }
+

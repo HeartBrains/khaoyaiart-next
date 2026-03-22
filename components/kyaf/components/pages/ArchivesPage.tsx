@@ -1,15 +1,12 @@
 // @ts-nocheck
 'use client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { Reveal } from '../ui/Reveal';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { useLanguage } from '@/utils/languageContext';
-import { exhibitions } from '@/components/kyaf/utils/exhibitionsDataNew';
-import { activities } from '@/components/kyaf/utils/activitiesDataNew';
-import { createBilingualPost } from '@/components/kyaf/utils/dataAdapter';
+import { useKyafExhibitions, useKyafActivities } from '@/lib/useWPData';
 import { IMG_MADRID_SRC } from '@/utils/imageConstants';
-import { WPPost } from '@/utils/types';
 
 // Helper to extract the relevant year from a date string
 const getYearFromDate = (dateStr: string): string => {
@@ -27,38 +24,38 @@ interface ArchivesPageProps {
 
 export function ArchivesPage({ onNavigate }: ArchivesPageProps) {
   const { language, t } = useLanguage();
-  
-  // State for loaded data
-  const [exhibitionsData, setExhibitionsData] = useState<WPPost[]>([]);
-  const [activitiesData, setActivitiesData] = useState<WPPost[]>([]);
-  const [loading, setLoading] = useState(true);
-  
+  const { data: wpExhibitions, loading: loadingEx } = useKyafExhibitions();
+  const { data: wpActivities, loading: loadingAct } = useKyafActivities();
+  const loading = loadingEx || loadingAct;
+
   // Filter state
   const [activeFilter, setActiveFilter] = useState<{
       category: 'exhibition' | 'activity' | null;
       year: string | null | 'all';
   }>({ category: null, year: null });
 
-  useEffect(() => {
-    // Load data from new structure
-    setLoading(true);
-    
-    // Convert to bilingual posts
-    const exhibitionPosts = exhibitions.map(ex => createBilingualPost(ex));
-    const activityPosts = activities.map(act => createBilingualPost(act));
-    
-    // Get language-specific posts
-    const allExhibitions = exhibitionPosts.map(bp => language === 'th' ? bp.th : bp.en);
-    const allActivities = activityPosts.map(bp => language === 'th' ? bp.th : bp.en);
+  // Normalise WP data into the flat shape the template uses
+  const exhibitionsData = useMemo(() => (wpExhibitions ?? [])
+    .filter(ex => ex.status === 'past')
+    .map(ex => ({
+      slug: ex.slug,
+      type: 'exhibition',
+      title: language === 'th' ? ex.title.th : ex.title.en,
+      date: language === 'th' ? ex.dateDisplay.th : ex.dateDisplay.en,
+      featuredImage: ex.featuredImage,
+      acf: { artist: language === 'th' ? ex.artist?.th : ex.artist?.en, status: ex.status },
+    })), [wpExhibitions, language]);
 
-    // Filter for PAST items only
-    const pastExhibitions = allExhibitions.filter(ex => ex.acf?.status === 'past');
-    const pastActivities = allActivities.filter(act => act.acf?.status === 'past');
-
-    setExhibitionsData(pastExhibitions);
-    setActivitiesData(pastActivities);
-    setLoading(false);
-  }, [language]);
+  const activitiesData = useMemo(() => (wpActivities ?? [])
+    .filter(act => act.status === 'past')
+    .map(act => ({
+      slug: act.slug,
+      type: 'activity',
+      title: language === 'th' ? act.title.th : act.title.en,
+      date: language === 'th' ? act.dateDisplay.th : act.dateDisplay.en,
+      featuredImage: act.featuredImage,
+      acf: { artist: language === 'th' ? act.artist?.th : act.artist?.en, status: act.status },
+    })), [wpActivities, language]);
 
   // Compute all available years from the loaded records
   const availableYears = useMemo(() => {

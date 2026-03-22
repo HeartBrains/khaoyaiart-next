@@ -1,14 +1,26 @@
 'use client';
 import { Reveal } from '../ui/Reveal';
 import { ParallaxHero } from '../ui/ParallaxHero';
-import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import { getTranslation } from '@/utils/translations';
+import { useBkkkPressItems } from '@/lib/useWPData';
 import { PRESS_ITEMS } from '@/utils/pressDataBilingual';
 
 export function PressPage() {
   const { language } = useLanguage();
-  const covers = useCovers();
+  const { data: wpItems, loading } = useBkkkPressItems();
+
+  const items = wpItems && wpItems.length > 0
+    ? wpItems.map(item => ({
+        id: item.id,
+        date: item.date.en,
+        dateTH: item.date.th,
+        title: item.title.en,
+        titleTH: item.title.th,
+        link: item.link,
+        type: item.type,
+      }))
+    : PRESS_ITEMS;
 
   return (
     <div className="w-full bg-white min-h-screen pb-12">
@@ -22,24 +34,38 @@ export function PressPage() {
 
       <div className="w-full px-6 py-12 md:py-20">
         <Reveal>
-            <h1 className="text-3xl md:text-4xl font-sans mb-8 text-gray-900">{getTranslation(language, 'press.title')}</h1>
+          <h1 className="text-3xl md:text-4xl font-sans mb-8 text-gray-900">{getTranslation(language, 'press.title')}</h1>
         </Reveal>
-        
+
         <Reveal delay={0.1}>
-            <div className="grid gap-8">
-                {PRESS_ITEMS.map((item) => (
-                    <div key={item.id} className="border-b border-gray-200 py-8">
-                        <p className={`text-gray-500 mb-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{language === 'th' ? item.dateTH : item.date}</p>
-                        <h2 className={`text-2xl font-sans text-black mb-4 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{language === 'th' ? item.titleTH : item.title}</h2>
-                        <button 
-                            onClick={() => console.log(item.type === 'pdf' ? 'Download PDF' : 'Read Article')} 
-                            className={`text-black underline underline-offset-4 hover:text-gray-600 transition-colors ${language === 'th' ? 'leading-[1.82em]' : ''}`}
-                        >
-                            {getTranslation(language, item.type === 'pdf' ? 'press.downloadPDF' : 'press.readArticle')}
-                        </button>
-                    </div>
-                ))}
-            </div>
+          <div className="grid gap-8">
+            {loading ? (
+              <p className="text-gray-400 font-sans">Loading...</p>
+            ) : items.map((item) => (
+              <div key={item.id} className="border-b border-gray-200 py-8">
+                <p className={`text-gray-500 mb-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                  {language === 'th' ? item.dateTH : item.date}
+                </p>
+                <h2 className={`text-2xl font-sans text-black mb-4 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                  {language === 'th' ? item.titleTH : item.title}
+                </h2>
+                {item.link && item.link !== '#' ? (
+                  <a
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`text-black underline underline-offset-4 hover:text-gray-600 transition-colors ${language === 'th' ? 'leading-[1.82em]' : ''}`}
+                  >
+                    {getTranslation(language, item.type === 'pdf' ? 'press.downloadPDF' : 'press.readArticle')}
+                  </a>
+                ) : (
+                  <span className={`text-gray-400 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                    {getTranslation(language, item.type === 'pdf' ? 'press.downloadPDF' : 'press.readArticle')}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
         </Reveal>
       </div>
     </div>

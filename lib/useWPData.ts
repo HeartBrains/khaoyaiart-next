@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { fetchCPTBySlug, fetchMenuConfig, type WPRawPost, type MenuConfig, type MenuConfigMap, type CoverConfigMap } from './wp-api';
 import {
   mapBkkkExhibition, mapKyafExhibition, mapMovingImage,
-  mapActivity, mapResidencyArtist, mapBkkkTeamMember, mapKyafTeamMember,
+  mapActivity, mapResidencyArtist, mapBkkkTeamMember, mapKyafTeamMember, mapPressItem,
 } from './wp-mappers';
 
 const _WP_URL = (process.env.NEXT_PUBLIC_WP_BASE_URL ?? 'https://content.khaoyaiart.org').replace(/\/$/, '');
@@ -110,6 +110,8 @@ export const useKyafResidencyArtists = () => useWPList('residency_artist', 'kyaf
 
 export const useBkkkTeamMembers = () => useWPList('team-members', 'bkkk', mapBkkkTeamMember);
 export const useKyafTeamMembers = () => useWPList('team-members', 'kyaf', mapKyafTeamMember);
+export const useBkkkPressItems  = () => useWPList('press_item', 'bkkk', mapPressItem);
+export const useKyafPressItems  = () => useWPList('press_item', 'kyaf', mapPressItem);
 
 export const useExhibitionBySlug        = (slug: string) => useWPItem('exhibition', slug, mapBkkkExhibition);
 export const useKyafExhibitionBySlug    = (slug: string) => useWPItem('exhibition', slug, mapKyafExhibition);
