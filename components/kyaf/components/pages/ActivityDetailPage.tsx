@@ -126,11 +126,10 @@ export function ActivityDetailPage({ onNavigate, slug, backPage }: ActivityDetai
               )}
               {data.imageCredits && (
                 <div className="mt-auto pt-8">
-                  {data.imageCredits.split(/(?<=\.)\s+/).filter(Boolean).map((line, i, arr) => (
-                    <p key={i} className="text-gray-500 text-[12px]">
-                      {i < arr.length - 1 ? <>{line}<br />|</> : line}
-                    </p>
-                  ))}
+                  {data.imageCredits.split('\n').map((line, i) => {
+                    const text = line.replace(/\|$/, '').trim();
+                    return text ? <p key={i} className="text-gray-500 text-[12px]">{text}</p> : null;
+                  })}
                 </div>
               )}
             </div>

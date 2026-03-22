@@ -103,7 +103,12 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
                 <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{period}</p>
               )}
               {data.imageCredits && (
-                <p className="text-gray-500 text-[12px] mt-8">{data.imageCredits}</p>
+                <div className="mt-8">
+                  {data.imageCredits.split('\n').map((line, i) => {
+                    const text = line.replace(/\|$/, '').trim();
+                    return text ? <p key={i} className="text-gray-500 text-[12px]">{text}</p> : null;
+                  })}
+                </div>
               )}
             </div>
           </div>
