@@ -96,14 +96,37 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
           <div className="md:col-span-6 flex flex-col gap-8">
             <div className="flex flex-col gap-0 px-0 md:px-[28px]">
               <h1 className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{name}</h1>
-              <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                {language === 'th' ? 'ศิลปินพำนัก' : 'Artist in Residence'}
-              </p>
+              {(data.role || data.roleTH) && (
+                <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                  {language === 'th' ? (data.roleTH || data.role) : data.role}
+                </p>
+              )}
               {period && (
                 <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{period}</p>
               )}
+
+              {/* CTA 1 */}
+              {data.ctaLabel && data.ctaUrl && (
+                <a
+                  href={data.ctaUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-block text-sm font-normal text-black underline underline-offset-4 hover:opacity-60 transition-opacity"
+                >
+                  {data.ctaLabel}
+                </a>
+              )}
+
+              {/* Additional Info */}
+              {data.additionalInfo && (
+                <div className={`text-sm font-normal text-gray-500 mt-6 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                  {data.additionalInfo}
+                </div>
+              )}
+
+              {/* Image Credits */}
               {data.imageCredits && (
-                <div className="mt-8">
+                <div className="mt-4">
                   {data.imageCredits.split('\n').map((line, i) => {
                     const text = line.replace(/\|$/, '').trim();
                     return text ? <p key={i} className="text-gray-500 text-[12px]">{text}</p> : null;
@@ -114,6 +137,18 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
           </div>
           <div className={`md:col-start-7 md:col-span-6 text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
             {bio && <div className="[&>p]:mb-8" dangerouslySetInnerHTML={{ __html: bio }} />}
+
+            {/* CTA 2 */}
+            {data.cta2Label && data.cta2Url && (
+              <a
+                href={data.cta2Url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-8 inline-block text-sm font-normal text-black underline underline-offset-4 hover:opacity-60 transition-opacity"
+              >
+                {data.cta2Label}
+              </a>
+            )}
           </div>
         </div>
       </div>
