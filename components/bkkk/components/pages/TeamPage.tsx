@@ -7,7 +7,7 @@ import { useLanguage } from '@/utils/languageContext';
 import { useCovers } from '@/lib/coversContext';
 import type { TeamMemberItem } from '@/lib/wp-mappers';
 
-const TEAM_HERO = 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=1600&auto=format&fit=crop';
+const TEAM_HERO = 'https://content.khaoyaiart.org/wp-content/uploads/2026/03/bk_Description-Without-Place-Krittawat-Atthsis-Prapasiri-Kasemkijkajorn-82.jpg';
 
 
 interface TeamPageProps {

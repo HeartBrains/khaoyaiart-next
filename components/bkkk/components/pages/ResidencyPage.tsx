@@ -117,6 +117,11 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
           <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
             {language === 'th' ? artist.nameTH : artist.name}
           </h3>
+          {(artist.role || artist.roleTH) && (
+            <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+              {language === 'th' ? (artist.roleTH || artist.role) : artist.role}
+            </p>
+          )}
           <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
             {language === 'th' ? artist.periodTH : artist.period}
           </p>
