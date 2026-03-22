@@ -62,6 +62,12 @@ function bkkk_css_get(): array {
 add_action('admin_menu', function() {
     add_options_page('Site Config','Site Config','manage_options','bkkk-menu-config','bkkk_menu_render_page');
 });
+
+add_action('admin_enqueue_scripts', function($hook) {
+    if ($hook !== 'settings_page_bkkk-menu-config') return;
+    wp_enqueue_media();
+    wp_enqueue_script('bkkk-media-upload', plugin_dir_url(__FILE__).'media-upload.js', ['jquery'], '1.0', true);
+});
 add_action('admin_init', function() {
     register_setting('bkkk_menu_config_group', BKKK_MENU_OPTION,     ['sanitize_callback'=>'bkkk_menu_sanitize']);
     register_setting('bkkk_menu_config_group', BKKK_SECTIONS_OPTION, ['sanitize_callback'=>'bkkk_sections_sanitize']);
@@ -147,10 +153,21 @@ function bkkk_menu_render_page(): void {
     <?php foreach(['bkkk'=>'Bangkok Kunsthalle (BK)','kyaf'=>'Khao Yai Art Forest (KYAF)'] as $site=>$heading): ?>
         <h3><?php echo esc_html($heading); ?></h3>
         <table class="form-table"><tbody>
-        <?php foreach($cover_labels as $snake=>$label): $key=$site.'_'.$snake; ?>
+        <?php foreach($cover_labels as $snake=>$label): $key=$site.'_'.$snake; $val=esc_attr($covers[$key]??''); $field_id='cover_'.$key; $preview_id='preview_'.$key; ?>
         <tr><th><?php echo esc_html($label); ?></th><td>
-        <input type="url" name="<?php echo esc_attr(BKKK_COVERS_OPTION); ?>[<?php echo esc_attr($key); ?>]"
-            value="<?php echo esc_attr($covers[$key]??''); ?>" class="regular-text" placeholder="https://..." />
+            <input type="url" id="<?php echo esc_attr($field_id); ?>"
+                name="<?php echo esc_attr(BKKK_COVERS_OPTION); ?>[<?php echo esc_attr($key); ?>]"
+                value="<?php echo $val; ?>" class="regular-text bkkk-cover-url" placeholder="https://..." />
+            <button type="button" class="button bkkk-upload-btn"
+                data-target="<?php echo esc_attr($field_id); ?>"
+                data-preview="<?php echo esc_attr($preview_id); ?>">Upload</button>
+            <button type="button" class="button bkkk-clear-btn"
+                data-target="<?php echo esc_attr($field_id); ?>"
+                data-preview="<?php echo esc_attr($preview_id); ?>"
+                style="<?php echo $val ? '' : 'display:none'; ?>">Clear</button>
+            <div id="<?php echo esc_attr($preview_id); ?>" style="margin-top:6px;">
+                <?php if($val): ?><img src="<?php echo $val; ?>" style="max-width:320px;max-height:120px;object-fit:cover;border:1px solid #ddd;border-radius:3px;" /><?php endif; ?>
+            </div>
         </td></tr>
         <?php endforeach; ?>
         </tbody></table>
