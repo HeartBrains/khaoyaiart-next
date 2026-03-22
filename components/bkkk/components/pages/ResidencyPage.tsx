@@ -22,9 +22,9 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
   const { data: ARTISTS_DATA } = useResidencyArtists();
   const wpSections = useSectionVisibility('bkkk');
   const vis = {
-    upcoming: wpSections?.residency?.upcoming ?? vis.upcoming,
-    current:  wpSections?.residency?.current  ?? vis.current,
-    past:     wpSections?.residency?.past     ?? vis.past,
+    upcoming: wpSections?.residency?.upcoming ?? siteConfig.visibility.residency.upcoming,
+    current:  wpSections?.residency?.current  ?? siteConfig.visibility.residency.current,
+    past:     wpSections?.residency?.past     ?? siteConfig.visibility.residency.past,
   };
 
   const firstSectionId = vis.upcoming

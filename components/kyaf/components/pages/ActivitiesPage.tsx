@@ -24,9 +24,9 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
   const { data: rawActivities } = useKyafActivities();
   const wpSections = useSectionVisibility('kyaf');
   const vis = {
-    upcoming: wpSections?.activities?.upcoming ?? vis.upcoming,
-    current:  wpSections?.activities?.current  ?? vis.current,
-    past:     wpSections?.activities?.past     ?? vis.past,
+    upcoming: wpSections?.activities?.upcoming ?? siteConfig.visibility.activities.upcoming,
+    current:  wpSections?.activities?.current  ?? siteConfig.visibility.activities.current,
+    past:     wpSections?.activities?.past     ?? siteConfig.visibility.activities.past,
   };
 
   const currentActivities  = rawActivities.filter(a => a.status === 'current');

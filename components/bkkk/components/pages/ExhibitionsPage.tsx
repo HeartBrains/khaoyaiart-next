@@ -55,9 +55,9 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
   const { data: exhibitions } = useBkkkExhibitions();
   const wpSections = useSectionVisibility('bkkk');
   const vis = {
-    upcoming: wpSections?.exhibitions?.upcoming ?? vis.upcoming,
-    current:  wpSections?.exhibitions?.current  ?? vis.current,
-    past:     wpSections?.exhibitions?.past     ?? vis.past,
+    upcoming: wpSections?.exhibitions?.upcoming ?? siteConfig.visibility.exhibitions.upcoming,
+    current:  wpSections?.exhibitions?.current  ?? siteConfig.visibility.exhibitions.current,
+    past:     wpSections?.exhibitions?.past     ?? siteConfig.visibility.exhibitions.past,
   };
 
   const today = new Date();
