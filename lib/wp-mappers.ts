@@ -283,3 +283,18 @@ export function mapActivity(post: WPRawPost, lang: Lang = 'en') {
   };
 }
 
+
+
+// ─── Press Item ───────────────────────────────────────────────────────────────
+
+export function mapPressItem(post: WPRawPost) {
+  return {
+    id: String(post.id),
+    slug: post.slug,
+    title: { en: decode(post.title.rendered), th: decode(m(post, 'title_th') || post.title.rendered) },
+    date: { en: decode(m(post, 'date_display_en')), th: decode(m(post, 'date_display_th') || m(post, 'date_display_en')) },
+    link: m(post, 'link_url'),
+    type: (m(post, 'item_type') || 'article') as 'pdf' | 'article',
+    site: m(post, 'site') as WPSite,
+  };
+}
