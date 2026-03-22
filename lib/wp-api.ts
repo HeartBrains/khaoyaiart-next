@@ -59,7 +59,7 @@ const WP_AUTH_HEADER: Record<string, string> = WP_AUTH_USER && WP_AUTH_PASS
 
 async function fetchWithRetry(url: string, retries = 3, delayMs = 2000): Promise<Response | null> {
   for (let attempt = 1; attempt <= retries; attempt++) {
-    const res = await fetch(url, { cache: 'force-cache', headers: WP_AUTH_HEADER });
+    const res = await fetch(url, { cache: 'no-store', headers: WP_AUTH_HEADER });
     if (res.ok) return res;
     console.error(`[wp-api] HTTP ${res.status} on attempt ${attempt}/${retries}: ${url}`);
     if (attempt < retries) await new Promise(r => setTimeout(r, delayMs));
