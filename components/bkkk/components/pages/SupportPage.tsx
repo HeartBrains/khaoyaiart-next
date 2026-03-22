@@ -1,11 +1,8 @@
 'use client';
-import { ASSETS } from '@/utils/assets';
-import { ImageWithFallback } from '../figma/ImageWithFallback';
-const partnersSprite = '/assets/eef054d9d2335ae6399ea1781db9290bf8a57720.png';
-const supportHero = '/assets/31ea28713060df0bb7786615b9851978be305cbd.png';
-import { ParallaxHero } from '../ui/ParallaxHero';
+
+import { HeroSlider } from '../ui/HeroSlider';
 import { Reveal } from '../ui/Reveal';
-import { motion } from 'motion/react';
+
 import { useLanguage } from '@/utils/languageContext';
 
 const PARTNERS = [
@@ -25,12 +22,16 @@ export function SupportPage() {
     return (
         <div className="w-full bg-white pb-24 min-h-screen">
             {/* Hero Section */}
-            <ParallaxHero 
-                image={supportHero}
+            <HeroSlider
+                images={[
+                    'https://content.khaoyaiart.org/wp-content/uploads/2026/03/Puma__-202.jpg',
+                    'https://content.khaoyaiart.org/wp-content/uploads/2026/03/Puma__-130-1.jpg',
+                    'https://content.khaoyaiart.org/wp-content/uploads/2026/03/Puma_nostalgia-for-unity-From-Dust-to-Dust-Performance-by-Tos.jpg',
+                ]}
                 height="h-[80vh]"
             >
                 <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />
-            </ParallaxHero>
+            </HeroSlider>
 
             {/* Content */}
             <div className="w-full px-[5%] pt-24">
