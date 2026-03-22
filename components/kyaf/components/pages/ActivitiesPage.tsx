@@ -8,7 +8,7 @@ import type { ActivityItem } from '@/lib/wp-mappers';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
-import { useKyafActivities } from '@/lib/useWPData';
+import { useKyafActivities, useSectionVisibility } from '@/lib/useWPData';
 
 interface ActivitiesPageProps {
   onNavigate?: (page: string, slug?: string) => void;
@@ -22,15 +22,21 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
   const covers = useCovers();
   const [activeSection, setActiveSection] = useState('current-activities');
   const { data: rawActivities } = useKyafActivities();
+  const wpSections = useSectionVisibility('kyaf');
+  const vis = {
+    upcoming: wpSections?.activities?.upcoming ?? vis.upcoming,
+    current:  wpSections?.activities?.current  ?? vis.current,
+    past:     wpSections?.activities?.past     ?? vis.past,
+  };
 
   const currentActivities  = rawActivities.filter(a => a.status === 'current');
   const upcomingActivities = rawActivities.filter(a => a.status === 'upcoming');
   const pastActivities     = rawActivities.filter(a => a.status === 'past');
 
   const sections = [
-    ...(siteConfig.visibility.activities.upcoming ? [{ id: 'upcoming-activities', label: language === 'th' ? 'กิจกรรมที่กำลังจะมาถึง' : 'Upcoming Activities' }] : []),
-    ...(siteConfig.visibility.activities.current  ? [{ id: 'current-activities',  label: language === 'th' ? 'กิจกรรมปัจจุบัน' : 'Current Activities' }] : []),
-    ...(siteConfig.visibility.activities.past     ? [{ id: 'past-activities',     label: language === 'th' ? 'กิจกรรมที่ผ่านมา' : 'Past Activities' }] : []),
+    ...(vis.upcoming ? [{ id: 'upcoming-activities', label: language === 'th' ? 'กิจกรรมที่กำลังจะมาถึง' : 'Upcoming Activities' }] : []),
+    ...(vis.current  ? [{ id: 'current-activities',  label: language === 'th' ? 'กิจกรรมปัจจุบัน' : 'Current Activities' }] : []),
+    ...(vis.past     ? [{ id: 'past-activities',     label: language === 'th' ? 'กิจกรรมที่ผ่านมา' : 'Past Activities' }] : []),
   ];
 
   const scrollToSection = (id: string) => {
@@ -102,21 +108,21 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
           </aside>
 
           <div className="w-full md:w-1/2 flex flex-col md:items-end">
-            {siteConfig.visibility.activities.upcoming && (
+            {vis.upcoming && (
               <section id="upcoming-activities" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:gap-16 md:items-end">
                   {upcomingActivities.length > 0 ? upcomingActivities.map(item => <ActivityCard key={item.id} item={item} />) : <EmptyState message={getEmptyStateMessage('noCurrentActivities', language)} />}
                 </div>
               </section>
             )}
-            {siteConfig.visibility.activities.current && (
+            {vis.current && (
               <section id="current-activities" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:gap-16 md:items-end">
                   {currentActivities.length > 0 ? currentActivities.map(item => <ActivityCard key={item.id} item={item} />) : <EmptyState message={getEmptyStateMessage('noCurrentActivities', language)} />}
                 </div>
               </section>
             )}
-            {siteConfig.visibility.activities.past && (
+            {vis.past && (
               <section id="past-activities" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:gap-16 md:items-end">
                   {pastActivities.length > 0 ? pastActivities.map(item => <ActivityCard key={item.id} item={item} />) : <EmptyState message={getEmptyStateMessage('noCurrentActivities', language)} />}

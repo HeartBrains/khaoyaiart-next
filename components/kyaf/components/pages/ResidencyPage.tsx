@@ -7,7 +7,7 @@ import { useLanguage } from '@/utils/languageContext';
 import { getTranslation } from '@/utils/translations';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
-import { useKyafResidencyArtists } from '@/lib/useWPData';
+import { useKyafResidencyArtists, useSectionVisibility } from '@/lib/useWPData';
 import { IMG_FOG_SRC } from '@/utils/imageConstants';
 
 interface ResidencyPageProps {
@@ -21,10 +21,16 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
   const { language } = useLanguage();
   const covers = useCovers();
   const { data: ARTISTS_DATA } = useKyafResidencyArtists();
+  const wpSections = useSectionVisibility('kyaf');
+  const vis = {
+    upcoming: wpSections?.residency?.upcoming ?? vis.upcoming,
+    current:  wpSections?.residency?.current  ?? vis.current,
+    past:     wpSections?.residency?.past     ?? vis.past,
+  };
 
-  const firstSectionId = siteConfig.visibility.residency.upcoming
+  const firstSectionId = vis.upcoming
     ? 'upcoming-residency'
-    : siteConfig.visibility.residency.current
+    : vis.current
     ? 'current-artists'
     : 'past-artists';
   const [activeSection, setActiveSection] = useState(firstSectionId);
@@ -42,15 +48,15 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
     .sort((a, b) => b.id - a.id);
 
   const sections = [
-    ...(siteConfig.visibility.residency.upcoming ? [{
+    ...(vis.upcoming ? [{
       id: 'upcoming-residency',
       label: getTranslation(language, 'residency.upcomingResidency'),
     }] : []),
-    ...(siteConfig.visibility.residency.current ? [{
+    ...(vis.current ? [{
       id: 'current-artists',
       label: getTranslation(language, 'residency.currentArtists'),
     }] : []),
-    ...(siteConfig.visibility.residency.past ? [{
+    ...(vis.past ? [{
       id: 'past-artists',
       label: getTranslation(language, 'residency.pastArtists'),
     }] : []),
@@ -155,7 +161,7 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
 
           {/* Content Sections */}
           <div className="w-full md:w-1/2 flex flex-col md:items-end">
-            {siteConfig.visibility.residency.upcoming && (
+            {vis.upcoming && (
               <section id="upcoming-residency" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:gap-16 md:items-end">
                   {upcomingArtists.length > 0 ? (
@@ -169,7 +175,7 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
               </section>
             )}
 
-            {siteConfig.visibility.residency.current && (
+            {vis.current && (
               <section id="current-artists" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:gap-16 md:items-end">
                   {currentArtists.length > 0 ? (
@@ -183,7 +189,7 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
               </section>
             )}
 
-            {siteConfig.visibility.residency.past && (
+            {vis.past && (
               <section id="past-artists" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:gap-16 md:items-end">
                   {pastArtists.length > 0 ? (

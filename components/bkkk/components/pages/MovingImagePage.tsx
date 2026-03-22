@@ -5,7 +5,8 @@ import { useState, useEffect, useMemo } from 'react';
 import type { MovingImageItem } from '@/lib/wp-mappers';
 import { getEmptyStateMessage } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
-import { useMovingImages } from '@/lib/useWPData';
+import { useMovingImages, useSectionVisibility } from '@/lib/useWPData';
+import { siteConfig } from '@/utils/siteConfig';
 const movingImageHero = '/assets/429c8ad61cdb4d502462d129e377fe4faf35abf2.png';
 
 interface MovingImagePageProps {
@@ -20,9 +21,15 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
   const { data: movingImageRecords } = useMovingImages();
   const [activeSection, setActiveSection] = useState('current-programs');
 
-  const upcomingPrograms = movingImageRecords.filter(r => r.status === 'upcoming');
-  const currentPrograms  = movingImageRecords.filter(r => r.status === 'current');
-  const pastPrograms     = movingImageRecords.filter(r => r.status === 'past');
+  const wpSections = useSectionVisibility('bkkk');
+  const vis = {
+    upcoming: wpSections?.movingImage?.upcoming ?? siteConfig.visibility.movingImage.upcoming,
+    current:  wpSections?.movingImage?.current  ?? siteConfig.visibility.movingImage.current,
+    past:     wpSections?.movingImage?.past     ?? siteConfig.visibility.movingImage.past,
+  };
+  const upcomingPrograms = vis.upcoming ? movingImageRecords.filter(r => r.status === 'upcoming') : [];
+  const currentPrograms  = vis.current  ? movingImageRecords.filter(r => r.status === 'current')  : [];
+  const pastPrograms     = vis.past     ? movingImageRecords.filter(r => r.status === 'past')     : [];
 
   // Anchor sections - memoized to prevent recreation on every render
   const sections = useMemo(() => {

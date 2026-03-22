@@ -1,15 +1,16 @@
 <?php
 /**
  * Plugin Name: BKKK Menu Config
- * Description: Options page to toggle menu items, set page cover images, and inject custom CSS for BKKK and KYAF sites.
- * Version: 2.0.0
+ * Description: Options page to toggle menu items, section anchors, page cover images, and inject custom CSS for BKKK and KYAF sites.
+ * Version: 2.1.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-const BKKK_MENU_OPTION   = 'bkkk_menu_config';
-const BKKK_COVERS_OPTION = 'bkkk_covers_config';
-const BKKK_CSS_OPTION    = 'bkkk_css_config';
+const BKKK_MENU_OPTION     = 'bkkk_menu_config';
+const BKKK_COVERS_OPTION   = 'bkkk_covers_config';
+const BKKK_CSS_OPTION      = 'bkkk_css_config';
+const BKKK_SECTIONS_OPTION = 'bkkk_sections_config';
 
 function bkkk_menu_defaults(): array {
     return [
@@ -19,6 +20,18 @@ function bkkk_menu_defaults(): array {
         'kyaf_home'=>true,'kyaf_exhibitions'=>true,'kyaf_activities'=>true,'kyaf_residency'=>true,
         'kyaf_blog'=>true,'kyaf_press'=>false,'kyaf_team'=>true,'kyaf_about'=>true,
         'kyaf_visit'=>true,'kyaf_contact'=>true,'kyaf_shop'=>false,'kyaf_archives'=>false,'kyaf_booking'=>true,
+    ];
+}
+
+function bkkk_sections_defaults(): array {
+    return [
+        'bkkk_exhibitions_upcoming'=>true,'bkkk_exhibitions_current'=>true,'bkkk_exhibitions_past'=>true,
+        'bkkk_activities_upcoming'=>true,'bkkk_activities_current'=>true,'bkkk_activities_past'=>false,
+        'bkkk_moving_image_upcoming'=>true,'bkkk_moving_image_current'=>true,'bkkk_moving_image_past'=>true,
+        'bkkk_residency_upcoming'=>true,'bkkk_residency_current'=>true,'bkkk_residency_past'=>true,
+        'kyaf_exhibitions_upcoming'=>true,'kyaf_exhibitions_current'=>true,'kyaf_exhibitions_past'=>true,
+        'kyaf_activities_upcoming'=>true,'kyaf_activities_current'=>true,'kyaf_activities_past'=>false,
+        'kyaf_residency_upcoming'=>true,'kyaf_residency_current'=>true,'kyaf_residency_past'=>true,
     ];
 }
 
@@ -33,6 +46,10 @@ function bkkk_menu_get(): array {
     $saved = get_option(BKKK_MENU_OPTION,[]);
     return array_merge(bkkk_menu_defaults(), is_array($saved)?$saved:[]);
 }
+function bkkk_sections_get(): array {
+    $saved = get_option(BKKK_SECTIONS_OPTION,[]);
+    return array_merge(bkkk_sections_defaults(), is_array($saved)?$saved:[]);
+}
 function bkkk_covers_get(): array {
     $saved = get_option(BKKK_COVERS_OPTION,[]);
     return array_merge(bkkk_covers_defaults(), is_array($saved)?$saved:[]);
@@ -46,14 +63,20 @@ add_action('admin_menu', function() {
     add_options_page('Site Config','Site Config','manage_options','bkkk-menu-config','bkkk_menu_render_page');
 });
 add_action('admin_init', function() {
-    register_setting('bkkk_menu_config_group',BKKK_MENU_OPTION,['sanitize_callback'=>'bkkk_menu_sanitize']);
-    register_setting('bkkk_menu_config_group',BKKK_COVERS_OPTION,['sanitize_callback'=>'bkkk_covers_sanitize']);
-    register_setting('bkkk_menu_config_group',BKKK_CSS_OPTION,['sanitize_callback'=>'bkkk_css_sanitize']);
+    register_setting('bkkk_menu_config_group', BKKK_MENU_OPTION,     ['sanitize_callback'=>'bkkk_menu_sanitize']);
+    register_setting('bkkk_menu_config_group', BKKK_SECTIONS_OPTION, ['sanitize_callback'=>'bkkk_sections_sanitize']);
+    register_setting('bkkk_menu_config_group', BKKK_COVERS_OPTION,   ['sanitize_callback'=>'bkkk_covers_sanitize']);
+    register_setting('bkkk_menu_config_group', BKKK_CSS_OPTION,      ['sanitize_callback'=>'bkkk_css_sanitize']);
 });
 
 function bkkk_menu_sanitize($input): array {
     $clean=[];
     foreach(array_keys(bkkk_menu_defaults()) as $key) $clean[$key]=!empty($input[$key]);
+    return $clean;
+}
+function bkkk_sections_sanitize($input): array {
+    $clean=[];
+    foreach(array_keys(bkkk_sections_defaults()) as $key) $clean[$key]=!empty($input[$key]);
     return $clean;
 }
 function bkkk_covers_sanitize($input): array {
@@ -67,10 +90,23 @@ function bkkk_css_sanitize($input): array {
 
 function bkkk_menu_render_page(): void {
     if(!current_user_can('manage_options')) return;
-    $menu=bkkk_menu_get(); $covers=bkkk_covers_get(); $css=bkkk_css_get();
+    $menu=bkkk_menu_get(); $sections=bkkk_sections_get(); $covers=bkkk_covers_get(); $css=bkkk_css_get();
     $menu_sections=[
         'Bangkok Kunsthalle (BK)'=>['bkkk_home'=>'Home','bkkk_exhibitions'=>'Exhibitions','bkkk_activities'=>'Activities','bkkk_residency'=>'Residency','bkkk_moving_image'=>'Moving Image','bkkk_blog'=>'Blog','bkkk_press'=>'Press','bkkk_team'=>'Team','bkkk_about'=>'About','bkkk_visit'=>'Visit','bkkk_contact'=>'Contact','bkkk_shop'=>'Shop','bkkk_support'=>'Support'],
         'Khao Yai Art Forest (KYAF)'=>['kyaf_home'=>'Home','kyaf_exhibitions'=>'Exhibitions','kyaf_activities'=>'Activities','kyaf_residency'=>'Residency','kyaf_blog'=>'Blog','kyaf_press'=>'Press','kyaf_team'=>'Team','kyaf_about'=>'About','kyaf_visit'=>'Visit','kyaf_contact'=>'Contact','kyaf_shop'=>'Shop','kyaf_archives'=>'Archives','kyaf_booking'=>'Booking'],
+    ];
+    $section_groups=[
+        'Bangkok Kunsthalle (BK)'=>[
+            'Exhibitions'=>['bkkk_exhibitions_upcoming'=>'Upcoming','bkkk_exhibitions_current'=>'Current','bkkk_exhibitions_past'=>'Past'],
+            'Activities'=>['bkkk_activities_upcoming'=>'Upcoming','bkkk_activities_current'=>'Current','bkkk_activities_past'=>'Past'],
+            'Moving Image'=>['bkkk_moving_image_upcoming'=>'Upcoming','bkkk_moving_image_current'=>'Current','bkkk_moving_image_past'=>'Past'],
+            'Residency'=>['bkkk_residency_upcoming'=>'Upcoming','bkkk_residency_current'=>'Current','bkkk_residency_past'=>'Past'],
+        ],
+        'Khao Yai Art Forest (KYAF)'=>[
+            'Exhibitions'=>['kyaf_exhibitions_upcoming'=>'Upcoming','kyaf_exhibitions_current'=>'Current','kyaf_exhibitions_past'=>'Past'],
+            'Activities'=>['kyaf_activities_upcoming'=>'Upcoming','kyaf_activities_current'=>'Current','kyaf_activities_past'=>'Past'],
+            'Residency'=>['kyaf_residency_upcoming'=>'Upcoming','kyaf_residency_current'=>'Current','kyaf_residency_past'=>'Past'],
+        ],
     ];
     $cover_labels=['exhibitions'=>'Exhibitions','activities'=>'Activities','moving_image'=>'Moving Image','residency'=>'Residency','blog'=>'Blog','press'=>'Press','team'=>'Team','about'=>'About','visit'=>'Visit','contact'=>'Contact','archives'=>'Archives'];
     ?>
@@ -86,6 +122,22 @@ function bkkk_menu_render_page(): void {
         <tr><th><?php echo esc_html($label); ?></th><td>
         <input type="checkbox" name="<?php echo esc_attr(BKKK_MENU_OPTION); ?>[<?php echo esc_attr($key); ?>]" value="1" <?php checked(!empty($menu[$key])); ?> />
         </td></tr>
+        <?php endforeach; ?>
+        </tbody></table>
+    <?php endforeach; ?>
+
+    <hr><h2>Section / Anchor Visibility</h2>
+    <p>Show or hide each anchor section within listing pages.</p>
+    <?php foreach($section_groups as $site_label=>$pages): ?>
+        <h3><?php echo esc_html($site_label); ?></h3>
+        <table class="form-table"><tbody>
+        <?php foreach($pages as $page_label=>$items): ?>
+            <tr><th style="padding-top:16px"><strong><?php echo esc_html($page_label); ?></strong></th><td></td></tr>
+            <?php foreach($items as $key=>$label): ?>
+            <tr><th style="padding-left:20px"><?php echo esc_html($label); ?></th><td>
+            <input type="checkbox" name="<?php echo esc_attr(BKKK_SECTIONS_OPTION); ?>[<?php echo esc_attr($key); ?>]" value="1" <?php checked(!empty($sections[$key])); ?> />
+            </td></tr>
+            <?php endforeach; ?>
         <?php endforeach; ?>
         </tbody></table>
     <?php endforeach; ?>
@@ -121,7 +173,7 @@ add_action('rest_api_init', function() {
     register_rest_route('bkkk/v1','/menu-config',[
         'methods'=>'GET',
         'callback'=>function() {
-            $menu=bkkk_menu_get(); $covers=bkkk_covers_get(); $css=bkkk_css_get();
+            $menu=bkkk_menu_get(); $sections=bkkk_sections_get(); $covers=bkkk_covers_get(); $css=bkkk_css_get();
             $key_map=['home'=>'home','exhibitions'=>'exhibitions','activities'=>'activities','residency'=>'residency',
                 'moving_image'=>'movingImage','blog'=>'blog','press'=>'press','team'=>'team','about'=>'about',
                 'visit'=>'visit','contact'=>'contact','shop'=>'shop','support'=>'support','archives'=>'archives','booking'=>'booking'];
@@ -136,7 +188,17 @@ add_action('rest_api_init', function() {
                 $bkkk_covers[$camel]=$covers['bkkk_'.$snake]??'';
                 $kyaf_covers[$camel]=$covers['kyaf_'.$snake]??'';
             }
-            $r=new WP_REST_Response(['bkkk'=>$bkkk_menu,'kyaf'=>$kyaf_menu,'bkkkCovers'=>$bkkk_covers,'kyafCovers'=>$kyaf_covers,'bkkkCss'=>$css['bkkk'],'kyafCss'=>$css['kyaf']]);
+            // Build section visibility per site
+            $pages_map=['exhibitions'=>'exhibitions','activities'=>'activities','moving_image'=>'movingImage','residency'=>'residency'];
+            $states=['upcoming','current','past'];
+            $bkkk_sections=[]; $kyaf_sections=[];
+            foreach($pages_map as $snake=>$camel) {
+                foreach($states as $state) {
+                    $bkkk_sections[$camel][$state]=(bool)($sections['bkkk_'.$snake.'_'.$state]??true);
+                    $kyaf_sections[$camel][$state]=(bool)($sections['kyaf_'.$snake.'_'.$state]??true);
+                }
+            }
+            $r=new WP_REST_Response(['bkkk'=>$bkkk_menu,'kyaf'=>$kyaf_menu,'bkkkCovers'=>$bkkk_covers,'kyafCovers'=>$kyaf_covers,'bkkkCss'=>$css['bkkk'],'kyafCss'=>$css['kyaf'],'bkkkSections'=>$bkkk_sections,'kyafSections'=>$kyaf_sections]);
             $r->header('Cache-Control','public, max-age=60');
             $r->header('Access-Control-Allow-Origin','*');
             return $r;

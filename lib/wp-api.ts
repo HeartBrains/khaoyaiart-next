@@ -149,6 +149,13 @@ export async function resolveMediaIds(ids: string): Promise<string[]> {
 export type MenuConfigMap = Partial<Record<string, boolean>>;
 export type CoverConfigMap = Partial<Record<string, string>>;
 
+export type SectionVisibility = {
+  upcoming: boolean;
+  current: boolean;
+  past: boolean;
+};
+export type SectionsConfigMap = Partial<Record<string, SectionVisibility>>;
+
 export interface MenuConfig {
   bkkk: MenuConfigMap;
   kyaf: MenuConfigMap;
@@ -156,6 +163,8 @@ export interface MenuConfig {
   kyafCovers: CoverConfigMap;
   bkkkCss: string;
   kyafCss: string;
+  bkkkSections: SectionsConfigMap;
+  kyafSections: SectionsConfigMap;
 }
 
 const MENU_CONFIG_URL = `${WP_BASE.replace('/wp-json/wp/v2', '')}/wp-json/bkkk/v1/menu-config`;

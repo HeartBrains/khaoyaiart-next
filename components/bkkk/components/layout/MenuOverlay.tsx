@@ -6,7 +6,7 @@ import { ASSETS } from '@/utils/assets';
 import { ExpandingSearch } from '../search/ExpandingSearch';
 import { useLanguage } from '@/utils/languageContext';
 import { siteConfig } from '@/utils/siteConfig';
-import { useMenuConfig } from '@/lib/useWPData';
+import { useMenuConfig, useSectionVisibility } from '@/lib/useWPData';
 
 interface MenuOverlayProps {
   isOpen: boolean;
@@ -42,6 +42,29 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
 
   // WP-driven menu visibility — merges over siteConfig.menu; falls back to siteConfig while loading
   const wpMenu = useMenuConfig('bkkk');
+  const wpSections = useSectionVisibility('bkkk');
+  const secVis = {
+    exhibitions: {
+      upcoming: wpSections?.exhibitions?.upcoming ?? secVis.exhibitions.upcoming,
+      current:  wpSections?.exhibitions?.current  ?? secVis.exhibitions.current,
+      past:     wpSections?.exhibitions?.past     ?? secVis.exhibitions.past,
+    },
+    activities: {
+      upcoming: wpSections?.activities?.upcoming ?? secVis.activities.upcoming,
+      current:  wpSections?.activities?.current  ?? secVis.activities.current,
+      past:     wpSections?.activities?.past     ?? secVis.activities.past,
+    },
+    movingImage: {
+      upcoming: wpSections?.movingImage?.upcoming ?? secVis.movingImage.upcoming,
+      current:  wpSections?.movingImage?.current  ?? secVis.movingImage.current,
+      past:     wpSections?.movingImage?.past     ?? secVis.movingImage.past,
+    },
+    residency: {
+      upcoming: wpSections?.residency?.upcoming ?? secVis.residency.upcoming,
+      current:  wpSections?.residency?.current  ?? secVis.residency.current,
+      past:     wpSections?.residency?.past     ?? secVis.residency.past,
+    },
+  };
   const menu = { ...siteConfig.menu, ...(wpMenu ?? {}) };
 
   const toggleExpand = (label: string, e: React.MouseEvent) => {
@@ -61,36 +84,36 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
       label: t('nav.exhibitions'), 
       page: 'exhibitions',
       children: [
-          ...(siteConfig.visibility.exhibitions.upcoming ? [{ label: t('exhibitions.upcoming'), page: 'exhibitions', sectionId: 'upcoming-exhibitions' }] : []),
-          ...(siteConfig.visibility.exhibitions.current ? [{ label: t('exhibitions.current'), page: 'exhibitions', sectionId: 'current-exhibitions' }] : []),
-          ...(siteConfig.visibility.exhibitions.past ? [{ label: t('exhibitions.past'), page: 'exhibitions', sectionId: 'past-exhibitions' }] : []),
+          ...(secVis.exhibitions.upcoming ? [{ label: t('exhibitions.upcoming'), page: 'exhibitions', sectionId: 'upcoming-exhibitions' }] : []),
+          ...(secVis.exhibitions.current ? [{ label: t('exhibitions.current'), page: 'exhibitions', sectionId: 'current-exhibitions' }] : []),
+          ...(secVis.exhibitions.past ? [{ label: t('exhibitions.past'), page: 'exhibitions', sectionId: 'past-exhibitions' }] : []),
       ]
     }] : []),
     ...(menu.movingImage ? [{ 
       label: language === 'th' ? 'โปรแกรมภาพเคลื่อนไหว' : 'Moving Image Program', 
       page: 'moving-image',
       children: [
-          ...(siteConfig.visibility.movingImage.upcoming ? [{ label: language === 'th' ? 'โปรแกรมภาพเคลื่อนไหวที่กำลังจะมาถึง' : 'Upcoming Moving Image Program', page: 'moving-image', sectionId: 'upcoming-programs' }] : []),
-          ...(siteConfig.visibility.movingImage.current ? [{ label: language === 'th' ? 'โปรแกรมภาพเคลื่อนไหวปัจจุบัน' : 'Current Moving Image Program', page: 'moving-image', sectionId: 'current-programs' }] : []),
-          ...(siteConfig.visibility.movingImage.past ? [{ label: language === 'th' ? 'โปรแกรมภาพเคลื่อนไหวที่ผ่านมา' : 'Past Moving Image Program', page: 'moving-image', sectionId: 'past-programs' }] : []),
+          ...(secVis.movingImage.upcoming ? [{ label: language === 'th' ? 'โปรแกรมภาพเคลื่อนไหวที่กำลังจะมาถึง' : 'Upcoming Moving Image Program', page: 'moving-image', sectionId: 'upcoming-programs' }] : []),
+          ...(secVis.movingImage.current ? [{ label: language === 'th' ? 'โปรแกรมภาพเคลื่อนไหวปัจจุบัน' : 'Current Moving Image Program', page: 'moving-image', sectionId: 'current-programs' }] : []),
+          ...(secVis.movingImage.past ? [{ label: language === 'th' ? 'โปรแกรมภาพเคลื่อนไหวที่ผ่านมา' : 'Past Moving Image Program', page: 'moving-image', sectionId: 'past-programs' }] : []),
       ]
     }] : []),
     ...(menu.activities ? [{
         label: t('nav.activities'),
         page: 'activities',
         children: [
-            ...(siteConfig.visibility.activities.upcoming ? [{ label: t('activities.upcoming'), page: 'activities', sectionId: 'upcoming-activities' }] : []),
-            ...(siteConfig.visibility.activities.current ? [{ label: t('activities.current'), page: 'activities', sectionId: 'current-activities' }] : []),
-            ...(siteConfig.visibility.activities.past ? [{ label: t('activities.past'), page: 'activities', sectionId: 'past-activities' }] : []),
+            ...(secVis.activities.upcoming ? [{ label: t('activities.upcoming'), page: 'activities', sectionId: 'upcoming-activities' }] : []),
+            ...(secVis.activities.current ? [{ label: t('activities.current'), page: 'activities', sectionId: 'current-activities' }] : []),
+            ...(secVis.activities.past ? [{ label: t('activities.past'), page: 'activities', sectionId: 'past-activities' }] : []),
         ]
     }] : []),
     ...(menu.residency ? [{
         label: t('nav.residency'),
         page: 'residency',
         children: [
-            ...(siteConfig.visibility.residency.upcoming ? [{ label: t('residency.upcomingResidency'), page: 'residency', sectionId: 'upcoming-residency' }] : []),
-            ...(siteConfig.visibility.residency.current ? [{ label: t('residency.currentArtists'), page: 'residency', sectionId: 'current-artists' }] : []),
-            ...(siteConfig.visibility.residency.past ? [{ label: t('residency.pastArtists'), page: 'residency', sectionId: 'past-artists' }] : []),
+            ...(secVis.residency.upcoming ? [{ label: t('residency.upcomingResidency'), page: 'residency', sectionId: 'upcoming-residency' }] : []),
+            ...(secVis.residency.current ? [{ label: t('residency.currentArtists'), page: 'residency', sectionId: 'current-artists' }] : []),
+            ...(secVis.residency.past ? [{ label: t('residency.pastArtists'), page: 'residency', sectionId: 'past-artists' }] : []),
         ]
     }] : []),
     ...(menu.blog ? [{ label: t('nav.blog'), page: 'blog' }] : []),

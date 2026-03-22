@@ -7,7 +7,7 @@ import type { ExhibitionItem } from '@/lib/wp-mappers';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
-import { useBkkkExhibitions } from '@/lib/useWPData';
+import { useBkkkExhibitions, useSectionVisibility } from '@/lib/useWPData';
 
 // Categorize exhibition status using ISO dates
 function getExhibitionStatus(fromDate: string, toDate: string, explicitStatus: 'current' | 'upcoming' | 'past', referenceDate: Date): 'current' | 'upcoming' | 'past' | null {
@@ -53,6 +53,12 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
   const covers = useCovers();
   const [activeSection, setActiveSection] = useState('upcoming-exhibitions');
   const { data: exhibitions } = useBkkkExhibitions();
+  const wpSections = useSectionVisibility('bkkk');
+  const vis = {
+    upcoming: wpSections?.exhibitions?.upcoming ?? vis.upcoming,
+    current:  wpSections?.exhibitions?.current  ?? vis.current,
+    past:     wpSections?.exhibitions?.past     ?? vis.past,
+  };
 
   const today = new Date();
 
@@ -71,17 +77,17 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
 
   // Navigation sections
   const sections = [
-    ...(siteConfig.visibility.exhibitions.upcoming ? [{ 
+    ...(vis.upcoming ? [{ 
       id: 'upcoming-exhibitions', 
       label: language === 'th' ? 'นิทรรศการที่กำลังจะเริ่ม' : 'Upcoming Exhibitions',
       count: upcomingExhibitions.length
     }] : []),
-    ...(siteConfig.visibility.exhibitions.current ? [{ 
+    ...(vis.current ? [{ 
       id: 'current-exhibitions', 
       label: language === 'th' ? 'นิทรรศการปัจจุบัน' : 'Current Exhibitions',
       count: currentExhibitions.length
     }] : []),
-    ...(siteConfig.visibility.exhibitions.past ? [{ 
+    ...(vis.past ? [{ 
       id: 'past-exhibitions', 
       label: language === 'th' ? 'นิทรรศการที่ผ่านมา' : 'Past Exhibitions',
       count: pastExhibitions.length
@@ -201,7 +207,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
           {/* Content Sections */}
           <div className="w-full md:w-1/2 flex flex-col md:items-end">
             {/* Upcoming Exhibitions Section */}
-            {siteConfig.visibility.exhibitions.upcoming && (
+            {vis.upcoming && (
               <section id="upcoming-exhibitions" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:gap-16 md:items-end">
                   {upcomingExhibitions.length > 0 ? (
@@ -219,7 +225,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
             )}
 
             {/* Current Exhibitions Section */}
-            {siteConfig.visibility.exhibitions.current && (
+            {vis.current && (
               <section id="current-exhibitions" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:gap-16 md:items-end">
                   {currentExhibitions.length > 0 ? (
@@ -237,7 +243,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
             )}
 
             {/* Past Exhibitions Section */}
-            {siteConfig.visibility.exhibitions.past && (
+            {vis.past && (
               <section id="past-exhibitions" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:gap-16 md:items-end">
                   {pastExhibitions.length > 0 ? (

@@ -149,3 +149,14 @@ export function useMenuConfig(site: 'bkkk' | 'kyaf'): MenuConfigMap | null {
   }, [site]);
   return config;
 }
+
+export function useSectionVisibility(site: 'bkkk' | 'kyaf') {
+  const [sections, setSections] = useState<import('./wp-api').SectionsConfigMap | null>(null);
+  useEffect(() => {
+    fetchMenuConfig().then(data => {
+      if (data) setSections(site === 'bkkk' ? (data.bkkkSections ?? null) : (data.kyafSections ?? null));
+    });
+  }, [site]);
+  // Fall back to siteConfig.visibility if WP hasn't loaded yet
+  return sections;
+}
