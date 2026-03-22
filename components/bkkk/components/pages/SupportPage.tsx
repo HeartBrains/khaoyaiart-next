@@ -70,7 +70,7 @@ export function SupportPage() {
                                 </p>
                                 {/* QR Code */}
                                 <img
-                                    src="https://content.khaoyaiart.org/wp-content/uploads/2026/03/qr-donate.png"
+                                    src="https://content.khaoyaiart.org/wp-content/uploads/2026/03/Screenshot_20260322-195733.png"
                                     alt="Donation QR Code"
                                     className="w-48 h-48 object-contain"
                                 />
