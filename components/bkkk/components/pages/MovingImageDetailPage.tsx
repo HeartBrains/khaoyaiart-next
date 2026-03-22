@@ -120,7 +120,11 @@ export function MovingImageDetailPage({ slug, onNavigate }: MovingImageDetailPag
               )}
               {data.imageCredits && (
                 <div className="mt-auto pt-8">
-                  <p className="text-gray-500 text-[12px]">{data.imageCredits}</p>
+                  {data.imageCredits.split(/(?<=\.)\s+/).filter(Boolean).map((line, i, arr) => (
+                    <p key={i} className="text-gray-500 text-[12px]">
+                      {i < arr.length - 1 ? <>{line}<br />|</> : line}
+                    </p>
+                  ))}
                 </div>
               )}
             </div>

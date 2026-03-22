@@ -198,7 +198,11 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                 {exhibitionData.imageCredits && (
                     <Reveal delay={0.15}>
                         <div className="mt-auto pt-4">
-                            <p className="text-gray-500 text-[12px]">{exhibitionData.imageCredits}</p>
+                            {exhibitionData.imageCredits.split(/(?<=\.)\s+/).filter(Boolean).map((line, i, arr) => (
+                                <p key={i} className="text-gray-500 text-[12px]">
+                                    {i < arr.length - 1 ? <>{line}<br />|</> : line}
+                                </p>
+                            ))}
                         </div>
                     </Reveal>
                 )}
