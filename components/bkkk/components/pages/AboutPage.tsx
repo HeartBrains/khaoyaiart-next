@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Reveal } from '../ui/Reveal';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { useLanguage } from '@/utils/languageContext';
@@ -16,6 +16,7 @@ export function AboutPage({ activePage = 'about' }: AboutPageProps) {
   const { language } = useLanguage();
   const covers = useCovers();
   const didScroll = useRef(false);
+  const [activeSection, setActiveSection] = useState<string>(activePage === 'history' ? 'history' : 'about');
 
   useEffect(() => {
     if (didScroll.current) return;
@@ -30,7 +31,24 @@ export function AboutPage({ activePage = 'about' }: AboutPageProps) {
     }, 100);
   }, [activePage]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['about', 'history'];
+      const scrollY = window.scrollY + 200;
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i]);
+        if (el && el.offsetTop <= scrollY) {
+          setActiveSection(sections[i]);
+          break;
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const scrollTo = (id: string) => {
+    setActiveSection(id);
     const el = document.getElementById(id);
     if (el) {
       const top = el.getBoundingClientRect().top + window.scrollY - 120;
@@ -54,13 +72,13 @@ export function AboutPage({ activePage = 'about' }: AboutPageProps) {
             <nav className="md:sticky md:top-32 flex flex-col items-start gap-2">
               <button
                 onClick={() => scrollTo('about')}
-                className={`text-left text-xl md:text-2xl font-sans font-normal text-gray-400 hover:text-black transition-colors duration-300 ${language === 'th' ? 'leading-[1.82em]' : ''}`}
+                className={`text-left text-xl md:text-2xl font-sans font-normal transition-colors duration-300 ${language === 'th' ? 'leading-[1.82em]' : ''} ${activeSection === 'about' ? 'text-black' : 'text-gray-400 hover:text-black'}`}
               >
                 {language === 'th' ? 'เกี่ยวกับเรา' : 'About Us'}
               </button>
               <button
                 onClick={() => scrollTo('history')}
-                className={`text-left text-xl md:text-2xl font-sans font-normal text-gray-400 hover:text-black transition-colors duration-300 ${language === 'th' ? 'leading-[1.82em]' : ''}`}
+                className={`text-left text-xl md:text-2xl font-sans font-normal transition-colors duration-300 ${language === 'th' ? 'leading-[1.82em]' : ''} ${activeSection === 'history' ? 'text-black' : 'text-gray-400 hover:text-black'}`}
               >
                 {language === 'th' ? 'ประวัติ' : 'History'}
               </button>

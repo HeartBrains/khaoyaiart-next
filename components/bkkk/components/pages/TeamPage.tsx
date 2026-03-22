@@ -128,7 +128,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
         {teamGroups.map(([groupName, groupMembers], gIdx) => (
           <section key={gIdx} id={groupName.toLowerCase().replace(/\s+/g, '-')} className="flex flex-col md:flex-row mb-24 md:mb-32">
             <div className="w-full md:w-1/2 mb-12 md:mb-0">
-              <h2 className="text-xl md:text-2xl font-normal sticky top-32">{groupName}</h2>
+              <h2 className="text-xl md:text-2xl font-normal sticky top-32">{groupName.charAt(0).toUpperCase() + groupName.slice(1)}</h2>
             </div>
             <div className="w-full md:w-1/2 flex flex-col gap-4">
               {groupMembers.map((member, mIdx) => (

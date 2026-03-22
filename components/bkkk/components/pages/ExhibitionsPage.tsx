@@ -51,7 +51,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
   const onNavigate = onNavigateProp ?? internalNavigate;
   const { language } = useLanguage();
   const covers = useCovers();
-  const [activeSection, setActiveSection] = useState('current-exhibitions');
+  const [activeSection, setActiveSection] = useState('upcoming-exhibitions');
   const { data: exhibitions } = useBkkkExhibitions();
 
   const today = new Date();
@@ -142,8 +142,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
               className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               loading="lazy"
               onError={() => setImgError(true)}
-              crossOrigin="anonymous"
-                    />
+            />
           </div>
         )}
         <div className="flex flex-col gap-1">
