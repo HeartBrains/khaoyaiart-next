@@ -13,7 +13,7 @@ interface HeaderProps {
 export function Header({ onMenuClick, onLogoClick, isTransparent = false, isScrolled = false }: HeaderProps) {
   return (
     <header 
-      className={`fixed top-0 left-0 w-full z-40 px-[5%] py-6 flex justify-between items-start md:items-center transition-all duration-300 bg-transparent`}
+      className={`fixed top-0 left-0 w-full z-40 px-[5%] flex justify-between items-start md:items-center transition-all duration-300 bg-transparent ${isScrolled ? 'py-3' : 'py-6'}`}
     >
       <div 
         onClick={onLogoClick}

@@ -46,6 +46,7 @@ export function KyafShell({ children, initialCovers, initialCss }: KyafShellProp
           onMenuClick={() => setIsMenuOpen(!isMenuOpen)}
           onLogoClick={scrolled ? undefined : () => router.push('/')}
           isTransparent={!scrolled}
+          isScrolled={scrolled}
         />
         <MenuOverlay
           isOpen={isMenuOpen}

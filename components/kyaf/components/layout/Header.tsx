@@ -7,12 +7,13 @@ interface HeaderProps {
   onMenuClick: () => void;
   onLogoClick?: () => void;
   isTransparent?: boolean;
+  isScrolled?: boolean;
 }
 
-export function Header({ onMenuClick, onLogoClick, isTransparent = false }: HeaderProps) {
+export function Header({ onMenuClick, onLogoClick, isTransparent = false, isScrolled = false }: HeaderProps) {
   return (
     <header 
-      className={`fixed top-0 left-0 w-full z-40 px-[6vw] py-6 flex justify-between items-center transition-colors duration-300 ${
+      className={`fixed top-0 left-0 w-full z-40 px-[6vw] flex justify-between items-center transition-all duration-300 ${isScrolled ? 'py-3' : 'py-6'} ${
         isTransparent ? 'bg-transparent text-white' : 'bg-transparent text-black'
       }`}
     >
