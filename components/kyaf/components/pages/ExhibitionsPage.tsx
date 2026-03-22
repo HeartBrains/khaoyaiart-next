@@ -3,151 +3,149 @@
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { Reveal } from '../ui/Reveal';
 import { ParallaxHero } from '../ui/ParallaxHero';
-import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
 import { useKyafExhibitions } from '@/lib/useWPData';
-import type { KyafExhibitionItem } from '@/lib/wp-mappers';
 import { EXHIBITIONS_HERO_IMAGE } from '@/utils/imageConstants';
 
 interface ExhibitionsPageProps {
   onNavigate?: (page: string, slug?: string) => void;
-  activeSection?: string;
+  targetSectionId?: string;
 }
 
-type Category = 'current' | 'upcoming' | 'past';
-
-export function ExhibitionsPage({ onNavigate: onNavigateProp, activeSection }: ExhibitionsPageProps) {
+export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }: ExhibitionsPageProps) {
   const internalNavigate = useAppNavigate();
   const onNavigate = onNavigateProp ?? internalNavigate;
   const { data: exhibitions } = useKyafExhibitions();
-  const [activeCategory, setActiveCategory] = useState<Category>(
-    (activeSection as Category) || 'upcoming'
-  );
+  const [activeSection, setActiveSection] = useState('upcoming-exhibitions');
   const { language } = useLanguage();
   const covers = useCovers();
 
-  // Update activeCategory when activeSection prop changes
-  useEffect(() => {
-    if (activeSection) {
-      setActiveCategory(activeSection as Category);
-    }
-  }, [activeSection]);
+  const upcoming = exhibitions.filter(ex => ex.status === 'upcoming');
+  const current  = exhibitions.filter(ex => ex.status === 'current');
+  const past     = exhibitions.filter(ex => ex.status === 'past');
 
-  // Filter by status directly from new data structure
-  const filteredExhibitions = exhibitions.filter(ex => ex.status === activeCategory);
+  const sections = [
+    { id: 'upcoming-exhibitions', label: language === 'th' ? 'นิทรรศการที่กำลังจะเกิดขึ้น' : 'Upcoming Exhibitions', items: upcoming },
+    { id: 'current-exhibitions',  label: language === 'th' ? 'นิทรรศการปัจจุบัน'           : 'Current Exhibitions',  items: current  },
+    { id: 'past-exhibitions',     label: language === 'th' ? 'นิทรรศการที่ผ่านมา'           : 'Past Exhibitions',     items: past     },
+  ];
+
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY - 120;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  };
+
+  // Track active section on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPos = window.scrollY + 200;
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i].id);
+        if (el && el.offsetTop <= scrollPos) {
+          setActiveSection(sections[i].id);
+          break;
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Scroll to target section on mount (from menu navigation)
+  useEffect(() => {
+    if (targetSectionId) {
+      const idMap: Record<string, string> = {
+        upcoming: 'upcoming-exhibitions',
+        current:  'current-exhibitions',
+        past:     'past-exhibitions',
+      };
+      setTimeout(() => scrollToSection(idMap[targetSectionId] ?? targetSectionId), 100);
+    }
+  }, [targetSectionId]);
+
+  const ExhibitionCard = ({ item }: { item: any }) => (
+    <div
+      className="flex flex-col gap-6 w-full cursor-pointer group"
+      onClick={() => onNavigate?.('exhibition-detail', item.slug)}
+    >
+      <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
+        <ImageWithFallback
+          src={item.featuredImage}
+          alt={language === 'th' ? item.title.th : item.title.en}
+          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+          {language === 'th' ? item.title.th : item.title.en}
+        </h3>
+        {item.artist && (
+          <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+            {language === 'th' ? item.artist.th : item.artist.en}
+          </p>
+        )}
+        {item.listingSummary && (
+          <p className={`text-xl md:text-2xl font-normal text-gray-600 leading-tight line-clamp-3 mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+            {language === 'th' ? item.listingSummary.th : item.listingSummary.en}
+          </p>
+        )}
+      </div>
+    </div>
+  );
 
   return (
-    <div className="w-full bg-white min-h-screen pb-24">
-      {/* Hero Section - Using Madrid Circle image from JSON */}
-      <ParallaxHero 
-        image={EXHIBITIONS_HERO_IMAGE}
-        height="h-[80vh]"
-      >
+    <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
+      {/* Hero */}
+      <ParallaxHero image={covers.exhibitions || EXHIBITIONS_HERO_IMAGE} height="h-[80vh]">
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
       </ParallaxHero>
 
-      {/* Content Container */}
       <div className="w-full px-[6vw] pt-[96px] pb-[0px]">
-        <div className="flex flex-col md:flex-row mb-32 md:mb-40">
-            
-            {/* Left Sidebar - Navigation */}
-            <div className="w-full md:w-1/2 mb-12 md:mb-0">
-                <div className="sticky top-32 flex flex-col items-start gap-4 z-10">
-                    <button 
-                        onClick={() => setActiveCategory('upcoming')}
-                        className={`text-xl md:text-2xl font-normal text-left transition-colors duration-300 flex flex-col items-start cursor-pointer ${
-                            activeCategory === 'upcoming' ? 'text-black' : 'text-gray-400 hover:text-gray-600'
-                        }`}
-                    >
-                        <span>{language === 'th' ? 'นิทรรศการที่กำลังจะเกิดขึ้น' : 'Upcoming Exhibitions'}</span>
-                    </button>
-                    <button 
-                        onClick={() => setActiveCategory('current')}
-                        className={`text-xl md:text-2xl font-normal text-left transition-colors duration-300 flex flex-col items-start cursor-pointer ${
-                            activeCategory === 'current' ? 'text-black' : 'text-gray-400 hover:text-gray-600'
-                        }`}
-                    >
-                        <span>{language === 'th' ? 'นิทรรศการปัจจุบัน' : 'Current Exhibitions'}</span>
-                    </button>
-                    <button 
-                        onClick={() => setActiveCategory('past')}
-                        className={`text-xl md:text-2xl font-normal text-left transition-colors duration-300 flex flex-col items-start cursor-pointer ${
-                            activeCategory === 'past' ? 'text-black' : 'text-gray-400 hover:text-gray-600'
-                        }`}
-                    >
-                        <span>{language === 'th' ? 'นิทรรศการที่ผ่านมา' : 'Past Exhibitions'}</span>
-                    </button>
-                </div>
-            </div>
+        <div className="flex flex-col md:flex-row gap-12 md:gap-0">
 
-            {/* Right Content - Exhibition List */}
-            <div className="w-full md:w-1/2 flex flex-col gap-12 md:gap-16">
-                {filteredExhibitions.length > 0 ? (
-                    filteredExhibitions.map((exhibition, index) => (
-                        <Reveal key={exhibition.id} delay={index * 0.1}>
-                            <div 
-                                className="flex flex-col gap-6 w-full cursor-pointer group"
-                                onClick={() => onNavigate && onNavigate('exhibition-detail', exhibition.slug)}
-                            >
-                                {/* Image */}
-                                <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                                    <ImageWithFallback 
-                                        src={exhibition.featuredImage}
-                                        alt={language === 'th' ? exhibition.title.th : exhibition.title.en}
-                                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                                    />
-                                </div>
+          {/* Sticky nav */}
+          <aside className="w-full md:w-1/2 shrink-0">
+            <nav className="md:sticky md:top-32 flex flex-col items-start gap-2">
+              {sections.map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => scrollToSection(s.id)}
+                  className={`text-left text-xl md:text-2xl font-normal transition-all duration-300 ${
+                    activeSection === s.id ? 'text-black' : 'text-gray-400 hover:text-black'
+                  }`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </nav>
+          </aside>
 
-                                {/* Info */}
-                                <div className="flex flex-col gap-6">
-                                    {/* English */}
-                                    {language !== 'th' && (
-                                        <div className="flex flex-col gap-2">
-                                            <div className="flex flex-col gap-1">
-                                              <h3 className="text-lg md:text-xl font-normal leading-tight font-sans text-black">{exhibition.title.en}</h3>
-                                              {exhibition.artist && (
-                                                  <p className="text-lg md:text-xl font-normal text-black leading-tight font-sans">{exhibition.artist.en}</p>
-                                              )}
-                                            </div>
-                                            
-                                            {exhibition.listingSummary && (
-                                                <p className="text-lg md:text-xl font-normal text-gray-600 leading-tight font-sans line-clamp-3">
-                                                  {exhibition.listingSummary.en}
-                                                </p>
-                                            )}
-                                        </div>
-                                    )}
-
-                                    {/* Thai */}
-                                    {language === 'th' && (
-                                        <div className="flex flex-col gap-2">
-                                            <div className="flex flex-col gap-1">
-                                              <h3 className="text-lg md:text-xl font-normal font-sans text-black leading-[1.82em]">{exhibition.title.th}</h3>
-                                              {exhibition.artist && (
-                                                  <p className="text-lg md:text-xl font-normal text-black font-sans leading-[1.82em]">{exhibition.artist.th}</p>
-                                              )}
-                                            </div>
-                                            
-                                            {exhibition.listingSummary && (
-                                                <p className="text-lg md:text-xl font-normal text-gray-600 font-sans line-clamp-3 leading-[1.82em]">
-                                                  {exhibition.listingSummary.th}
-                                                </p>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </Reveal>
+          {/* Scrollable sections */}
+          <div className="w-full md:w-1/2 flex flex-col">
+            {sections.map((s) => (
+              <section key={s.id} id={s.id} className="mb-32 md:mb-40 scroll-mt-32 w-full">
+                <div className="flex flex-col gap-12 md:gap-16">
+                  {s.items.length > 0 ? (
+                    s.items.map((item, index) => (
+                      <Reveal key={item.id} delay={index * 0.05}>
+                        <ExhibitionCard item={item} />
+                      </Reveal>
                     ))
-                ) : (
-                    <div className="py-20 text-gray-400 font-sans text-xl text-left">
-                        {language === 'th' ? 'เร็วๆ นี้' : 'Coming soon'}
+                  ) : (
+                    <div className="py-20 text-gray-400 text-xl md:text-2xl">
+                      {language === 'th' ? 'เร็วๆ นี้' : 'Coming soon'}
                     </div>
-                )}
-            </div>
+                  )}
+                </div>
+              </section>
+            ))}
+          </div>
 
         </div>
       </div>
