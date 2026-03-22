@@ -92,7 +92,7 @@ export function VisitPage() {
                                 </div>
                                 <div className="w-full h-[400px] bg-gray-100 rounded-sm overflow-hidden">
                                     <iframe
-                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3844.5!2d101.371!3d14.463!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTTCsDI3JzQ2LjgiTiAxMDHCsDIyJzE1LjYiRQ!5e0!3m2!1sen!2sth!4v1234567890!5m2!1sen!2sth&q=Khao+Yai+Art+Forest,+Pong+Ta+Long,+Pak+Chong,+Nakhon+Ratchasima"
+                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3844.5!2d101.510924!3d14.5701514!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x311c2f004a0ed5d7%3A0x7dc289d9bb712f51!2sKhao+Yai+Art+Forest!5e0!3m2!1sen!2sth!4v1710417600000!5m2!1sen!2sth"
                                         width="100%"
                                         height="100%"
                                         style={{ border: 0 }}
@@ -101,6 +101,14 @@ export function VisitPage() {
                                         referrerPolicy="no-referrer-when-downgrade"
                                         title={language === 'th' ? 'แผนที่ Khao Yai Art Forest' : 'Khao Yai Art Forest Map'}
                                     />
+                                    <a
+                                        href="https://maps.app.goo.gl/du5SEK5sPfnQfydp8"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`inline-block mt-3 text-base font-normal text-black underline underline-offset-4 hover:opacity-60 transition-opacity ${language === 'th' ? 'leading-[1.82em]' : ''}`}
+                                    >
+                                        {language === 'th' ? 'เปิดใน Google Maps' : 'Open in Google Maps'}
+                                    </a>
                                 </div>
                             </div>
                         </Reveal>
