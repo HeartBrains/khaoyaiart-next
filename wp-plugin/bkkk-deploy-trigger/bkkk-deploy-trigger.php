@@ -7,14 +7,11 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-// Allow HTML (including <a> tags) in these meta fields — WP strips tags by default
+// Register meta fields for all listing CPTs
 add_action( 'init', function () {
-    $html_fields = [
-        'content_en', 'content_th',
-        'additional_info',
-        'bio_en', 'bio_th',
-    ];
-    $post_types = [ 'exhibition', 'activity', 'moving_image', 'residency_artist' ];
+    $html_fields = [ 'content_en', 'content_th', 'additional_info', 'bio_en', 'bio_th' ];
+    $text_fields = [ 'cta_label', 'cta_url', 'cta2_label', 'cta2_url' ];
+    $post_types  = [ 'exhibition', 'activity', 'moving_image', 'residency_artist' ];
 
     foreach ( $post_types as $post_type ) {
         foreach ( $html_fields as $field ) {
@@ -24,6 +21,16 @@ add_action( 'init', function () {
                 'single'            => true,
                 'show_in_rest'      => true,
                 'sanitize_callback' => null,
+                'auth_callback'     => function() { return current_user_can( 'edit_posts' ); },
+            ] );
+        }
+        foreach ( $text_fields as $field ) {
+            register_meta( 'post', $field, [
+                'object_subtype'    => $post_type,
+                'type'              => 'string',
+                'single'            => true,
+                'show_in_rest'      => true,
+                'sanitize_callback' => 'sanitize_text_field',
                 'auth_callback'     => function() { return current_user_can( 'edit_posts' ); },
             ] );
         }

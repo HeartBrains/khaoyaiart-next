@@ -116,6 +116,8 @@ export function mapBkkkExhibition(post: WPRawPost) {
       th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
     },
     additionalInfo: m(post, 'additional_info'),
+    ctaLeft:  { label: m(post, 'cta_label'),  url: m(post, 'cta_url') },
+    ctaRight: { label: m(post, 'cta2_label'), url: m(post, 'cta2_url') },
     site: m(post, 'site') as WPSite,
   };
 }
@@ -141,6 +143,8 @@ export function mapKyafExhibition(post: WPRawPost) {
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),
     additionalInfo: m(post, 'additional_info'),
+    ctaLeft:  { label: m(post, 'cta_label'),  url: m(post, 'cta_url') },
+    ctaRight: { label: m(post, 'cta2_label'), url: m(post, 'cta2_url') },
     tags: { en: m(post, 'tags_en').split(',').map(t => t.trim()).filter(Boolean), th: [] },
     listingSummary: {
       en: m(post, 'content_en').replace(/<[^>]+>/g, '').slice(0, 200),
@@ -174,6 +178,8 @@ export function mapMovingImage(post: WPRawPost) {
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),
     additionalInfo: m(post, 'additional_info'),
+    ctaLeft:  { label: m(post, 'cta_label'),  url: m(post, 'cta_url') },
+    ctaRight: { label: m(post, 'cta2_label'), url: m(post, 'cta2_url') },
     content: {
       en: m(post, 'content_en') || post.content?.rendered || '',
       th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
@@ -255,6 +261,8 @@ export function mapActivity(post: WPRawPost, lang: Lang = 'en') {
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),
     additionalInfo: m(post, 'additional_info'),
+    ctaLeft:  { label: m(post, 'cta_label'),  url: m(post, 'cta_url') },
+    ctaRight: { label: m(post, 'cta2_label'), url: m(post, 'cta2_url') },
     listingSummary: {
       en: m(post, 'content_en').replace(/<[^>]+>/g, '').slice(0, 200),
       th: (m(post, 'content_th') || m(post, 'content_en')).replace(/<[^>]+>/g, '').slice(0, 200),
