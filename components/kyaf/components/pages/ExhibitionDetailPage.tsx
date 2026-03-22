@@ -138,11 +138,11 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
       </div>
 
       {/* Content Section */}
-      <div className="w-full px-[6vw] py-12 md:py-16">
+      <div className="w-full px-[6vw] pt-8 pb-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-12 md:gap-x-16">
             
             {/* Left Column - Meta Data */}
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-4">
                 <Reveal>
                     <div className="flex flex-col gap-1">
                         <h1 className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
