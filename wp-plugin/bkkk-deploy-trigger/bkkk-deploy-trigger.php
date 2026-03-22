@@ -7,6 +7,29 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+// Allow HTML (including <a> tags) in these meta fields — WP strips tags by default
+add_action( 'init', function () {
+    $html_fields = [
+        'content_en', 'content_th',
+        'additional_info',
+        'bio_en', 'bio_th',
+    ];
+    $post_types = [ 'exhibition', 'activity', 'moving_image', 'residency_artist' ];
+
+    foreach ( $post_types as $post_type ) {
+        foreach ( $html_fields as $field ) {
+            register_meta( 'post', $field, [
+                'object_subtype'    => $post_type,
+                'type'              => 'string',
+                'single'            => true,
+                'show_in_rest'      => true,
+                'sanitize_callback' => null,
+                'auth_callback'     => function() { return current_user_can( 'edit_posts' ); },
+            ] );
+        }
+    }
+} );
+
 // CPTs that should trigger a redeploy when saved
 define( 'BKKK_WATCHED_POST_TYPES', [
     'exhibition',
