@@ -144,21 +144,27 @@ export function TeamPage({ activePage }: TeamPageProps) {
           </section>
         )}
 
-        {/* Donors */}
-        {DONORS.length > 0 && (
-          <section id="donors" className="flex flex-col md:flex-row mb-24 md:mb-32">
-            <div className="w-full md:w-1/2 mb-12 md:mb-0">
-              <h2 className={`text-xl md:text-2xl font-normal sticky top-32 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                {language === 'th' ? 'วงผู้ก่อตั้งและโต๊ะกลมผู้สะสมผู้บริจาค' : "Founder's Circle & Collector's Roundtable Donors"}
-              </h2>
-            </div>
-            <div className="w-full md:w-1/2 flex flex-col gap-4">
-              {DONORS.map((donor, idx) => (
-                <div key={idx} className="text-xl md:text-2xl font-sans text-black font-normal">{donor.name}</div>
-              ))}
-            </div>
-          </section>
-        )}
+        {/* Founder's Circle & Collector's Roundtable Donors */}
+        <section id="donors" className="flex flex-col md:flex-row mb-24 md:mb-32">
+          <div className="w-full md:w-1/2 mb-12 md:mb-0">
+            <h2 className={`text-xl md:text-2xl font-normal sticky top-32 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+              {language === 'th' ? 'วงผู้ก่อตั้งและโต๊ะกลมผู้สะสมผู้บริจาค' : "Founder's Circle & Collector's Roundtable Donors"}
+            </h2>
+          </div>
+          <div className="w-full md:w-1/2 flex flex-col gap-4">
+            {[
+              'Sangita Jindal',
+              'Isabel Liu',
+              'Takeo Obayashi',
+              'Taizo Son',
+              'Nunthinee Tanner',
+              'Elisa Yu',
+              'Lisa Zhang',
+            ].map((name) => (
+              <div key={name} className="text-xl md:text-2xl font-sans text-black font-normal">{name}</div>
+            ))}
+          </div>
+        </section>
 
         {/* Team groups */}
         {teamGroups.map(([groupName, groupMembers], gIdx) => (
