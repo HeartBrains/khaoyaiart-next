@@ -98,14 +98,14 @@ export function ExhibitionDetailPage({ onNavigate, slug }: ExhibitionDetailPageP
               ))}
               {curator && <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{language === 'th' ? 'ภัณฑารักษ์: ' : 'Curated by '}{curator}</p>}
               {data.additionalInfo && (
-                <div className="mt-6 text-xl md:text-2xl text-black font-normal leading-tight">
+                <div className="text-xl md:text-2xl text-black font-normal leading-tight">
                   <RichContent content={data.additionalInfo} />
                 </div>
               )}
               {data.ctaLeft?.url && data.ctaLeft?.label && (
                 <div className="mt-4">
                   <a href={data.ctaLeft.url} target="_blank" rel="noopener noreferrer"
-                    className="inline-block text-xl md:text-2xl text-black underline font-normal leading-tight">
+                    className="inline-block text-xl md:text-2xl text-black underline font-bold leading-tight">
                     {data.ctaLeft.label}
                   </a>
                 </div>
@@ -125,7 +125,7 @@ export function ExhibitionDetailPage({ onNavigate, slug }: ExhibitionDetailPageP
             {data.ctaRight?.url && data.ctaRight?.label && (
               <div className="mt-8">
                 <a href={data.ctaRight.url} target="_blank" rel="noopener noreferrer"
-                  className="inline-block text-xl md:text-2xl text-black underline font-normal leading-tight">
+                  className="inline-block text-xl md:text-2xl text-black underline font-bold leading-tight">
                   {data.ctaRight.label}
                 </a>
               </div>

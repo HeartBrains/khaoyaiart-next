@@ -167,7 +167,7 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                 {/* Additional Info (Specifications, Location, etc.) */}
                 {exhibitionData.additionalInfo && (
                     <Reveal delay={0.1}>
-                        <div className="mt-2 text-xl md:text-2xl text-black font-normal leading-tight">
+                        <div className="text-xl md:text-2xl text-black font-normal leading-tight">
                             <RichContent content={exhibitionData.additionalInfo} />
                         </div>
                     </Reveal>
@@ -187,7 +187,7 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                     <Reveal delay={0.13}>
                         <div className="mt-4">
                             <a href={exhibitionData.ctaLeft.url} target="_blank" rel="noopener noreferrer"
-                                className="inline-block text-xl md:text-2xl text-black underline font-normal leading-tight">
+                                className="inline-block text-xl md:text-2xl text-black underline font-bold leading-tight">
                                 {exhibitionData.ctaLeft.label}
                             </a>
                         </div>
@@ -216,7 +216,7 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                     <Reveal delay={0.25}>
                         <div className="mt-8">
                             <a href={exhibitionData.ctaRight.url} target="_blank" rel="noopener noreferrer"
-                                className="inline-block text-xl md:text-2xl text-black underline font-normal leading-tight">
+                                className="inline-block text-xl md:text-2xl text-black underline font-bold leading-tight">
                                 {exhibitionData.ctaRight.label}
                             </a>
                         </div>
