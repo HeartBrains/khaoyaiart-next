@@ -5,6 +5,7 @@ import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { HeroSlider } from '../ui/HeroSlider';
 import { useState, useEffect, useMemo } from 'react';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
+import { useHomeAnchors } from '@/lib/useWPData';
 
 // Hero images from different pages
 const heroImages = [
@@ -29,13 +30,21 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
   const upcomingExhibitions = allExhibitions.filter(e => e.status === 'upcoming');
   const currentActivities   = allActivities.filter(a => a.status === 'current');
   const currentMovingImageProgram = allMovingImages.find(m => m.status === 'current') ?? null;
+  const wpAnchors = useHomeAnchors('bkkk');
+  // Fall back to siteConfig while WP loads
+  const anchors = {
+    currentExhibitions:  wpAnchors ? wpAnchors.currentExhibitions  : siteConfig.homeAnchors.currentExhibitions,
+    upcomingExhibitions: wpAnchors ? (wpAnchors.upcomingExhibitions ?? true) : siteConfig.homeAnchors.upcomingExhibitions,
+    currentMovingImage:  wpAnchors ? (wpAnchors.currentMovingImage  ?? true) : siteConfig.homeAnchors.currentMovingImageProgram,
+    currentActivities:   wpAnchors ? wpAnchors.currentActivities   : siteConfig.homeAnchors.currentActivities,
+  };
 
   const sections = useMemo(() => [
-    { id: 'current-exhibitions',   label: language === 'th' ? 'นิทรรศการปัจจุบัน' : 'Current Exhibitions',          visible: siteConfig.homeAnchors.currentExhibitions && currentExhibitions.length > 0 },
-    { id: 'upcoming-exhibitions',  label: language === 'th' ? 'นิทรรศการที่กำลังจะเริ่ม' : 'Upcoming Exhibitions',   visible: siteConfig.homeAnchors.upcomingExhibitions && upcomingExhibitions.length > 0 },
-    { id: 'moving-image-program',  label: language === 'th' ? 'โปรแกรมภาพเคลื่อนไหวปัจจุบัน' : 'Current Moving Image Program', visible: siteConfig.homeAnchors.currentMovingImageProgram && currentMovingImageProgram !== null },
-    { id: 'current-activities',    label: language === 'th' ? 'กิจกรรมปัจจุบัน' : 'Current Activities',              visible: siteConfig.homeAnchors.currentActivities && currentActivities.length > 0 },
-  ].filter(s => s.visible), [language, currentExhibitions, upcomingExhibitions, currentMovingImageProgram, currentActivities]);
+    { id: 'current-exhibitions',   label: language === 'th' ? 'นิทรรศการปัจจุบัน' : 'Current Exhibitions',                   visible: anchors.currentExhibitions  && currentExhibitions.length > 0 },
+    { id: 'upcoming-exhibitions',  label: language === 'th' ? 'นิทรรศการที่กำลังจะเริ่ม' : 'Upcoming Exhibitions',            visible: anchors.upcomingExhibitions && upcomingExhibitions.length > 0 },
+    { id: 'moving-image-program',  label: language === 'th' ? 'โปรแกรมภาพเคลื่อนไหวปัจจุบัน' : 'Current Moving Image Program', visible: anchors.currentMovingImage  && currentMovingImageProgram !== null },
+    { id: 'current-activities',    label: language === 'th' ? 'กิจกรรมปัจจุบัน' : 'Current Activities',                       visible: anchors.currentActivities   && currentActivities.length > 0 },
+  ].filter(s => s.visible), [language, anchors, currentExhibitions, upcomingExhibitions, currentMovingImageProgram, currentActivities]);
 
   // Scroll to section
   const scrollToSection = (id: string) => {
@@ -103,7 +112,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
           {/* Content Sections */}
           <div className="w-full md:w-1/2 flex flex-col md:items-end">
             {/* Current Exhibitions */}
-            {siteConfig.homeAnchors.currentExhibitions && (
+            {anchors.currentExhibitions && (
               <section id="current-exhibitions" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:gap-16 md:items-end">
                   {currentExhibitions.length > 0 ? currentExhibitions.map((item) => (
@@ -127,7 +136,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
             )}
 
             {/* Upcoming Exhibitions */}
-            {siteConfig.homeAnchors.upcomingExhibitions && (
+            {anchors.upcomingExhibitions && (
               <section id="upcoming-exhibitions" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:items-end">
                   {upcomingExhibitions.length > 0 ? upcomingExhibitions.map((item) => (
@@ -151,7 +160,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
             )}
 
             {/* Moving Image Program */}
-            {siteConfig.homeAnchors.currentMovingImageProgram && (
+            {anchors.currentMovingImage && (
               <section id="moving-image-program" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:items-end">
                   {currentMovingImageProgram ? (
@@ -175,7 +184,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
             )}
 
             {/* Current Activities */}
-            {siteConfig.homeAnchors.currentActivities && (
+            {anchors.currentActivities && (
               <section id="current-activities" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:items-end">
                   {currentActivities.length > 0 ? currentActivities.map((item) => (

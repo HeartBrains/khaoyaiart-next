@@ -6,6 +6,7 @@ import { useLanguage } from '@/utils/languageContext';
 import { useKyafExhibitions, useKyafActivities } from '@/lib/useWPData';
 import { HOME_HERO_IMAGES } from '@/utils/imageConstants';
 import { isHomeSectionVisible } from '@/utils/siteConfig';
+import { useHomeAnchors } from '@/lib/useWPData';
 
 export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: string) => void }) {
   const { language } = useLanguage();
@@ -16,9 +17,10 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
   const currentExhibitions = allExhibitions.filter(ex => ex.status === 'current');
   const currentActivities  = allActivities.filter(act => act.status === 'current');
 
-  // Check visibility settings
-  const showCurrentExhibitions = isHomeSectionVisible('currentExhibitions');
-  const showCurrentActivities = isHomeSectionVisible('currentActivities');
+  const wpAnchors = useHomeAnchors('kyaf');
+  // Fall back to siteConfig while WP loads
+  const showCurrentExhibitions = wpAnchors ? wpAnchors.currentExhibitions : isHomeSectionVisible('currentExhibitions');
+  const showCurrentActivities  = wpAnchors ? wpAnchors.currentActivities  : isHomeSectionVisible('currentActivities');
 
   return (
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">

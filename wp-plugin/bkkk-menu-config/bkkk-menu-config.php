@@ -32,6 +32,10 @@ function bkkk_sections_defaults(): array {
         'kyaf_exhibitions_upcoming'=>true,'kyaf_exhibitions_current'=>true,'kyaf_exhibitions_past'=>true,
         'kyaf_activities_upcoming'=>true,'kyaf_activities_current'=>true,'kyaf_activities_past'=>false,
         'kyaf_residency_upcoming'=>true,'kyaf_residency_current'=>true,'kyaf_residency_past'=>true,
+        // Home page anchor sections
+        'bkkk_home_current_exhibitions'=>true,'bkkk_home_upcoming_exhibitions'=>true,
+        'bkkk_home_current_moving_image'=>true,'bkkk_home_current_activities'=>false,
+        'kyaf_home_current_exhibitions'=>true,'kyaf_home_current_activities'=>false,
     ];
 }
 
@@ -107,11 +111,13 @@ function bkkk_menu_render_page(): void {
             'Activities'=>['bkkk_activities_upcoming'=>'Upcoming','bkkk_activities_current'=>'Current','bkkk_activities_past'=>'Past'],
             'Moving Image'=>['bkkk_moving_image_upcoming'=>'Upcoming','bkkk_moving_image_current'=>'Current','bkkk_moving_image_past'=>'Past'],
             'Residency'=>['bkkk_residency_upcoming'=>'Upcoming','bkkk_residency_current'=>'Current','bkkk_residency_past'=>'Past'],
+            'Home Anchors'=>['bkkk_home_current_exhibitions'=>'Current Exhibitions','bkkk_home_upcoming_exhibitions'=>'Upcoming Exhibitions','bkkk_home_current_moving_image'=>'Current Moving Image','bkkk_home_current_activities'=>'Current Activities'],
         ],
         'Khao Yai Art Forest (KYAF)'=>[
             'Exhibitions'=>['kyaf_exhibitions_upcoming'=>'Upcoming','kyaf_exhibitions_current'=>'Current','kyaf_exhibitions_past'=>'Past'],
             'Activities'=>['kyaf_activities_upcoming'=>'Upcoming','kyaf_activities_current'=>'Current','kyaf_activities_past'=>'Past'],
             'Residency'=>['kyaf_residency_upcoming'=>'Upcoming','kyaf_residency_current'=>'Current','kyaf_residency_past'=>'Past'],
+            'Home Anchors'=>['kyaf_home_current_exhibitions'=>'Current Exhibitions','kyaf_home_current_activities'=>'Current Activities'],
         ],
     ];
     $cover_labels=['exhibitions'=>'Exhibitions','activities'=>'Activities','moving_image'=>'Moving Image','residency'=>'Residency','blog'=>'Blog','press'=>'Press','team'=>'Team','about'=>'About','visit'=>'Visit','contact'=>'Contact','archives'=>'Archives'];
@@ -215,6 +221,17 @@ add_action('rest_api_init', function() {
                     $kyaf_sections[$camel][$state]=(bool)($sections['kyaf_'.$snake.'_'.$state]??true);
                 }
             }
+            // Home anchor visibility
+            $bkkk_sections['homeAnchors']=[
+                'currentExhibitions' =>(bool)($sections['bkkk_home_current_exhibitions']??true),
+                'upcomingExhibitions'=>(bool)($sections['bkkk_home_upcoming_exhibitions']??true),
+                'currentMovingImage' =>(bool)($sections['bkkk_home_current_moving_image']??true),
+                'currentActivities'  =>(bool)($sections['bkkk_home_current_activities']??false),
+            ];
+            $kyaf_sections['homeAnchors']=[
+                'currentExhibitions'=>(bool)($sections['kyaf_home_current_exhibitions']??true),
+                'currentActivities' =>(bool)($sections['kyaf_home_current_activities']??false),
+            ];
             $r=new WP_REST_Response(['bkkk'=>$bkkk_menu,'kyaf'=>$kyaf_menu,'bkkkCovers'=>$bkkk_covers,'kyafCovers'=>$kyaf_covers,'bkkkCss'=>$css['bkkk'],'kyafCss'=>$css['kyaf'],'bkkkSections'=>$bkkk_sections,'kyafSections'=>$kyaf_sections]);
             $r->header('Cache-Control','public, max-age=60');
             $r->header('Access-Control-Allow-Origin','*');

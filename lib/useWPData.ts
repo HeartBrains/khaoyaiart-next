@@ -157,6 +157,18 @@ export function useSectionVisibility(site: 'bkkk' | 'kyaf') {
       if (data) setSections(site === 'bkkk' ? (data.bkkkSections ?? null) : (data.kyafSections ?? null));
     });
   }, [site]);
-  // Fall back to siteConfig.visibility if WP hasn't loaded yet
   return sections;
+}
+
+export function useHomeAnchors(site: 'bkkk' | 'kyaf') {
+  const [anchors, setAnchors] = useState<import('./wp-api').HomeAnchorsVisibility | null>(null);
+  useEffect(() => {
+    fetchMenuConfig().then(data => {
+      if (data) {
+        const sections = site === 'bkkk' ? data.bkkkSections : data.kyafSections;
+        setAnchors((sections?.homeAnchors as import('./wp-api').HomeAnchorsVisibility) ?? null);
+      }
+    });
+  }, [site]);
+  return anchors;
 }

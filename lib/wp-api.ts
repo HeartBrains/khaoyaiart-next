@@ -154,7 +154,15 @@ export type SectionVisibility = {
   current: boolean;
   past: boolean;
 };
-export type SectionsConfigMap = Partial<Record<string, SectionVisibility>>;
+export type HomeAnchorsVisibility = {
+  currentExhibitions: boolean;
+  upcomingExhibitions?: boolean;
+  currentMovingImage?: boolean;
+  currentActivities: boolean;
+};
+export type SectionsConfigMap = Partial<Record<string, SectionVisibility>> & {
+  homeAnchors?: HomeAnchorsVisibility;
+};
 
 export interface MenuConfig {
   bkkk: MenuConfigMap;
