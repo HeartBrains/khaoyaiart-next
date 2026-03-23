@@ -47,7 +47,7 @@ export const siteConfig = {
     archives: false,
     booking: true,
     movingImage: false,
-    support: false,
+    support: true,
     search: true,
     languageSwitcher: false,
   },

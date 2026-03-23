@@ -92,6 +92,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
             { label: 'Past Activities', page: 'archives' },
         ]
     },
+    ...(isVisible('support') ? [{ label: language === 'th' ? 'สนับสนุนเรา' : 'Support Us', page: 'support' }] : []),
     { label: t('nav.contact'), page: 'contact' },
   ];
 

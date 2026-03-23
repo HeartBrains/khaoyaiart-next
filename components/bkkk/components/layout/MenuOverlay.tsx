@@ -135,6 +135,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
             ...(siteConfig.visibility.archives.pastActivities ? [{ label: 'Past Activities', page: 'archives', sectionId: 'past-activities' }] : []),
         ]
     }] : []),
+    ...(menu.support ? [{ label: language === 'th' ? 'สนับสนุนเรา' : 'Support Us', page: 'support' }] : []),
     ...(menu.contact ? [{ label: t('nav.contact'), page: 'contact' }] : []),
   ];
 
