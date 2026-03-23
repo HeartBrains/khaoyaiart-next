@@ -1,11 +1,4 @@
 // @ts-nocheck
-import { ARTISTS_DATA } from './residencyData';
-import { translations } from './translations';
-import { exhibitions } from './exhibitionsDataNew';
-import { movingImagePrograms } from './movingImageData';
-import { MOCK_POSTS_BILINGUAL } from './mockDataBilingual';
-import { getDetailContentByLanguage } from './detailContent';
-
 export interface SearchDocument {
   id: string;
   title: string;
@@ -16,216 +9,104 @@ export interface SearchDocument {
   lang: 'en' | 'th';
 }
 
-const STATIC_PAGES_CONFIG = [
-  { id: 'home', page: 'home', titleKey: 'nav.home', content: { en: 'Bangkok Kunsthalle is a multidisciplinary platform for contemporary art in Thailand.', th: 'บางกอก คุนสท์ฮัลเล่ เป็นพื้นที่ทางศิลปะร่วมสมัยและพหุสาขาวิชาในประเทศไทย' }, keywords: 'art contemporary thailand platform bangkok main ศิลปะ ร่วมสมัย ไทย กรุงเทพ' },
-  { id: 'about', page: 'about', titleKey: 'nav.aboutUs', contentKey: 'about.description', keywords: 'history vision team background mission story who we are ประวัติ วิสัยทัศน์ ทีมงาน' },
-  { id: 'vision', page: 'vision', titleKey: 'nav.vision', contentKey: 'about.vision.content', keywords: 'mission goals creativity dialogue future strategy manifesto พันธกิจ เป้าหมาย' },
-  { id: 'visit', page: 'visit', titleKey: 'nav.visit', contentKey: 'visit.title', keywords: 'location map hours directions ticket access transport address ที่ตั้ง แผนที่ เวลาทำการ' },
-  { id: 'exhibitions', page: 'exhibitions', titleKey: 'nav.exhibitions', content: { en: 'Discover our current, upcoming, and past exhibitions.', th: 'ค้นพบนิทรรศการปัจจุบัน นิทรรศการที่กำลังจะมาถึง และนิทรรศการที่ผ่านมา' }, keywords: 'show gallery display art artists calendar schedule นิทรรศการ ศิลปะ ศิลปิน' },
-  { id: 'activities', page: 'activities', titleKey: 'nav.activities', content: { en: 'Join our educational programs, workshops, artist talks, and special events.', th: 'เข้าร่วมโปรแกรมการศึกษา เวิร์กช็อป การบรรยายของศิลปิน และกิจกรรมพิเศษของเรา' }, keywords: 'events workshops education talks programs learning public กิจกรรม เวิร์กช็อป การศึกษา' },
-  { id: 'blog', page: 'blog', titleKey: 'nav.blog', content: { en: 'Read the latest updates, articles, interviews, and insights.', th: 'อ่านข่าวสารล่าสุด บทความ บทสัมภาษณ์ และข้อมูลเชิงลึก' }, keywords: 'articles updates press reviews insights journalism media บทความ ข่าวสาร สื่อ' },
-  { id: 'support', page: 'support', titleKey: 'nav.support', content: { en: 'Help us sustain our mission by becoming a patron or donor.', th: 'ช่วยสนับสนุนพันธกิจของเราโดยการเป็นผู้มีอุปการคุณหรือผู้บริจาค' }, keywords: 'donate patron sponsorship funding membership giving philanthropy บริจาค สนับสนุน' },
-  { id: 'contact', page: 'contact', titleKey: 'nav.contact', content: { en: 'Get in touch with us for inquiries, press information, or collaborations.', th: 'ติดต่อเราสำหรับการสอบถาม ข้อมูลสื่อมวลชน หรือความร่วมมือ' }, keywords: 'email phone address press inquiries connect hello ติดต่อ อีเมล โทรศัพท์' },
-  { id: 'press', page: 'press', titleKey: 'nav.press', contentKey: 'press.title', keywords: 'media news kit release journalism download coverage สื่อ ข่าว ประชาสัมพันธ์' },
-  { id: 'founder', page: 'founder', titleKey: 'nav.founder', contentKey: 'about.foundingDirector', keywords: 'biography leadership owner director profile ผู้ก่อตั้ง ผู้อำนวยการ' },
-  { id: 'team', page: 'team', titleKey: 'nav.team', contentKey: 'team.team', keywords: 'staff curators management jobs careers hiring ทีมงาน ภัณฑารักษ์' },
-  { id: 'residency', page: 'residency', titleKey: 'nav.residency', contentKey: 'residency.description', keywords: 'artist-in-residence studio program development exchange housing ศิลปินพำนัก' },
-];
+const WP_URL = (process.env.NEXT_PUBLIC_WP_BASE_URL ?? 'https://content.khaoyaiart.org').replace(/\/$/, '');
+const WP_BASE = WP_URL.endsWith('/wp-json/wp/v2') ? WP_URL : `${WP_URL}/wp-json/wp/v2`;
 
 function stripHtml(html: string): string {
-  const tmp = document.createElement("DIV");
-  tmp.innerHTML = html;
-  return tmp.textContent || tmp.innerText || "";
+  if (!html) return '';
+  return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+async function fetchCPT(cpt: string): Promise<any[]> {
+  try {
+    const all: any[] = [];
+    let page = 1;
+    while (true) {
+      const res = await fetch(`${WP_BASE}/${cpt}?per_page=100&page=${page}&_fields=id,slug,title,content,meta`);
+      if (!res.ok) break;
+      const data = await res.json();
+      if (!Array.isArray(data) || data.length === 0) break;
+      all.push(...data.filter((p: any) => !p.meta?.site || p.meta.site === 'bkkk'));
+      const total = parseInt(res.headers.get('X-WP-TotalPages') ?? '1', 10);
+      if (page >= total) break;
+      page++;
+    }
+    return all;
+  } catch {
+    return [];
+  }
+}
+
+function m(post: any, key: string): string {
+  return post.meta?.[key] ?? '';
 }
 
 export async function getFullSearchData(): Promise<SearchDocument[]> {
-  const data: SearchDocument[] = [];
+  const docs: SearchDocument[] = [];
 
-  // 1. Static Pages (EN & TH)
-  STATIC_PAGES_CONFIG.forEach(config => {
-    // EN
-    data.push({
-      id: `${config.id}-en`,
-      title: translations.en[config.titleKey as keyof typeof translations.en] || config.titleKey,
-      content: config.contentKey 
-        ? (translations.en[config.contentKey as keyof typeof translations.en] || '') 
-        : (typeof config.content === 'object' ? config.content.en : ''),
-      keywords: config.keywords,
-      page: config.page,
-      lang: 'en'
-    });
+  const [exhibitions, activities, movingImages, artists] = await Promise.all([
+    fetchCPT('exhibition'),
+    fetchCPT('activity'),
+    fetchCPT('moving_image'),
+    fetchCPT('residency_artist'),
+  ]);
 
-    // TH
-    data.push({
-      id: `${config.id}-th`,
-      title: translations.th[config.titleKey as keyof typeof translations.th] || config.titleKey,
-      content: config.contentKey 
-        ? (translations.th[config.contentKey as keyof typeof translations.th] || '') 
-        : (typeof config.content === 'object' ? config.content.th : ''),
-      keywords: config.keywords,
-      page: config.page,
-      lang: 'th'
-    });
-  });
+  for (const post of exhibitions) {
+    const titleEn = post.title?.rendered ?? '';
+    const titleTh = m(post, 'title_th') || titleEn;
+    const artistEn = m(post, 'artist_en');
+    const artistTh = m(post, 'artist_th') || artistEn;
+    const contentEn = stripHtml(m(post, 'content_en') || post.content?.rendered || '');
+    const contentTh = stripHtml(m(post, 'content_th') || contentEn);
+    docs.push({ id: `exhibition-${post.slug}-en`, title: titleEn, content: contentEn, keywords: `exhibition art show ${artistEn} นิทรรศการ`, page: 'exhibition-detail', slug: post.slug, lang: 'en' });
+    docs.push({ id: `exhibition-${post.slug}-th`, title: titleTh, content: contentTh, keywords: `นิทรรศการ ศิลปะ ${artistTh} exhibition`, page: 'exhibition-detail', slug: post.slug, lang: 'th' });
+  }
 
-  // 2. Records (Archives) - Currently assuming EN mostly, but we can duplicate for TH or just leave as EN
-  // Since we don't have explicit TH translations for RECORDS in the file provided, we will map them to EN
-  // and maybe provide a generic TH fallback if needed, or just let them be searchable in EN.
-  // To make them searchable in TH mode, we should at least include them with lang='th' if we want them to appear in TH search results.
-  // RECORDS.forEach(record => {
-  //     // Check if already exists in MOCK_POSTS_BILINGUAL (to avoid duplicates if they overlap)
-  //     // The logic in original file did this.
-  //     const exists = Object.values(MOCK_POSTS_BILINGUAL).some(p => p.en.slug === record.slug);
-  //     if (exists) return;
+  for (const post of activities) {
+    const titleEn = post.title?.rendered ?? '';
+    const titleTh = m(post, 'title_th') || titleEn;
+    const contentEn = stripHtml(m(post, 'content_en') || post.content?.rendered || '');
+    const contentTh = stripHtml(m(post, 'content_th') || contentEn);
+    docs.push({ id: `activity-${post.slug}-en`, title: titleEn, content: contentEn, keywords: `activity event program workshop กิจกรรม`, page: 'activity-detail', slug: post.slug, lang: 'en' });
+    docs.push({ id: `activity-${post.slug}-th`, title: titleTh, content: contentTh, keywords: `กิจกรรม โปรแกรม activity event`, page: 'activity-detail', slug: post.slug, lang: 'th' });
+  }
 
-  //     let page = '';
-  //     let keywords = '';
+  for (const post of movingImages) {
+    const titleEn = post.title?.rendered ?? '';
+    const titleTh = m(post, 'title_th') || titleEn;
+    const curatorEn = m(post, 'curator_en');
+    const contentEn = stripHtml(m(post, 'content_en') || post.content?.rendered || '');
+    const contentTh = stripHtml(m(post, 'content_th') || contentEn);
+    docs.push({ id: `moving-image-${post.slug}-en`, title: titleEn, content: contentEn, keywords: `moving image film video ${curatorEn} ภาพยนตร์`, page: 'moving-image-detail', slug: post.slug, lang: 'en' });
+    docs.push({ id: `moving-image-${post.slug}-th`, title: titleTh, content: contentTh, keywords: `ภาพเคลื่อนไหว ภาพยนตร์ moving image`, page: 'moving-image-detail', slug: post.slug, lang: 'th' });
+  }
 
-  //     if (record.category === 'activity' || record.category === 'event') {
-  //       page = 'activity-detail';
-  //       keywords = `activity event ${record.status} ${record.description || ''}`;
-  //     } else if (record.category === 'exhibition') {
-  //       page = 'exhibition-detail';
-  //       keywords = `exhibition art show ${record.status} ${record.description || ''}`;
-  //     }
+  for (const post of artists) {
+    const nameEn = post.title?.rendered ?? '';
+    const nameTh = m(post, 'title_th') || nameEn;
+    const bioEn = stripHtml(m(post, 'bio_en') || post.content?.rendered || '');
+    const bioTh = stripHtml(m(post, 'bio_th') || bioEn);
+    docs.push({ id: `artist-${post.slug}-en`, title: nameEn, content: bioEn, keywords: `artist resident residency ศิลปิน`, page: 'artist-detail', slug: post.slug, lang: 'en' });
+    docs.push({ id: `artist-${post.slug}-th`, title: nameTh, content: bioTh, keywords: `ศิลปิน ศิลปินพำนัก artist residency`, page: 'artist-detail', slug: post.slug, lang: 'th' });
+  }
 
-  //     if (page) {
-  //       // Add for EN
-  //       data.push({
-  //         id: `record-${record.id}-en`,
-  //         title: record.title,
-  //         content: `${record.description || ''} (${record.date})`,
-  //         keywords: keywords,
-  //         page: page,
-  //         slug: record.slug,
-  //         lang: 'en'
-  //       });
+  const staticPages = [
+    { id: 'home',        page: 'home',        en: 'Bangkok Kunsthalle — contemporary art space',       th: 'บางกอก คุนซ์ฮาลเล่ — พื้นที่ศิลปะร่วมสมัย',          kw: 'art contemporary bangkok kunsthalle ศิลปะ' },
+    { id: 'about',       page: 'about',       en: 'About Bangkok Kunsthalle — mission and history',    th: 'เกี่ยวกับบางกอก คุนซ์ฮาลเล่',                         kw: 'about mission history ประวัติ' },
+    { id: 'visit',       page: 'visit',       en: 'Visit — location, hours, directions',               th: 'เยี่ยมชม — ที่ตั้ง เวลาทำการ',                         kw: 'visit location hours map ที่ตั้ง' },
+    { id: 'exhibitions', page: 'exhibitions', en: 'Exhibitions — current, upcoming, past',             th: 'นิทรรศการ — ปัจจุบัน กำลังจะมา ที่ผ่านมา',            kw: 'exhibitions gallery นิทรรศการ' },
+    { id: 'activities',  page: 'activities',  en: 'Activities — workshops, talks, events',             th: 'กิจกรรม — เวิร์กช็อป บรรยาย',                         kw: 'activities events workshops กิจกรรม' },
+    { id: 'residency',   page: 'residency',   en: 'Artist in Residence program',                       th: 'โปรแกรมศิลปินพำนัก',                                   kw: 'residency artist ศิลปินพำนัก' },
+    { id: 'team',        page: 'team',        en: 'Team — staff and curators',                         th: 'ทีมงาน',                                               kw: 'team staff curators ทีมงาน' },
+    { id: 'support',     page: 'support',     en: 'Support Us — donate and become a patron',           th: 'สนับสนุนเรา — บริจาค',                                 kw: 'support donate patron สนับสนุน บริจาค' },
+    { id: 'contact',     page: 'contact',     en: 'Contact — get in touch',                            th: 'ติดต่อ',                                               kw: 'contact email phone ติดต่อ' },
+    { id: 'press',       page: 'press',       en: 'Press — media coverage and releases',               th: 'สื่อมวลชน',                                            kw: 'press media news สื่อ ข่าว' },
+  ];
 
-  //       // Add for TH (using same content as fallback, so it appears in TH search)
-  //       data.push({
-  //         id: `record-${record.id}-th`,
-  //         title: record.title, // Keep EN title
-  //         content: `${record.description || ''} (${record.date})`,
-  //         keywords: keywords,
-  //         page: page,
-  //         slug: record.slug,
-  //         lang: 'th'
-  //       });
-  //     }
-  // });
+  for (const p of staticPages) {
+    docs.push({ id: `${p.id}-en`, title: p.en, content: p.en, keywords: p.kw, page: p.page, lang: 'en' });
+    docs.push({ id: `${p.id}-th`, title: p.th, content: p.th, keywords: p.kw, page: p.page, lang: 'th' });
+  }
 
-  // 3. Artists (Residency)
-  ARTISTS_DATA.forEach(artist => {
-      // Support both old and new data structure
-      const enContent = artist.content || (artist.bio ? `${artist.bio}${artist.statement || ''}` : '');
-      const thContent = artist.contentTH || (artist.bioTH ? `${artist.bioTH}${artist.statementTH || ''}` : enContent);
-      
-      // EN
-      data.push({
-          id: `artist-${artist.slug}-en`,
-          title: artist.name,
-          content: stripHtml(enContent),
-          keywords: `artist resident residency ${artist.period} ${artist.status} ศิลปิน`,
-          page: 'artist-detail',
-          slug: artist.slug,
-          lang: 'en'
-      });
-      // TH (Using proper Thai fields)
-      data.push({
-          id: `artist-${artist.slug}-th`,
-          title: artist.nameTH || artist.name,
-          content: stripHtml(thContent),
-          keywords: `artist resident residency ${artist.periodTH || artist.period} ${artist.status} ศิลปิน พำนัก`,
-          page: 'artist-detail',
-          slug: artist.slug,
-          lang: 'th'
-      });
-  });
-
-  // 4. Exhibitions
-  exhibitions.forEach(exhibition => {
-    // Get detail content for both languages
-    const enContent = getDetailContentByLanguage(exhibition.slug, 'en') || '';
-    const thContent = getDetailContentByLanguage(exhibition.slug, 'th') || '';
-    
-    // EN
-    data.push({
-      id: `exhibition-${exhibition.slug}-en`,
-      title: exhibition.title.en,
-      content: stripHtml(enContent + ' ' + exhibition.artist.en),
-      keywords: `exhibition art show ${exhibition.artist.en} ${exhibition.dateDisplay.en} นิทรรศการ ศิลปะ`,
-      page: 'exhibition-detail',
-      slug: exhibition.slug,
-      lang: 'en'
-    });
-
-    // TH
-    data.push({
-      id: `exhibition-${exhibition.slug}-th`,
-      title: exhibition.title.th,
-      content: stripHtml(thContent + ' ' + exhibition.artist.th),
-      keywords: `exhibition art show ${exhibition.artist.th} ${exhibition.dateDisplay.th} นิทรรศการ ศิลปะ`,
-      page: 'exhibition-detail',
-      slug: exhibition.slug,
-      lang: 'th'
-    });
-  });
-
-  // 5. Moving Image Programs
-  movingImagePrograms.forEach(program => {
-    // Get detail content from detailContent.ts instead of inline content
-    const enContent = getDetailContentByLanguage(program.slug, 'en') || '';
-    const thContent = getDetailContentByLanguage(program.slug, 'th') || '';
-    
-    // EN
-    data.push({
-      id: `moving-image-${program.id}-en`,
-      title: program.title.en,
-      content: stripHtml(enContent),
-      keywords: `moving image film video cinema ${program.curator.en} ภาพยนตร์ วิดีโอ`,
-      page: 'moving-image-detail',
-      slug: program.slug,
-      lang: 'en'
-    });
-
-    // TH
-    data.push({
-      id: `moving-image-${program.id}-th`,
-      title: program.title.th,
-      content: stripHtml(thContent),
-      keywords: `moving image film video cinema ${program.curator.th} ภาพยนตร์ วิดีโอ ภาพเคลื่อนไหว`,
-      page: 'moving-image-detail',
-      slug: program.slug,
-      lang: 'th'
-    });
-  });
-
-  // 6. Blog Posts
-  Object.values(MOCK_POSTS_BILINGUAL).forEach(postData => {
-    // EN
-    const enPost = postData.en;
-    data.push({
-      id: `blog-${enPost.slug}-en`,
-      title: enPost.title,
-      content: stripHtml(enPost.content),
-      keywords: `blog article post ${enPost.author} ${enPost.categories.join(' ')} ${enPost.date} บทความ บล็อก`,
-      page: 'blog-detail',
-      slug: enPost.slug,
-      lang: 'en'
-    });
-
-    // TH
-    const thPost = postData.th;
-    data.push({
-      id: `blog-${thPost.slug}-th`,
-      title: thPost.title,
-      content: stripHtml(thPost.content),
-      keywords: `blog article post ${thPost.author} ${thPost.categories.join(' ')} ${thPost.date} บทความ บล็อก`,
-      page: 'blog-detail',
-      slug: thPost.slug,
-      lang: 'th'
-    });
-  });
-
-  return data;
+  return docs;
 }
