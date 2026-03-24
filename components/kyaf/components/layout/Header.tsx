@@ -24,15 +24,17 @@ export function Header({ onMenuClick, onLogoClick, isTransparent = false, isScro
         }`}
       />
       
-      <div 
+      <div
         onClick={onLogoClick}
-        className={`w-[38vw] md:w-[10.8vw] ${onLogoClick ? 'cursor-pointer' : 'cursor-default'} ${
-          isTransparent ? 'block' : 'hidden'
+        className={`w-[38vw] md:w-[10.8vw] shrink-0 ${onLogoClick ? 'cursor-pointer' : 'cursor-default'} ${
+          isTransparent ? 'visible' : 'invisible'
         }`}
         style={{ aspectRatio: '371 / 159', filter: 'invert(1) brightness(2)' }}
       >
         <KyafBlk />
       </div>
+      {/* Spacer pushes hamburger to the right at all times */}
+      <div className="flex-1" />
       <Button 
         variant="ghost" 
         onClick={onMenuClick}
