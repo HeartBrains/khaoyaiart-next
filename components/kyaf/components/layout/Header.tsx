@@ -26,7 +26,7 @@ export function Header({ onMenuClick, onLogoClick, isTransparent = false, isScro
       
       <div
         onClick={onLogoClick}
-        className={`w-[38vw] md:w-[10.8vw] shrink-0 ${onLogoClick ? 'cursor-pointer' : 'cursor-default'} ${
+        className={`w-[38vw] max-w-[160px] md:w-[10.8vw] md:max-w-none shrink-0 ${onLogoClick ? 'cursor-pointer' : 'cursor-default'} ${
           isTransparent ? 'visible' : 'invisible'
         }`}
         style={{ aspectRatio: '371 / 159', filter: 'invert(1) brightness(2)' }}
