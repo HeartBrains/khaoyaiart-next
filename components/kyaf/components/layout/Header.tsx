@@ -26,13 +26,10 @@ export function Header({ onMenuClick, onLogoClick, isTransparent = false, isScro
       
       <div 
         onClick={onLogoClick}
-        className={`w-[48vw] md:w-[13.5vw] transition-opacity duration-300 ${onLogoClick ? 'cursor-pointer' : 'cursor-default'} ${
-          isTransparent ? 'opacity-100' : 'opacity-0'
+        className={`w-[48vw] md:w-[13.5vw] ${onLogoClick ? 'cursor-pointer' : 'cursor-default'} ${
+          isTransparent ? 'block' : 'hidden'
         }`}
-        style={{
-          aspectRatio: '371 / 159',
-          filter: isTransparent ? 'invert(1) brightness(2)' : 'none',
-        }}
+        style={{ aspectRatio: '371 / 159' }}
       >
         <KyafBlk />
       </div>

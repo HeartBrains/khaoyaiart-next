@@ -20,7 +20,7 @@ export function Header({ onMenuClick, onLogoClick, isTransparent = false, isScro
         className={`mt-0 mr-0 mb-0 ml-0 p-0 overflow-visible ${onLogoClick ? 'cursor-pointer' : 'cursor-default'}`}
       >
         <Logo 
-          className={`h-[40px] md:h-[60px] w-auto ${isTransparent ? 'text-white' : 'text-black'} ${isScrolled ? 'opacity-0 invisible hidden' : 'opacity-100 visible transition-all duration-300'} mx-[-8px] my-[0px]`}
+          className={`h-[40px] md:h-[60px] w-auto mx-[-8px] my-[0px] ${isTransparent ? 'text-white' : 'text-black'} ${isScrolled ? 'hidden' : 'block'}`}
           white={isTransparent}
         />
       </div>
