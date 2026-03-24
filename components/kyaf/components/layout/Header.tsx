@@ -26,7 +26,7 @@ export function Header({ onMenuClick, onLogoClick, isTransparent = false, isScro
       
       <div 
         onClick={onLogoClick}
-        className={`w-[48vw] md:w-[13.5vw] ${onLogoClick ? 'cursor-pointer' : 'cursor-default'} ${
+        className={`w-[38vw] md:w-[10.8vw] ${onLogoClick ? 'cursor-pointer' : 'cursor-default'} ${
           isTransparent ? 'block' : 'hidden'
         }`}
         style={{ aspectRatio: '371 / 159' }}
