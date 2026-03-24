@@ -46,7 +46,7 @@ export function MovingImageDetailPage({ slug, onNavigate }: MovingImageDetailPag
                   <img
                     src={src}
                     alt={`${data.title?.en} ${index + 1}`}
-                    className="w-full h-auto max-h-[80vh] object-cover block"
+                    className="w-full h-auto min-h-[50vh] max-h-[80vh] object-cover block"
                     loading={index === 0 ? 'eager' : 'lazy'}
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />

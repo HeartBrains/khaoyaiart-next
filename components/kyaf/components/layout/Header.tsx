@@ -26,14 +26,12 @@ export function Header({ onMenuClick, onLogoClick, isTransparent = false, isScro
       
       <div 
         onClick={onLogoClick}
-        className={`w-[180px] h-[77px] md:w-[200px] md:h-[86px] transition-opacity duration-300 ${onLogoClick ? 'cursor-pointer' : 'cursor-default'} ${
+        className={`h-[40px] md:h-[60px] w-auto transition-opacity duration-300 ${onLogoClick ? 'cursor-pointer' : 'cursor-default'} ${
           isTransparent ? 'opacity-100' : 'opacity-0'
         }`}
-        style={{ 
-          filter: isTransparent ? 'invert(1) brightness(2)' : 'none'
-        }}
+        style={{ filter: isTransparent ? 'invert(1) brightness(2)' : 'none' }}
       >
-        <KyafBlk />
+        <KyafBlk className="h-full w-auto" />
       </div>
       <Button 
         variant="ghost" 

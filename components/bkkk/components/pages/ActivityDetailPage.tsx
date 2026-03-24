@@ -47,7 +47,7 @@ export function ActivityDetailPage({ onNavigate, slug, backPage }: ActivityDetai
                   <img
                     src={src}
                     alt={`${title} Gallery ${index + 1}`}
-                    className="w-full h-auto block"
+                    className="w-full h-auto min-h-[50vh] max-h-[80vh] object-cover block"
                     loading={index === 0 ? 'eager' : 'lazy'}
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />
@@ -122,14 +122,6 @@ export function ActivityDetailPage({ onNavigate, slug, backPage }: ActivityDetai
                   </a>
                 </div>
               )}
-              {data.imageCredits && (
-                <div className="mt-auto pt-8">
-                  {data.imageCredits.split('\n').map((line, i) => {
-                    const text = line.replace(/\|$/, '').trim();
-                    return text ? <p key={i} className="text-gray-500 text-[12px]">{text}</p> : null;
-                  })}
-                </div>
-              )}
             </div>
           </div>
           <div className={`md:col-start-7 md:col-span-6 text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
@@ -140,6 +132,14 @@ export function ActivityDetailPage({ onNavigate, slug, backPage }: ActivityDetai
                   className="inline-block text-xl md:text-2xl text-black underline font-normal leading-tight">
                   {data.ctaRight.label}
                 </a>
+              </div>
+            )}
+            {data.imageCredits && (
+              <div className="mt-8">
+                {data.imageCredits.split('\n').map((line, i) => {
+                  const text = line.replace(/\|$/, '').trim();
+                  return text ? <p key={i} className="text-gray-500 text-[12px]">{text}</p> : null;
+                })}
               </div>
             )}
           </div>

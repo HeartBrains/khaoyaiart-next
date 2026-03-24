@@ -1,5 +1,5 @@
 'use client';
-import { Instagram, Facebook } from 'lucide-react';
+import { Instagram, Facebook, AtSign } from 'lucide-react';
 import { useLanguage } from '@/utils/languageContext';
 import KyafWhite from '../../imports/KyafWhite';
 
@@ -50,6 +50,9 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
             </a>
             <a href="https://www.instagram.com/khaoyai_art_forest/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300 transition-colors cursor-pointer">
               <Instagram className="w-5 h-5" />
+            </a>
+            <a href="mailto:info@khaoyaiart.com" className="hover:text-gray-300 transition-colors cursor-pointer">
+              <AtSign className="w-5 h-5" />
             </a>
           </div>
 

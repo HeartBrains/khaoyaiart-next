@@ -1,11 +1,10 @@
 'use client';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { Reveal } from '../ui/Reveal';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
-import { getTranslation } from '@/utils/translations';
 
 import { ABOUT_HERO_IMAGE } from '@/utils/imageConstants';
 
@@ -19,17 +18,40 @@ interface AboutPageProps {
 export function AboutPage({ onNavigate, activePage = 'about' }: AboutPageProps) {
   const { language } = useLanguage();
   const covers = useCovers();
-  const isScrolling = useRef(false);
+  const didScroll = useRef(false);
+  const [activeSection, setActiveSection] = useState<string>(activePage === 'history' ? 'history' : 'about');
 
-  // Handle auto-scroll to section
-  useEffect(() => {
-    if (activePage) {
-        const el = document.getElementById(activePage);
-        if (el) {
-            setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 100);
-        }
+  const scrollTo = (id: string) => {
+    setActiveSection(id);
+    const el = document.getElementById(id);
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY - 120;
+      window.scrollTo({ top, behavior: 'smooth' });
     }
+  };
+
+  useEffect(() => {
+    if (didScroll.current) return;
+    didScroll.current = true;
+    const id = activePage === 'history' ? 'history' : 'about';
+    setTimeout(() => scrollTo(id), 100);
   }, [activePage]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['about', 'history'];
+      const scrollY = window.scrollY + 200;
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i]);
+        if (el && el.offsetTop <= scrollY) {
+          setActiveSection(sections[i]);
+          break;
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const contentEN = [
     `Khao Yai Art Forest is a new paradigm of institution whose name "Art Forest" reflects the institution's ambition: advancing, supporting, and realizing visionary proposals of artists in the natural environment.`,
@@ -59,73 +81,56 @@ export function AboutPage({ onNavigate, activePage = 'about' }: AboutPageProps) 
 
   return (
     <div className="w-full min-h-screen bg-white pb-24">
-      {/* Hero Section */}
-      <ParallaxHero 
-        image={covers.about || ABOUT_HERO_IMAGE}
-        height="h-[80vh]"
-      >
+      <ParallaxHero image={covers.about || ABOUT_HERO_IMAGE} height="h-[80vh]">
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
       </ParallaxHero>
 
       <div className="w-full px-[6vw] pt-[96px] pb-[0px]">
-        <section id="about" className="flex flex-col md:flex-row">
-            {/* Left Column */}
-            <div className="w-full md:w-1/2 mb-8 md:mb-0">
-                <h2 className="text-xl md:text-2xl font-normal font-sans text-black leading-tight">
-                    {language === 'th' ? 'เกี่ยวกับเรา' : 'About Us'}
-                </h2>
-            </div>
+        <div className="flex flex-col md:flex-row">
 
-            {/* Right Column */}
-            <div className="w-full md:w-1/2">
-                <div className="flex flex-col gap-8">
-                    {contentEN.map((paragraph, index) => (
-                        <div key={`content-${index}`} className="flex flex-col gap-4">
-                            {language !== 'th' && (
-                                <p className="text-xl md:text-2xl text-black font-normal leading-tight">
-                                    {paragraph}
-                                </p>
-                            )}
-                            {language === 'th' && (
-                                <p className="text-xl md:text-2xl text-black font-normal font-sans leading-[1.82em]">
-                                    {contentTH[index]}
-                                </p>
-                            )}
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-        
-        {/* History Section */}
-        <section id="history" className="flex flex-col md:flex-row mt-12 md:mt-16">
-            {/* Left Column */}
-            <div className="w-full md:w-1/2 mb-8 md:mb-0">
-                <h2 className="text-xl md:text-2xl font-normal font-sans text-black leading-tight">
-                    {language === 'th' ? 'ประวัติ' : 'History'}
-                </h2>
-            </div>
+          {/* Sticky left nav */}
+          <aside className="w-full md:w-1/2 shrink-0 mb-12 md:mb-0">
+            <nav className="md:sticky md:top-32 flex flex-col items-start gap-2">
+              <button
+                onClick={() => scrollTo('about')}
+                className={`text-left text-xl md:text-2xl font-sans font-normal transition-colors duration-300 ${language === 'th' ? 'leading-[1.82em]' : ''} ${activeSection === 'about' ? 'text-black' : 'text-gray-400 hover:text-black'}`}
+              >
+                {language === 'th' ? 'เกี่ยวกับเรา' : 'About Us'}
+              </button>
+              <button
+                onClick={() => scrollTo('history')}
+                className={`text-left text-xl md:text-2xl font-sans font-normal transition-colors duration-300 ${language === 'th' ? 'leading-[1.82em]' : ''} ${activeSection === 'history' ? 'text-black' : 'text-gray-400 hover:text-black'}`}
+              >
+                {language === 'th' ? 'ประวัติ' : 'History'}
+              </button>
+            </nav>
+          </aside>
 
-            {/* Right Column */}
-            <div className="w-full md:w-1/2">
-                <div className="flex flex-col gap-8">
-                    {historyEN.map((paragraph, index) => (
-                        <div key={`history-${index}`} className="flex flex-col gap-4">
-                            {language !== 'th' && (
-                                <p className="text-xl md:text-2xl text-black font-normal leading-tight">
-                                    {paragraph}
-                                </p>
-                            )}
-                            {language === 'th' && (
-                                <p className="text-xl md:text-2xl text-black font-normal font-sans leading-[1.82em]">
-                                    {historyTH[index]}
-                                </p>
-                            )}
-                        </div>
-                    ))}
+          {/* Scrollable content */}
+          <main className="w-full md:w-1/2">
+
+            <section id="about" className="mb-24 md:mb-32 scroll-mt-32">
+              <Reveal delay={0.1}>
+                <div className="flex flex-col gap-6 text-xl md:text-2xl font-normal leading-tight text-black">
+                  {(language === 'th' ? contentTH : contentEN).map((p, i) => (
+                    <p key={i} className={language === 'th' ? 'leading-[1.82em]' : ''}>{p}</p>
+                  ))}
                 </div>
-            </div>
-        </section>
+              </Reveal>
+            </section>
+
+            <section id="history" className="scroll-mt-32">
+              <Reveal delay={0.1}>
+                <div className="flex flex-col gap-6 text-xl md:text-2xl font-normal leading-tight text-black">
+                  {(language === 'th' ? historyTH : historyEN).map((p, i) => (
+                    <p key={i} className={language === 'th' ? 'leading-[1.82em]' : ''}>{p}</p>
+                  ))}
+                </div>
+              </Reveal>
+            </section>
+
+          </main>
+        </div>
       </div>
     </div>
   );

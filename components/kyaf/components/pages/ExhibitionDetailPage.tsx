@@ -74,7 +74,7 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                          <ImageWithFallback
                             src={src}
                             alt={`${exhibitionData.title} Gallery ${index + 1}`}
-                            className="w-full h-auto max-h-[80vh] block opacity-90 object-cover"
+                            className="w-full h-auto min-h-[50vh] max-h-[80vh] block opacity-90 object-cover"
                          />
                       </CarouselItem>
                    ))}
@@ -194,17 +194,6 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                     </Reveal>
                 )}
 
-                {/* Image Credits — bottom of left column */}
-                {exhibitionData.imageCredits && (
-                    <Reveal delay={0.15}>
-                        <div className="mt-auto pt-4">
-                            {exhibitionData.imageCredits.split('\n').map((line, i) => {
-                                const text = line.replace(/\|$/, '').trim();
-                                return text ? <p key={i} className="text-gray-500 text-[12px]">{text}</p> : null;
-                            })}
-                        </div>
-                    </Reveal>
-                )}
             </div>
 
             {/* Right Column - Text Content */}
@@ -219,6 +208,16 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                                 className="inline-block text-xl md:text-2xl text-black underline font-bold leading-tight">
                                 {exhibitionData.ctaRight.label}
                             </a>
+                        </div>
+                    </Reveal>
+                )}
+                {exhibitionData.imageCredits && (
+                    <Reveal delay={0.3}>
+                        <div className="mt-8">
+                            {exhibitionData.imageCredits.split('\n').map((line, i) => {
+                                const text = line.replace(/\|$/, '').trim();
+                                return text ? <p key={i} className="text-gray-500 text-[12px]">{text}</p> : null;
+                            })}
                         </div>
                     </Reveal>
                 )}
