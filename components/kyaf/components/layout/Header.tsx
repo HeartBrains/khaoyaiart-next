@@ -29,7 +29,7 @@ export function Header({ onMenuClick, onLogoClick, isTransparent = false, isScro
         className={`w-[38vw] md:w-[10.8vw] ${onLogoClick ? 'cursor-pointer' : 'cursor-default'} ${
           isTransparent ? 'block' : 'hidden'
         }`}
-        style={{ aspectRatio: '371 / 159' }}
+        style={{ aspectRatio: '371 / 159', filter: 'invert(1) brightness(2)' }}
       >
         <KyafBlk />
       </div>
