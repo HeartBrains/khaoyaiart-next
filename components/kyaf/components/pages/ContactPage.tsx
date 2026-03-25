@@ -155,13 +155,13 @@ export function ContactPage() {
                         khaoyai_art_forest
                     </a>
                     <a 
-                        href="http://www.khaoyaiart.com" 
+                        href="https://www.khaoyaiart.org" 
                         target="_blank" 
                         rel="noopener noreferrer" 
                         className="font-normal hover:text-gray-600 transition-colors flex items-center text-[19px]"
                     >
                         <Globe className="mr-6" size={16} />
-                        www.khaoyaiart.com
+                        www.khaoyaiart.org
                     </a>
                 </div>
             </div>

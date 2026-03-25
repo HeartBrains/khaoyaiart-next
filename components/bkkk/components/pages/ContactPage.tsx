@@ -174,13 +174,13 @@ export function ContactPage() {
                           bangkok_kunsthalle
                         </a>
                         <a 
-                          href="http://www.khaoyaiart.com" 
+                          href="https://www.khaoyaiart.org" 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className={`text-xl md:text-2xl font-normal underline hover:no-underline ${language === 'th' ? 'leading-[1.82em]' : 'leading-tight'}`}
                         >
                           <Globe className="inline-block mr-6" size={16} />
-                          www.khaoyaiart.com
+                          www.khaoyaiart.org
                         </a>
                     </div>
                 </Reveal>
