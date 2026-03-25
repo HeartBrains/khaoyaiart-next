@@ -24,10 +24,10 @@ export const ACTIVITY_HERO_IMAGE = "https://lirp.cdn-website.com/5516674f/dms3re
 
 // Home Page Hero Slider Images (All 6 images from CSV - Reversed Order)
 export const HOME_HERO_IMAGES = [
+  "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-6.+About+Us--Madrid+Circle-+Krittawat+and+Puttisin+1-1920w.jpg",
   "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-4.+Activities-Forest+Table--Activity+-+People-+Puttisin+5-d03dca9e-1920w.jpg",
   "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-11.+Contact+Us--Activity+-+People-+Puttisin+16-1920w.jpg",
   "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-2.+Visit--Activity+-+People-+Rungkit+-+Pongsakorn+3-1920w.jpg",
-  "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-6.+About+Us--Madrid+Circle-+Krittawat+and+Puttisin+1-1920w.jpg",
   "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-7.+Team--Activity+-+People-+Nawaphon-+Film+41-1920w.jpg",
   "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-11.+Contact+Us--Activity+-+People-+Chittawan+Limcharoen+35-1920w.jpg"
 ];
