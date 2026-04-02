@@ -1,6 +1,16 @@
 name: Build & Deploy
 
 on:
+  push:
+    branches: [master]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'lib/**'
+      - 'utils/**'
+      - 'public/**'
+      - 'next.config.ts'
+      - 'package.json'
   repository_dispatch:
     types: [wp_content_updated]
   workflow_dispatch:
