@@ -2,14 +2,12 @@ import type { Metadata } from 'next';
 import { kyafMetadata } from '@/lib/seo';
 import { JsonLd, organizationJsonLd } from '@/lib/JsonLd';
 import { ClientPage } from '@/components/kyaf/ClientPage';
-import { GtagConversionEvent } from '@/components/GtagConversionEvent';
 
 export const metadata: Metadata = kyafMetadata('Khao Yai Art Forest', 'Khao Yai Art Forest is a contemporary art space set in the forests of Khao Yai, Thailand, presenting exhibitions, residencies, and public programmes.', { path: '/kyaf' });
 
 export default function Page() {
   return (
     <>
-      <GtagConversionEvent />
       <JsonLd data={organizationJsonLd({
         name: 'Khao Yai Art Forest',
         url: 'https://khaoyaiart.org/kyaf',
