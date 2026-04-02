@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { LandingClient } from './landing-client';
+import { GtagConversionEvent } from '@/components/GtagConversionEvent';
 
 export const metadata: Metadata = {
   title: 'Bangkok Kunsthalle / Khao Yai Art Forest',
@@ -23,5 +24,10 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <LandingClient />;
+  return (
+    <>
+      <GtagConversionEvent />
+      <LandingClient />
+    </>
+  );
 }
