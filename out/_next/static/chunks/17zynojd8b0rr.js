@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,79564,t=>{"use strict";var e=t.i(71645);t.s(["GtagConversionEvent",0,function(){return(0,e.useEffect)(()=>{"u">typeof gtag&&gtag("event","conversion",{send_to:"AW-18039634862/atAUCJiQl48cEK73-5lD"})},[]),null}])}]);
