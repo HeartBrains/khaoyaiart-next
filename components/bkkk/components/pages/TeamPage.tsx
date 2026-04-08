@@ -18,7 +18,13 @@ interface TeamPageProps {
 export function TeamPage({ activePage }: TeamPageProps) {
   const { language } = useLanguage();
   const covers = useCovers();
-  const { data: members } = useBkkkTeamMembers();
+  const { data: rawMembers } = useBkkkTeamMembers();
+  // Role override — update in WP when possible
+  const members = rawMembers.map(m =>
+    m.name === 'Thanchanok Benjajinda'
+      ? { ...m, role: 'Assistant Curator of Public Programs', roleTH: 'ผู้ช่วยภัณฑารักษ์โปรแกรมสาธารณะ' }
+      : m
+  );
 
   // Group members by their 'group' field, sorted by 'order'
   const grouped = members

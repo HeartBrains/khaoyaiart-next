@@ -124,15 +124,7 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
                 </div>
               )}
 
-              {/* Image Credits */}
-              {data.imageCredits && (
-                <div className="mt-4">
-                  {data.imageCredits.split('\n').map((line, i) => {
-                    const text = line.replace(/\|$/, '').trim();
-                    return text ? <p key={i} className="text-gray-500 text-[12px]">{text}</p> : null;
-                  })}
-                </div>
-              )}
+
             </div>
           </div>
           <div className={`md:col-start-7 md:col-span-6 text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
@@ -148,6 +140,14 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
               >
                 {data.cta2Label}
               </a>
+            )}
+            {data.imageCredits && (
+              <div className="mt-8">
+                {data.imageCredits.split('\n').map((line, i) => {
+                  const text = line.replace(/\|$/, '').trim();
+                  return text ? <p key={i} className="text-gray-500 text-[12px]">{text}</p> : null;
+                })}
+              </div>
             )}
           </div>
         </div>
