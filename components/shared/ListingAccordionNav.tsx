@@ -31,8 +31,19 @@ export function ListingAccordionNav({
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   const handleSectionClick = (sectionId: string) => {
+    const isOpening = expandedSection !== sectionId;
     setExpandedSection(prev => (prev === sectionId ? null : sectionId));
     onSectionClick(sectionId);
+    // Also scroll to first record when opening
+    if (isOpening) {
+      const section = sections.find(s => s.id === sectionId);
+      if (section && section.records.length > 0) {
+        setTimeout(() => {
+          const el = document.getElementById(`record-${section.records[0].slug}`);
+          if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
+        }, 50);
+      }
+    }
   };
 
   return (
@@ -70,13 +81,13 @@ export function ListingAccordionNav({
                         <button
                           key={record.slug}
                           onClick={() => onRecordClick(record.slug)}
-                          className="pl-4 md:pl-6 text-left text-base md:text-lg font-normal text-gray-500 hover:text-black transition-colors duration-200 leading-snug py-0.5"
+                          className="pl-4 md:pl-6 text-left text-xl md:text-2xl font-normal text-gray-400 hover:text-black transition-colors duration-200 leading-snug py-0.5"
                         >
                           {record.title}
                         </button>
                       ))
                     ) : (
-                      <span className="pl-4 md:pl-6 text-base md:text-lg text-gray-300 py-0.5">—</span>
+                      <span className="pl-4 md:pl-6 text-xl md:text-2xl text-gray-300 py-0.5">—</span>
                     )}
                   </div>
                 </motion.div>
