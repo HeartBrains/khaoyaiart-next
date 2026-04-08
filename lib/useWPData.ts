@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { fetchCPTBySlug, fetchMenuConfig, type WPRawPost, type MenuConfig, type MenuConfigMap, type CoverConfigMap } from './wp-api';
+import { mapAboutUs } from './wp-mappers';
 import {
   mapBkkkExhibition, mapKyafExhibition, mapMovingImage,
   mapActivity, mapResidencyArtist, mapBkkkTeamMember, mapKyafTeamMember, mapPressItem,
@@ -112,6 +113,8 @@ export const useBkkkTeamMembers = () => useWPList('team-members', 'bkkk', mapBkk
 export const useKyafTeamMembers = () => useWPList('team-members', 'kyaf', mapKyafTeamMember);
 export const useBkkkPressItems  = () => useWPList('press_item', 'bkkk', mapPressItem);
 export const useKyafPressItems  = () => useWPList('press_item', 'kyaf', mapPressItem);
+export const useBkkkAboutUs     = () => useWPList('about-us', 'bkkk', mapAboutUs);
+export const useKyafAboutUs     = () => useWPList('about-us', 'kyaf', mapAboutUs);
 
 export const useExhibitionBySlug        = (slug: string) => useWPItem('exhibition', slug, mapBkkkExhibition);
 export const useKyafExhibitionBySlug    = (slug: string) => useWPItem('exhibition', slug, mapKyafExhibition);

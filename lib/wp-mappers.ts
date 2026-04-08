@@ -11,6 +11,7 @@ export type ResidencyArtistItem = ReturnType<typeof mapResidencyArtist>;
 export type TeamMemberItem = ReturnType<typeof mapBkkkTeamMember>;
 export type ActivityItem = ReturnType<typeof mapActivity>;
 export type PressItem = ReturnType<typeof mapPressItem>;
+export type AboutUsItem = ReturnType<typeof mapAboutUs>;
 
 type Lang = 'en' | 'th';
 
@@ -284,6 +285,20 @@ export function mapActivity(post: WPRawPost, lang: Lang = 'en') {
 }
 
 
+
+// ─── About Us ─────────────────────────────────────────────────────────────────
+
+export function mapAboutUs(post: WPRawPost) {
+  return {
+    id: String(post.id),
+    slug: post.slug,
+    section: m(post, 'section'),
+    detail: m(post, 'detail') || post.content?.rendered || '',
+    site: m(post, 'site') as WPSite,
+    status: m(post, 'status') || 'publish',
+    order: Number(m(post, 'order')) || 0,
+  };
+}
 
 // ─── Press Item ───────────────────────────────────────────────────────────────
 
