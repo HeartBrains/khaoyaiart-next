@@ -47,10 +47,18 @@ export function AboutPage({ activePage = 'about' }: AboutPageProps) {
       }
       return Array.from(map.entries())
         .map(([section, details]) => ({ section, details }))
-        .sort((a, b) => a.section.localeCompare(b.section));
+        .sort((a, b) => {
+          if (a.section === 'About Us') return -1;
+          if (b.section === 'About Us') return 1;
+          return a.section.localeCompare(b.section);
+        });
     }
     return FALLBACK.map(f => ({ section: f.section, details: [f.detail] }))
-      .sort((a, b) => a.section.localeCompare(b.section));
+      .sort((a, b) => {
+        if (a.section === 'About Us') return -1;
+        if (b.section === 'About Us') return 1;
+        return a.section.localeCompare(b.section);
+      });
   })();
 
   const firstId = sections.length > 0 ? slugify(sections[0].section) : 'about';
