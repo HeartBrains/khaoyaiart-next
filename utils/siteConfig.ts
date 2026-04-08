@@ -62,7 +62,7 @@ export const siteConfig = {
     activities: {
       current: true,
       upcoming: true,
-      past: false,
+      past: true,
       publicProgram: true,
       screenings: true,
     },

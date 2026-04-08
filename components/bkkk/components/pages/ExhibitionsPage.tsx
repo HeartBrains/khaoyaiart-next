@@ -8,6 +8,7 @@ import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
 import { useBkkkExhibitions, useSectionVisibility } from '@/lib/useWPData';
+import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
 
 // Categorize exhibition status using ISO dates
 function getExhibitionStatus(fromDate: string, toDate: string, explicitStatus: 'current' | 'upcoming' | 'past', referenceDate: Date): 'current' | 'upcoming' | 'past' | null {
@@ -136,6 +137,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
     
     return (
       <div 
+        id={`record-${item.slug}`}
         key={`${prefix}-${index}-${item.slug}`}
         className="flex flex-col gap-6 w-full cursor-pointer group" 
         onClick={() => onNavigate?.('exhibition-detail', item.slug)}
@@ -187,21 +189,23 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
         <div className="flex flex-col md:flex-row gap-12 md:gap-0">
           {/* Sticky Navigation Menu */}
           <aside className="w-full md:w-1/2 shrink-0">
-            <nav className="md:sticky md:top-32 flex flex-col items-start gap-2">
-              {sections.map((section) => (
-                <button
-                  key={section.id}
-                  onClick={() => scrollToSection(section.id)}
-                  className={`text-left text-xl md:text-2xl font-sans font-normal transition-all duration-300 ${
-                    activeSection === section.id
-                      ? 'text-black'
-                      : 'text-gray-400 hover:text-black'
-                  }`}
-                >
-                  {section.label}
-                </button>
-              ))}
-            </nav>
+            <ListingAccordionNav
+              sections={sections.map(s => ({
+                id: s.id,
+                label: s.label,
+                records: (
+                  s.id === 'upcoming-exhibitions' ? upcomingExhibitions :
+                  s.id === 'current-exhibitions'  ? currentExhibitions  :
+                  pastExhibitions
+                ).map(ex => ({ id: ex.id, slug: ex.slug, title: ex.title[language] })),
+              }))}
+              activeSection={activeSection}
+              onSectionClick={scrollToSection}
+              onRecordClick={(slug) => {
+                const el = document.getElementById(`record-${slug}`);
+                if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
+              }}
+            />
           </aside>
 
           {/* Content Sections */}

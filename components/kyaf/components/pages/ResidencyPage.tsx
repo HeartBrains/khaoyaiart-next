@@ -9,6 +9,7 @@ import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
 import { useKyafResidencyArtists, useSectionVisibility } from '@/lib/useWPData';
 import { IMG_FOG_SRC } from '@/utils/imageConstants';
+import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
 
 interface ResidencyPageProps {
   onNavigate?: (page: string, slug?: string) => void;
@@ -98,6 +99,7 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
 
     return (
       <div
+        id={`record-${artist.slug}`}
         key={`${prefix}-${index}-${artist.slug}`}
         className="flex flex-col gap-6 w-full cursor-pointer group"
         onClick={() => onNavigate?.('artist-detail', artist.slug)}
@@ -142,21 +144,23 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
         <div className="flex flex-col md:flex-row gap-12 md:gap-0">
           {/* Sticky Navigation Menu */}
           <aside className="w-full md:w-1/2 shrink-0">
-            <nav className="md:sticky md:top-32 flex flex-col items-start gap-2">
-              {sections.map((section) => (
-                <button
-                  key={section.id}
-                  onClick={() => scrollToSection(section.id)}
-                  className={`text-left text-xl md:text-2xl font-sans font-normal transition-all duration-300 ${
-                    activeSection === section.id
-                      ? 'text-black'
-                      : 'text-gray-400 hover:text-black'
-                  }`}
-                >
-                  {section.label}
-                </button>
-              ))}
-            </nav>
+            <ListingAccordionNav
+              sections={sections.map(s => ({
+                id: s.id,
+                label: s.label,
+                records: (
+                  s.id === 'upcoming-residency' ? upcomingArtists :
+                  s.id === 'current-artists'    ? currentArtists  :
+                  pastArtists
+                ).map(a => ({ id: a.id, slug: a.slug, title: language === 'th' ? a.nameTH : a.name })),
+              }))}
+              activeSection={activeSection}
+              onSectionClick={scrollToSection}
+              onRecordClick={(slug) => {
+                const el = document.getElementById(`record-${slug}`);
+                if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
+              }}
+            />
           </aside>
 
           {/* Content Sections */}

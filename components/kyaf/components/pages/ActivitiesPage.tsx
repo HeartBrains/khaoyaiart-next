@@ -9,6 +9,7 @@ import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
 import { useKyafActivities, useSectionVisibility } from '@/lib/useWPData';
+import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
 
 interface ActivitiesPageProps {
   onNavigate?: (page: string, slug?: string) => void;
@@ -61,7 +62,7 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
   }, [targetSectionId]);
 
   const ActivityCard = ({ item }) => (
-    <div className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', item.slug)}>
+    <div id={`record-${item.slug}`} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', item.slug)}>
       {item.featuredImage && (
         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
           <ImageWithFallback src={item.featuredImage} alt={item.title[language] || item.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" loading="lazy" />
@@ -97,14 +98,23 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
         <div className="flex flex-col md:flex-row gap-12 md:gap-0">
 
           <aside className="w-full md:w-1/2 shrink-0">
-            <nav className="md:sticky md:top-32 flex flex-col items-start gap-2">
-              {sections.map(s => (
-                <button key={s.id} onClick={() => scrollToSection(s.id)}
-                  className={`text-left text-xl md:text-2xl font-sans font-normal transition-all duration-300 ${activeSection === s.id ? 'text-black' : 'text-gray-400 hover:text-black'}`}>
-                  {s.label}
-                </button>
-              ))}
-            </nav>
+            <ListingAccordionNav
+              sections={sections.map(s => ({
+                id: s.id,
+                label: s.label,
+                records: (
+                  s.id === 'upcoming-activities' ? upcomingActivities :
+                  s.id === 'current-activities'  ? currentActivities  :
+                  pastActivities
+                ).map(a => ({ id: a.id, slug: a.slug, title: a.title[language] || a.title.en })),
+              }))}
+              activeSection={activeSection}
+              onSectionClick={scrollToSection}
+              onRecordClick={(slug) => {
+                const el = document.getElementById(`record-${slug}`);
+                if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
+              }}
+            />
           </aside>
 
           <div className="w-full md:w-1/2 flex flex-col md:items-end">

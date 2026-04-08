@@ -311,9 +311,9 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                         )}
                         <a 
                             href="/kyaf"
-                            className="text-[18px] text-white font-normal hover:text-gray-300 transition-colors uppercase tracking-wide"
+                            className="text-[18px] text-white font-normal hover:text-gray-300 transition-colors tracking-wide"
                         >
-                            KYAF
+                            Khao Yai Art Forest
                         </a>
                     </div>
 

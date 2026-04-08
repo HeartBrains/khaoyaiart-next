@@ -222,14 +222,6 @@ export function VisitPage() {
                                         ? 'ที่นั่งจำกัด จำเป็นต้องจองล่วงหน้า กรุณาตรวจสอบตารางการเดินทางก่อนจอง'
                                         : 'Limited seats available. Advance reservation required. Kindly review the departure schedule prior to booking.'}
                                 </p>
-                                <a 
-                                    href={siteConfig.links.booking}
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="inline-block text-xl md:text-2xl underline hover:no-underline mt-2 font-bold"
-                                >
-                                    {language === 'th' ? 'จองบัตร' : 'Get Ticket'}
-                                </a>
                             </div>
                         </Reveal>
                     </div>

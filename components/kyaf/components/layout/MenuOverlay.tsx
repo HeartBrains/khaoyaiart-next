@@ -47,12 +47,11 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
     { label: t('nav.home'), page: 'home' },
     { label: t('nav.visit'), page: 'visit' },
     { 
-      label: t('nav.exhibitions'), 
+      label: t('nav.artworks'), 
       page: 'exhibitions',
       children: [
-          { label: t('exhibitions.current'), page: 'exhibitions', section: 'current' },
-          { label: t('exhibitions.upcoming'), page: 'exhibitions', section: 'upcoming' },
-          { label: t('exhibitions.past'), page: 'exhibitions', section: 'past' },
+          { label: t('artworks.current'), page: 'exhibitions', section: 'current' },
+          { label: t('artworks.past'), page: 'exhibitions', section: 'past' },
       ]
     },
     {
@@ -285,9 +284,9 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                         />
                         <a 
                             href="/bk"
-                            className="text-xl md:text-2xl text-white font-normal hover:text-gray-300 transition-colors uppercase tracking-wide cursor-pointer"
+                            className="text-xl md:text-2xl text-white font-normal hover:text-gray-300 transition-colors tracking-wide cursor-pointer"
                         >
-                            BK
+                            Bangkok Kunsthalle
                         </a>
                     </div>
 

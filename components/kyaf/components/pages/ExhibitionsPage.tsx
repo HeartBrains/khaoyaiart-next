@@ -9,6 +9,8 @@ import { useLanguage } from '@/utils/languageContext';
 import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
 import { useKyafExhibitions } from '@/lib/useWPData';
 import { EXHIBITIONS_HERO_IMAGE } from '@/utils/imageConstants';
+import { RichContent } from '@/utils/richContent';
+import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
 
 interface ExhibitionsPageProps {
   onNavigate?: (page: string, slug?: string) => void;
@@ -19,18 +21,16 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
   const internalNavigate = useAppNavigate();
   const onNavigate = onNavigateProp ?? internalNavigate;
   const { data: exhibitions } = useKyafExhibitions();
-  const [activeSection, setActiveSection] = useState('upcoming-exhibitions');
+  const [activeSection, setActiveSection] = useState('current-exhibitions');
   const { language } = useLanguage();
   const covers = useCovers();
 
-  const upcoming = exhibitions.filter(ex => ex.status === 'upcoming');
   const current  = exhibitions.filter(ex => ex.status === 'current');
   const past     = exhibitions.filter(ex => ex.status === 'past');
 
   const sections = [
-    { id: 'upcoming-exhibitions', label: language === 'th' ? 'นิทรรศการที่กำลังจะเกิดขึ้น' : 'Upcoming Exhibitions', items: upcoming },
-    { id: 'current-exhibitions',  label: language === 'th' ? 'นิทรรศการปัจจุบัน'           : 'Current Exhibitions',  items: current  },
-    { id: 'past-exhibitions',     label: language === 'th' ? 'นิทรรศการที่ผ่านมา'           : 'Past Exhibitions',     items: past     },
+    { id: 'current-exhibitions',  label: language === 'th' ? 'ผลงานศิลปะปัจจุบัน'  : 'Current Artworks',  items: current  },
+    { id: 'past-exhibitions',     label: language === 'th' ? 'ผลงานศิลปะที่ผ่านมา' : 'Past Artworks',     items: past     },
   ];
 
   const scrollToSection = (id: string) => {
@@ -61,7 +61,6 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
   useEffect(() => {
     if (targetSectionId) {
       const idMap: Record<string, string> = {
-        upcoming: 'upcoming-exhibitions',
         current:  'current-exhibitions',
         past:     'past-exhibitions',
       };
@@ -71,6 +70,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
 
   const ExhibitionCard = ({ item }: { item: any }) => (
     <div
+      id={`record-${item.slug}`}
       className="flex flex-col gap-6 w-full cursor-pointer group"
       onClick={() => onNavigate?.('exhibition-detail', item.slug)}
     >
@@ -91,9 +91,9 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
           </p>
         )}
         {item.listingSummary && (
-          <p className={`text-xl md:text-2xl font-normal text-gray-600 leading-tight line-clamp-3 mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-            {language === 'th' ? item.listingSummary.th : item.listingSummary.en}
-          </p>
+          <div className={`text-xl md:text-2xl font-normal text-gray-600 leading-tight line-clamp-3 mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+            <RichContent content={language === 'th' ? item.listingSummary.th : item.listingSummary.en} />
+          </div>
         )}
       </div>
     </div>
@@ -111,19 +111,23 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
 
           {/* Sticky nav */}
           <aside className="w-full md:w-1/2 shrink-0">
-            <nav className="md:sticky md:top-32 flex flex-col items-start gap-2">
-              {sections.map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => scrollToSection(s.id)}
-                  className={`text-left text-xl md:text-2xl font-normal transition-all duration-300 ${
-                    activeSection === s.id ? 'text-black' : 'text-gray-400 hover:text-black'
-                  }`}
-                >
-                  {s.label}
-                </button>
-              ))}
-            </nav>
+            <ListingAccordionNav
+              sections={sections.map(s => ({
+                id: s.id,
+                label: s.label,
+                records: s.items.map(item => ({
+                  id: item.id,
+                  slug: item.slug,
+                  title: language === 'th' ? item.title.th : item.title.en,
+                })),
+              }))}
+              activeSection={activeSection}
+              onSectionClick={scrollToSection}
+              onRecordClick={(slug) => {
+                const el = document.getElementById(`record-${slug}`);
+                if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
+              }}
+            />
           </aside>
 
           {/* Scrollable sections */}

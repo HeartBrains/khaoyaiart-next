@@ -137,7 +137,6 @@ export function TeamPage({ activePage }: TeamPageProps) {
               'Sangita Jindal',
               'Isabel Liu',
               'Takeo Obayashi',
-              'Taizo Son',
               'Nunthinee Tanner',
               'Elisa Yu',
               'Lisa Zhang',

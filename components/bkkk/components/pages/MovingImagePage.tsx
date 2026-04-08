@@ -7,6 +7,7 @@ import { getEmptyStateMessage } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
 import { useMovingImages, useSectionVisibility } from '@/lib/useWPData';
 import { siteConfig } from '@/utils/siteConfig';
+import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
 const movingImageHero = '/assets/429c8ad61cdb4d502462d129e377fe4faf35abf2.png';
 
 interface MovingImagePageProps {
@@ -98,24 +99,23 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
         <div className="flex flex-col md:flex-row gap-12 md:gap-0">
           {/* Left Column - Title & Anchor Menu */}
           <aside className="w-full md:w-1/2 shrink-0">
-            <div className="md:sticky md:top-32">
-              {/* Anchor Navigation */}
-              <nav className="flex flex-col gap-3">
-                {sections.map((section) => (
-                  <button
-                    key={section.id}
-                    onClick={() => scrollToSection(section.id)}
-                    className={`text-left text-xl md:text-2xl font-normal transition-colors duration-300 ${
-                      activeSection === section.id 
-                        ? 'text-black' 
-                        : 'text-gray-400 hover:text-gray-600'
-                    } ${language === 'th' ? 'leading-[1.82em]' : ''}`}
-                  >
-                    {section.label}
-                  </button>
-                ))}
-              </nav>
-            </div>
+            <ListingAccordionNav
+              sections={sections.map(s => ({
+                id: s.id,
+                label: s.label,
+                records: (
+                  s.id === 'upcoming-programs' ? upcomingPrograms :
+                  s.id === 'current-programs'  ? currentPrograms  :
+                  pastPrograms
+                ).map(r => ({ id: r.id, slug: r.slug, title: r.title[language] || r.title.en })),
+              }))}
+              activeSection={activeSection}
+              onSectionClick={scrollToSection}
+              onRecordClick={(slug) => {
+                const el = document.getElementById(`record-${slug}`);
+                if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
+              }}
+            />
           </aside>
 
           {/* Right Column - Content */}
@@ -126,6 +126,7 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
                 {upcomingPrograms.length > 0 ? (
                   upcomingPrograms.map((record) => (
                     <div
+                      id={`record-${record.slug}`}
                       key={record.id}
                       className="flex flex-col gap-6 w-full cursor-pointer group"
                       onClick={() => onNavigate?.('moving-image-detail', record.slug)}
@@ -156,6 +157,7 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
                 {currentPrograms.length > 0 ? (
                   currentPrograms.map((record) => (
                     <div
+                      id={`record-${record.slug}`}
                       key={record.id}
                       className="flex flex-col gap-6 w-full cursor-pointer group"
                       onClick={() => onNavigate?.('moving-image-detail', record.slug)}
@@ -186,6 +188,7 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
                 {pastPrograms.length > 0 ? (
                   pastPrograms.map((record) => (
                     <div
+                      id={`record-${record.slug}`}
                       key={record.id}
                       className="flex flex-col gap-6 w-full cursor-pointer group"
                       onClick={() => onNavigate?.('moving-image-detail', record.slug)}
