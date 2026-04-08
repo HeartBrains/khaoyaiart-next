@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
-import { useKyafExhibitions } from '@/lib/useWPData';
+import { useKyafExhibitions, useSectionVisibility } from '@/lib/useWPData';
 import { EXHIBITIONS_HERO_IMAGE } from '@/utils/imageConstants';
 import { RichContent } from '@/utils/richContent';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
@@ -24,15 +24,21 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
   const [activeSection, setActiveSection] = useState('upcoming-exhibitions');
   const { language } = useLanguage();
   const covers = useCovers();
+  const wpSections = useSectionVisibility('kyaf');
+  const vis = {
+    upcoming: wpSections?.exhibitions?.upcoming ?? true,
+    current:  wpSections?.exhibitions?.current  ?? true,
+    past:     wpSections?.exhibitions?.past     ?? true,
+  };
 
   const upcoming = exhibitions.filter(ex => ex.status === 'upcoming');
   const current  = exhibitions.filter(ex => ex.status === 'current');
   const past     = exhibitions.filter(ex => ex.status === 'past');
 
   const sections = [
-    { id: 'upcoming-exhibitions', label: language === 'th' ? 'ผลงานศิลปะที่กำลังจะมาถึง' : 'Upcoming Artworks', items: upcoming },
-    { id: 'current-exhibitions',  label: language === 'th' ? 'ผลงานศิลปะปัจจุบัน'         : 'Current Artworks',  items: current  },
-    { id: 'past-exhibitions',     label: language === 'th' ? 'ผลงานศิลปะที่ผ่านมา'        : 'Past Artworks',     items: past     },
+    ...(vis.upcoming ? [{ id: 'upcoming-exhibitions', label: language === 'th' ? 'ผลงานศิลปะที่กำลังจะมาถึง' : 'Upcoming Artworks', items: upcoming }] : []),
+    ...(vis.current  ? [{ id: 'current-exhibitions',  label: language === 'th' ? 'ผลงานศิลปะปัจจุบัน'         : 'Current Artworks',  items: current  }] : []),
+    ...(vis.past     ? [{ id: 'past-exhibitions',     label: language === 'th' ? 'ผลงานศิลปะที่ผ่านมา'        : 'Past Artworks',     items: past     }] : []),
   ];
 
   const scrollToSection = (id: string) => {

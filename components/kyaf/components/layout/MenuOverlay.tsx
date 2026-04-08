@@ -7,7 +7,7 @@ import { ASSETS } from '@/components/kyaf/utils/assets';
 import { ExpandingSearch } from '../search/ExpandingSearch';
 import { useLanguage } from '@/utils/languageContext';
 import { siteConfig, isSectionVisible } from '@/utils/siteConfig';
-import { useMenuConfig } from '@/lib/useWPData';
+import { useMenuConfig, useSectionVisibility } from '@/lib/useWPData';
 
 interface MenuOverlayProps {
   isOpen: boolean;
@@ -32,6 +32,8 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
   const wpMenu = useMenuConfig('kyaf');
   const menu = { ...siteConfig.kyafMenu, ...(wpMenu ?? {}) };
   const isVisible = (key: string) => (menu as Record<string, boolean>)[key] ?? (siteConfig.kyafMenu as Record<string, boolean>)[key] ?? true;
+  const wpSections = useSectionVisibility('kyaf');
+  const sec = (cpt: string, section: string) => wpSections?.[cpt]?.[section] ?? siteConfig.visibility?.[cpt]?.[section] ?? true;
 
   const toggleExpand = (label: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -50,26 +52,27 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
       label: t('nav.artworks'), 
       page: 'exhibitions',
       children: [
-          { label: t('artworks.upcoming'), page: 'exhibitions', section: 'upcoming' },
-          { label: t('artworks.current'),  page: 'exhibitions', section: 'current' },
-          { label: t('artworks.past'),     page: 'exhibitions', section: 'past' },
+          ...(sec('exhibitions', 'upcoming') ? [{ label: t('artworks.upcoming'), page: 'exhibitions', section: 'upcoming' }] : []),
+          ...(sec('exhibitions', 'current')  ? [{ label: t('artworks.current'),  page: 'exhibitions', section: 'current'  }] : []),
+          ...(sec('exhibitions', 'past')     ? [{ label: t('artworks.past'),     page: 'exhibitions', section: 'past'     }] : []),
       ]
     },
     {
         label: t('nav.activities'),
         page: 'activities',
         children: [
-            { label: t('activities.current'), page: 'activities', section: 'current' },
-            { label: t('activities.upcoming'), page: 'activities', section: 'upcoming' },
-            { label: t('activities.past'), page: 'activities', section: 'past' },
+            ...(sec('activities', 'upcoming') ? [{ label: t('activities.upcoming'), page: 'activities', section: 'upcoming' }] : []),
+            ...(sec('activities', 'current')  ? [{ label: t('activities.current'),  page: 'activities', section: 'current'  }] : []),
+            ...(sec('activities', 'past')     ? [{ label: t('activities.past'),     page: 'activities', section: 'past'     }] : []),
         ]
     },
     {
         label: t('nav.residency'),
         page: 'residency',
         children: [
-            { label: t('residency.currentArtists'), page: 'residency', section: 'current' },
-            { label: t('residency.pastArtists'), page: 'residency', section: 'past' },
+            ...(sec('residency', 'upcoming') ? [{ label: t('residency.upcomingArtists'), page: 'residency', section: 'upcoming' }] : []),
+            ...(sec('residency', 'current')  ? [{ label: t('residency.currentArtists'),  page: 'residency', section: 'current'  }] : []),
+            ...(sec('residency', 'past')     ? [{ label: t('residency.pastArtists'),      page: 'residency', section: 'past'     }] : []),
         ]
     },
     { label: t('nav.blog'), page: 'blog' },
