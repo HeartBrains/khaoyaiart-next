@@ -33,7 +33,11 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
   const menu = { ...siteConfig.kyafMenu, ...(wpMenu ?? {}) };
   const isVisible = (key: string) => (menu as Record<string, boolean>)[key] ?? (siteConfig.kyafMenu as Record<string, boolean>)[key] ?? true;
   const wpSections = useSectionVisibility('kyaf');
-  const sec = (cpt: string, section: string) => wpSections?.[cpt]?.[section] ?? siteConfig.visibility?.[cpt]?.[section] ?? true;
+  const sec = (cpt: string, section: string) => {
+    const cptSec = wpSections?.[cpt as keyof typeof wpSections] as Record<string, boolean> | undefined;
+    const fallback = (siteConfig.visibility as Record<string, Record<string, boolean>>)?.[cpt]?.[section] ?? true;
+    return cptSec?.[section] ?? fallback;
+  };
 
   const toggleExpand = (label: string, e: React.MouseEvent) => {
     e.stopPropagation();
