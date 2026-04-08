@@ -46,9 +46,12 @@ export function AboutPage({ onNavigate, activePage = 'about' }: AboutPageProps) 
         if (!map.has(key)) map.set(key, []);
         map.get(key)!.push(item.detail);
       }
-      return Array.from(map.entries()).map(([section, details]) => ({ section, details }));
+      return Array.from(map.entries())
+        .map(([section, details]) => ({ section, details }))
+        .sort((a, b) => a.section.localeCompare(b.section));
     }
-    return FALLBACK.map(f => ({ section: f.section, details: [f.detail] }));
+    return FALLBACK.map(f => ({ section: f.section, details: [f.detail] }))
+      .sort((a, b) => a.section.localeCompare(b.section));
   })();
 
   const firstId = sections.length > 0 ? slugify(sections[0].section) : 'about';
