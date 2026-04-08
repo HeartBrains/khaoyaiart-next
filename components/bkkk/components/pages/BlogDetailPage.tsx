@@ -8,6 +8,7 @@ import Autoplay from 'embla-carousel-autoplay';
 import { Reveal } from '../ui/Reveal';
 import { useLanguage } from '@/utils/languageContext';
 import { getMockPost } from '@/utils/mockDataBilingual';
+import { RichContent } from '@/utils/richContent';
 
 interface BlogDetailPageProps {
   onNavigate: (page: string) => void;
@@ -155,7 +156,7 @@ export function BlogDetailPage({ onNavigate, post, slug }: BlogDetailPageProps) 
 
             {/* Right Column */}
             <div className={`md:col-start-7 md:col-span-6 text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-               <div className="[&>p]:mb-8" dangerouslySetInnerHTML={{ __html: postData.content }} />
+               <div className="[&>p]:mb-8"><RichContent content={postData.content} /></div>
 
                {postData.acf?.keyThemes && (
                    <div>

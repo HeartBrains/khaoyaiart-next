@@ -6,6 +6,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import Autoplay from 'embla-carousel-autoplay';
 import { useLanguage } from '@/utils/languageContext';
 import { useResidencyArtistBySlug } from '@/lib/useWPData';
+import { RichContent } from '@/utils/richContent';
 
 interface ArtistDetailPageProps {
   onNavigate: (page: string) => void;
@@ -105,7 +106,7 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
             </div>
           </div>
           <div className={`md:col-start-7 md:col-span-6 text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-            {bio && <div className="[&>p]:mb-8" dangerouslySetInnerHTML={{ __html: bio }} />}
+            {bio && <div className="[&>p]:mb-8"><RichContent content={bio} /></div>}
             {data.imageCredits && (
               <div className="mt-8">
                 {data.imageCredits.split('\n').map((line, i) => {

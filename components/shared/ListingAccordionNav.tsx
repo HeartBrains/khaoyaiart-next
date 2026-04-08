@@ -28,7 +28,7 @@ export function ListingAccordionNav({
   onSectionClick,
   onRecordClick,
 }: ListingAccordionNavProps) {
-  const [expandedSection, setExpandedSection] = useState<string | null>(activeSection);
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   const handleSectionClick = (sectionId: string) => {
     setExpandedSection(prev => (prev === sectionId ? null : sectionId));
@@ -45,13 +45,13 @@ export function ListingAccordionNav({
           <div key={section.id} className="w-full">
             <button
               onClick={() => handleSectionClick(section.id)}
-              className={`flex items-center justify-between w-full text-left text-xl md:text-2xl font-normal transition-all duration-300 py-1 ${
+              className={`flex items-center gap-1 text-left text-xl md:text-2xl font-normal transition-all duration-300 py-1 ${
                 isActive ? 'text-black' : 'text-gray-400 hover:text-black'
               }`}
             >
               <span>{section.label}</span>
               <ChevronDown
-                className={`w-4 h-4 shrink-0 ml-2 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+                className={`w-4 h-4 shrink-0 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
               />
             </button>
 

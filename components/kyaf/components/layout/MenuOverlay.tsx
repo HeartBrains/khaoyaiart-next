@@ -50,8 +50,9 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
       label: t('nav.artworks'), 
       page: 'exhibitions',
       children: [
-          { label: t('artworks.current'), page: 'exhibitions', section: 'current' },
-          { label: t('artworks.past'), page: 'exhibitions', section: 'past' },
+          { label: t('artworks.upcoming'), page: 'exhibitions', section: 'upcoming' },
+          { label: t('artworks.current'),  page: 'exhibitions', section: 'current' },
+          { label: t('artworks.past'),     page: 'exhibitions', section: 'past' },
       ]
     },
     {

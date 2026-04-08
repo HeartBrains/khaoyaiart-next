@@ -9,6 +9,7 @@ import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import type { TeamMemberItem } from '@/lib/wp-mappers';
 import { TEAM_HERO_IMAGE } from '@/utils/imageConstants';
+import { RichContent } from '@/utils/richContent';
 
 interface TeamPageProps {
   activePage?: 'team' | 'advisory-board';
@@ -85,9 +86,9 @@ export function TeamPage({ activePage }: TeamPageProps) {
               <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
                 <div className="mb-2">{FOUNDER.name}</div>
                 {FOUNDER.bio && (
-                  <div className="text-base md:text-lg text-gray-700 mt-2 [&>p]:mb-4"
-                    dangerouslySetInnerHTML={{ __html: language === 'th' ? (FOUNDER.bioTH || FOUNDER.bio) : FOUNDER.bio }}
-                  />
+                  <div className="text-base md:text-lg text-gray-700 mt-2 [&>p]:mb-4">
+                    <RichContent content={language === 'th' ? (FOUNDER.bioTH || FOUNDER.bio) : FOUNDER.bio} />
+                  </div>
                 )}
               </div>
             </div>
@@ -114,9 +115,9 @@ export function TeamPage({ activePage }: TeamPageProps) {
                     <div className="mb-2">{director.name}</div>
                     <div className="text-base md:text-lg text-gray-500">{language === 'th' ? (director.roleTH || director.role) : director.role}</div>
                     {director.bio && (
-                      <div className="text-base md:text-lg text-gray-700 mt-2 [&>p]:mb-4"
-                        dangerouslySetInnerHTML={{ __html: language === 'th' ? (director.bioTH || director.bio) : director.bio }}
-                      />
+                      <div className="text-base md:text-lg text-gray-700 mt-2 [&>p]:mb-4">
+                        <RichContent content={language === 'th' ? (director.bioTH || director.bio) : director.bio} />
+                      </div>
                     )}
                   </div>
                 </div>
@@ -144,7 +145,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
           </section>
         )}
 
-        {/* Donors */}
+        {/* Donors — WP-driven */}
         {DONORS.length > 0 && (
           <section id="donors" className="flex flex-col md:flex-row mb-24 md:mb-32">
             <div className="w-full md:w-1/2 mb-12 md:mb-0">
@@ -159,6 +160,28 @@ export function TeamPage({ activePage }: TeamPageProps) {
             </div>
           </section>
         )}
+
+        {/* Founder's Circle — hardcoded */}
+        <section id="founders-circle" className="flex flex-col md:flex-row mb-24 md:mb-32">
+          <div className="w-full md:w-1/2 mb-12 md:mb-0">
+            <h2 className={`text-xl md:text-2xl font-normal sticky top-32 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+              {language === 'th' ? "วงผู้ก่อตั้งและโต๊ะกลมผู้สะสมผู้บริจาค" : "Founder's Circle & Collector's Roundtable Donors"}
+            </h2>
+          </div>
+          <div className="w-full md:w-1/2 flex flex-col gap-4">
+            {[
+              'Sangita Jindal',
+              'Isabel Liu',
+              'Takeo Obayashi',
+              'Taizo Son',
+              'Nunthinee Tanner',
+              'Elisa Yu',
+              'Lisa Zhang',
+            ].map((name) => (
+              <div key={name} className="text-xl md:text-2xl font-sans text-black font-normal">{name}</div>
+            ))}
+          </div>
+        </section>
 
         {/* Team groups */}
         {teamGroups.map(([groupName, groupMembers], gIdx) => (

@@ -21,16 +21,18 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
   const internalNavigate = useAppNavigate();
   const onNavigate = onNavigateProp ?? internalNavigate;
   const { data: exhibitions } = useKyafExhibitions();
-  const [activeSection, setActiveSection] = useState('current-exhibitions');
+  const [activeSection, setActiveSection] = useState('upcoming-exhibitions');
   const { language } = useLanguage();
   const covers = useCovers();
 
+  const upcoming = exhibitions.filter(ex => ex.status === 'upcoming');
   const current  = exhibitions.filter(ex => ex.status === 'current');
   const past     = exhibitions.filter(ex => ex.status === 'past');
 
   const sections = [
-    { id: 'current-exhibitions',  label: language === 'th' ? 'ผลงานศิลปะปัจจุบัน'  : 'Current Artworks',  items: current  },
-    { id: 'past-exhibitions',     label: language === 'th' ? 'ผลงานศิลปะที่ผ่านมา' : 'Past Artworks',     items: past     },
+    { id: 'upcoming-exhibitions', label: language === 'th' ? 'ผลงานศิลปะที่กำลังจะมาถึง' : 'Upcoming Artworks', items: upcoming },
+    { id: 'current-exhibitions',  label: language === 'th' ? 'ผลงานศิลปะปัจจุบัน'         : 'Current Artworks',  items: current  },
+    { id: 'past-exhibitions',     label: language === 'th' ? 'ผลงานศิลปะที่ผ่านมา'        : 'Past Artworks',     items: past     },
   ];
 
   const scrollToSection = (id: string) => {
@@ -61,6 +63,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
   useEffect(() => {
     if (targetSectionId) {
       const idMap: Record<string, string> = {
+        upcoming: 'upcoming-exhibitions',
         current:  'current-exhibitions',
         past:     'past-exhibitions',
       };

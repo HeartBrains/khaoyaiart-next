@@ -6,6 +6,7 @@ import { WPPost } from '@/utils/types';
 import { Reveal } from '../ui/Reveal';
 import { useLanguage } from '@/utils/languageContext';
 import { useScrollHide } from '@/utils/useScrollHide';
+import { RichContent } from '@/utils/richContent';
 
 interface BlogDetailPageProps {
   onNavigate: (page: string) => void;
@@ -115,7 +116,7 @@ export function BlogDetailPage({ onNavigate, post, slug, backPage }: BlogDetailP
             {/* Right Column */}
             <div className={`text-xl md:text-2xl text-black font-normal leading-tight space-y-6 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                <Reveal delay={0.2}>
-                   <div dangerouslySetInnerHTML={{ __html: postData.content }} />
+                   <div><RichContent content={postData.content} /></div>
                </Reveal>
 
                {postData.acf?.keyThemes && (
