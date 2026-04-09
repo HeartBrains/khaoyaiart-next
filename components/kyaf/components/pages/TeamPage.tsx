@@ -113,7 +113,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
                   )}
                   <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
                     <div className="mb-2">{director.name}</div>
-                    <div className="text-base md:text-lg text-gray-500">{language === 'th' ? (director.roleTH || director.role) : director.role}</div>
+                    <div className="text-base md:text-lg text-gray-500"><RichContent content={language === 'th' ? (director.roleTH || director.role) : director.role} /></div>
                     {director.bio && (
                       <div className="text-base md:text-lg text-gray-700 mt-2 [&>p]:mb-4">
                         <RichContent content={language === 'th' ? (director.bioTH || director.bio) : director.bio} />
@@ -138,7 +138,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
               {ADVISORY.map((member, idx) => (
                 <div key={idx} className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
                   <div>{member.name}</div>
-                  {member.role && <div className="text-base md:text-lg text-gray-500">{language === 'th' ? (member.roleTH || member.role) : member.role}</div>}
+                  {member.role && <div className="text-base md:text-lg text-gray-500"><RichContent content={language === 'th' ? (member.roleTH || member.role) : member.role} /></div>}
                 </div>
               ))}
             </div>
@@ -194,7 +194,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
               {groupMembers.map((member, mIdx) => (
                 <div key={mIdx} className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
                   <div>{member.name}</div>
-                  {member.role && <div className="text-base md:text-lg text-gray-500">{language === 'th' ? (member.roleTH || member.role) : member.role}</div>}
+                  {member.role && <div className="text-base md:text-lg text-gray-500"><RichContent content={language === 'th' ? (member.roleTH || member.role) : member.role} /></div>}
                 </div>
               ))}
             </div>
