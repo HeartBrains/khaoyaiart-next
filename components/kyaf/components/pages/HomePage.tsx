@@ -7,9 +7,12 @@ import { useKyafExhibitions, useKyafActivities } from '@/lib/useWPData';
 import { HOME_HERO_IMAGES } from '@/utils/imageConstants';
 import { isHomeSectionVisible } from '@/utils/siteConfig';
 import { useHomeAnchors } from '@/lib/useWPData';
+import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
+import { useState } from 'react';
 
 export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: string) => void }) {
   const { language } = useLanguage();
+  const [activeSection, setActiveSection] = useState('current-exhibitions');
 
   const { data: allExhibitions } = useKyafExhibitions();
   const { data: allActivities }  = useKyafActivities();
@@ -18,91 +21,108 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
   const currentActivities  = allActivities.filter(act => act.status === 'current');
 
   const wpAnchors = useHomeAnchors('kyaf');
-  // Fall back to siteConfig while WP loads
   const showCurrentExhibitions = wpAnchors ? wpAnchors.currentExhibitions : isHomeSectionVisible('currentExhibitions');
   const showCurrentActivities  = wpAnchors ? wpAnchors.currentActivities  : isHomeSectionVisible('currentActivities');
 
+  const sections = [
+    ...(showCurrentExhibitions ? [{ id: 'current-exhibitions', label: language === 'th' ? 'นิทรรศการปัจจุบัน' : 'Current Exhibitions' }] : []),
+    ...(showCurrentActivities  ? [{ id: 'current-activities',  label: language === 'th' ? 'กิจกรรมปัจจุบัน'   : 'Current Activities'  }] : []),
+  ];
+
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
+  };
+
   return (
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
-      {/* Hero Section - Using all 6 images from CSV */}
-      <HeroSlider 
-        images={HOME_HERO_IMAGES} 
-        height="h-[80vh]"
-      >
+      <HeroSlider images={HOME_HERO_IMAGES} height="h-[80vh]">
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
       </HeroSlider>
 
       <div className="w-full px-[6vw] pt-[96px] pb-[0px]">
-        
-        {/* Current Exhibitions */}
-        {showCurrentExhibitions && currentExhibitions.length > 0 && (
-          <section className="flex flex-col md:flex-row mb-32 md:mb-40">
-            <div className="w-full md:w-1/2 mb-12 md:mb-0">
-               <h2 className="text-xl md:text-2xl font-normal sticky top-32">
-                  {language === 'th' ? 'นิทรรศการปัจจุบัน' : 'Current Exhibitions'}
-               </h2>
-            </div>
-            <div className="w-full md:w-1/2 flex flex-col gap-12 md:gap-16">
-               {currentExhibitions.map((exhibition) => (
-                  <div key={exhibition.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', exhibition.slug)}>
+        <div className="flex flex-col md:flex-row gap-12 md:gap-0">
+
+          {/* Accordion Anchor Nav */}
+          <aside className="w-full md:w-1/2 shrink-0">
+            <ListingAccordionNav
+              sections={sections.map(s => ({
+                id: s.id,
+                label: s.label,
+                records: (
+                  s.id === 'current-exhibitions'
+                    ? currentExhibitions.map(i => ({ id: i.id, slug: i.slug, title: i.title[language] || i.title.en }))
+                    : currentActivities.map(i => ({ id: i.id, slug: i.slug, title: i.title[language] || i.title.en }))
+                ),
+              }))}
+              activeSection={activeSection}
+              onSectionClick={(id) => {
+                setActiveSection(id);
+                setTimeout(() => scrollToSection(id), 50);
+              }}
+              onRecordClick={(slug) => {
+                const el = document.getElementById(`record-${slug}`);
+                if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
+              }}
+            />
+          </aside>
+
+          {/* Content Sections */}
+          <div className="w-full md:w-1/2 flex flex-col">
+
+            {/* Current Exhibitions */}
+            {showCurrentExhibitions && currentExhibitions.length > 0 && (
+              <section id="current-exhibitions" className="mb-32 md:mb-40 scroll-mt-32">
+                <div className="flex flex-col gap-12 md:gap-16">
+                  {currentExhibitions.map((exhibition) => (
+                    <div id={`record-${exhibition.slug}`} key={exhibition.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', exhibition.slug)}>
                       {exhibition.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                            <ImageWithFallback
-                                src={exhibition.featuredImage}
-                                alt={exhibition.title[language] || exhibition.title.en}
-                                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                            />
+                          <ImageWithFallback src={exhibition.featuredImage} alt={exhibition.title[language] || exhibition.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
-                          <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{exhibition.title[language] || exhibition.title.en}</h3>
-                          <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{exhibition.artist[language] || exhibition.artist.en}</p>
-                          {exhibition.listingSummary && (
-                              <p className={`text-xl md:text-2xl font-normal text-gray-600 leading-tight mt-1 line-clamp-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                                  {exhibition.listingSummary[language] || exhibition.listingSummary.en}
-                              </p>
-                          )}
-                      </div>
-                  </div>
-               ))}
-            </div>
-          </section>
-        )}
-
-        {/* Current Activities */}
-        {showCurrentActivities && currentActivities.length > 0 && (
-            <section className="flex flex-col md:flex-row mb-32 md:mb-40">
-            <div className="w-full md:w-1/2 mb-12 md:mb-0">
-                <h2 className="text-xl md:text-2xl font-normal sticky top-32">
-                    {language === 'th' ? 'กิจกรรมปัจจุบัน' : 'Current Activities'}
-                </h2>
-            </div>
-            <div className="w-full md:w-1/2 flex flex-col gap-12">
-                {currentActivities.map((activity) => (
-                    <div key={activity.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', activity.slug)}>
-                        {activity.featuredImage && (
-                          <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                              <ImageWithFallback
-                                  src={activity.featuredImage}
-                                  alt={activity.title[language] || activity.title.en}
-                                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                              />
-                          </div>
+                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{exhibition.title[language] || exhibition.title.en}</h3>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{exhibition.artist[language] || exhibition.artist.en}</p>
+                        {exhibition.listingSummary && (
+                          <p className={`text-xl md:text-2xl font-normal text-gray-600 leading-tight mt-1 line-clamp-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                            {exhibition.listingSummary[language] || exhibition.listingSummary.en}
+                          </p>
                         )}
-                        <div className="flex flex-col gap-1">
-                            <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{activity.title[language] || activity.title.en}</h3>
-                            {activity.listingSummary && (
-                                <p className={`text-xl md:text-2xl font-normal text-gray-600 leading-tight mt-1 line-clamp-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                                    {activity.listingSummary[language] || activity.listingSummary.en}
-                                </p>
-                            )}
-                        </div>
+                      </div>
                     </div>
-                ))}
-            </div>
-            </section>
-        )}
+                  ))}
+                </div>
+              </section>
+            )}
 
+            {/* Current Activities */}
+            {showCurrentActivities && currentActivities.length > 0 && (
+              <section id="current-activities" className="mb-32 md:mb-40 scroll-mt-32">
+                <div className="flex flex-col gap-12">
+                  {currentActivities.map((activity) => (
+                    <div id={`record-${activity.slug}`} key={activity.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', activity.slug)}>
+                      {activity.featuredImage && (
+                        <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
+                          <ImageWithFallback src={activity.featuredImage} alt={activity.title[language] || activity.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                        </div>
+                      )}
+                      <div className="flex flex-col gap-1">
+                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{activity.title[language] || activity.title.en}</h3>
+                        {activity.listingSummary && (
+                          <p className={`text-xl md:text-2xl font-normal text-gray-600 leading-tight mt-1 line-clamp-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                            {activity.listingSummary[language] || activity.listingSummary.en}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+          </div>
+        </div>
       </div>
     </div>
   );

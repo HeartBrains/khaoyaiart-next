@@ -6,6 +6,7 @@ import { HeroSlider } from '../ui/HeroSlider';
 import { useState, useEffect, useMemo } from 'react';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 import { useHomeAnchors } from '@/lib/useWPData';
+import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
 
 // Hero images from different pages
 const heroImages = [
@@ -88,25 +89,28 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
         <div className="flex flex-col md:flex-row gap-12 md:gap-0">
           {/* Sticky Anchor Menu */}
           <aside className="w-full md:w-1/2 shrink-0">
-            <nav className="md:sticky md:top-32 flex flex-col items-start gap-2">
-              {sections.map((section) => (
-                <button
-                  key={section.id}
-                  onClick={() => {
-                    onNavigate?.('home');
-                    setActiveSection(section.id);
-                    setTimeout(() => scrollToSection(section.id), 100);
-                  }}
-                  className={`text-left text-xl md:text-2xl font-sans font-normal transition-all duration-300 ${
-                    activeSection === section.id
-                      ? 'text-black'
-                      : 'text-gray-400 hover:text-black'
-                  }`}
-                >
-                  {section.label}
-                </button>
-              ))}
-            </nav>
+            <ListingAccordionNav
+              sections={sections.map(s => ({
+                id: s.id,
+                label: s.label,
+                records: (
+                  s.id === 'current-exhibitions'  ? currentExhibitions.map(i => ({ id: i.id, slug: i.slug, title: i.title[language] || i.title.en })) :
+                  s.id === 'upcoming-exhibitions' ? upcomingExhibitions.map(i => ({ id: i.id, slug: i.slug, title: i.title[language] || i.title.en })) :
+                  s.id === 'current-activities'   ? currentActivities.map(i => ({ id: i.id, slug: i.slug, title: i.title[language] || i.title.en })) :
+                  s.id === 'moving-image-program' ? (currentMovingImageProgram ? [{ id: currentMovingImageProgram.id, slug: currentMovingImageProgram.slug, title: currentMovingImageProgram.title[language] || currentMovingImageProgram.title.en }] : []) :
+                  []
+                ),
+              }))}
+              activeSection={activeSection}
+              onSectionClick={(id) => {
+                setActiveSection(id);
+                setTimeout(() => scrollToSection(id), 50);
+              }}
+              onRecordClick={(slug) => {
+                const el = document.getElementById(`record-${slug}`);
+                if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
+              }}
+            />
           </aside>
 
           {/* Content Sections */}
@@ -116,7 +120,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
               <section id="current-exhibitions" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:gap-16 md:items-end">
                   {currentExhibitions.length > 0 ? currentExhibitions.map((item) => (
-                    <div key={item.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', item.slug)}>
+                    <div id={`record-${item.slug}`} key={item.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', item.slug)}>
                       {item.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
                           <ImageWithFallback src={item.featuredImage} alt={item.title[language] || item.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
@@ -140,7 +144,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
               <section id="upcoming-exhibitions" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:items-end">
                   {upcomingExhibitions.length > 0 ? upcomingExhibitions.map((item) => (
-                    <div key={item.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', item.slug)}>
+                    <div id={`record-${item.slug}`} key={item.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', item.slug)}>
                       {item.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
                           <ImageWithFallback src={item.featuredImage} alt={item.title[language] || item.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
@@ -164,7 +168,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
               <section id="moving-image-program" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:items-end">
                   {currentMovingImageProgram ? (
-                    <div className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('moving-image-detail', currentMovingImageProgram.slug)}>
+                    <div id={`record-${currentMovingImageProgram.slug}`} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('moving-image-detail', currentMovingImageProgram.slug)}>
                       {currentMovingImageProgram.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
                           <ImageWithFallback src={currentMovingImageProgram.featuredImage} alt={currentMovingImageProgram.title[language] || currentMovingImageProgram.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
@@ -188,7 +192,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
               <section id="current-activities" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:items-end">
                   {currentActivities.length > 0 ? currentActivities.map((item) => (
-                    <div key={item.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', item.slug)}>
+                    <div id={`record-${item.slug}`} key={item.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', item.slug)}>
                       {item.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
                           <ImageWithFallback src={item.featuredImage} alt={item.title[language] || item.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
