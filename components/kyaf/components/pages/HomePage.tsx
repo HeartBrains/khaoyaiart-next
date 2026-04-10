@@ -25,8 +25,8 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
   const showCurrentActivities  = wpAnchors ? wpAnchors.currentActivities  : isHomeSectionVisible('currentActivities');
 
   const sections = [
-    ...(showCurrentExhibitions ? [{ id: 'current-exhibitions', label: language === 'th' ? 'นิทรรศการปัจจุบัน' : 'Current Exhibitions' }] : []),
-    ...(showCurrentActivities  ? [{ id: 'current-activities',  label: language === 'th' ? 'กิจกรรมปัจจุบัน'   : 'Current Activities'  }] : []),
+    ...(showCurrentExhibitions ? [{ id: 'current-exhibitions', label: language === 'th' ? 'ผลงานศิลปะปัจจุบัน' : 'Current Artworks' }] : []),
+    ...(showCurrentActivities  ? [{ id: 'current-activities',  label: language === 'th' ? 'กิจกรรมปัจจุบัน'    : 'Current Activities' }] : []),
   ];
 
   const scrollToSection = (id: string) => {
