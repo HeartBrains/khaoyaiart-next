@@ -111,7 +111,6 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
               className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               loading="lazy"
               onError={() => setImgError(true)}
-              crossOrigin="anonymous"
             />
           </div>
         )}
