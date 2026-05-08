@@ -192,6 +192,30 @@ function bkkk_menu_render_page(): void {
     <?php
 }
 
+// Inject resolved featured image URL into REST responses for all custom CPTs.
+// When a post has featured_media set but featured_image_url meta is empty,
+// resolve the attachment source_url server-side and expose it as featured_image_url
+// so the client never needs a separate (potentially auth-gated) media API call.
+add_action('rest_api_init', function() {
+    $cpts = ['residency_artist', 'exhibition', 'activity', 'moving_image'];
+    foreach ($cpts as $cpt) {
+        add_filter("rest_prepare_{$cpt}", function(WP_REST_Response $response, WP_Post $post) {
+            $data = $response->get_data();
+            $meta = $data['meta'] ?? [];
+            $featured_image_url = $meta['featured_image_url'] ?? '';
+            // Only inject if featured_image_url is empty and featured_media is set
+            if (empty($featured_image_url) && !empty($data['featured_media'])) {
+                $src = wp_get_attachment_image_url($data['featured_media'], 'full');
+                if ($src) {
+                    $data['meta']['featured_image_url'] = $src;
+                    $response->set_data($data);
+                }
+            }
+            return $response;
+        }, 10, 2);
+    }
+});
+
 add_action('rest_api_init', function() {
     register_rest_route('bkkk/v1','/menu-config',[
         'methods'=>'GET',
