@@ -109,6 +109,17 @@ This makes `FALLBACK_SLUGS` a permanent safety net rather than a replacement for
 
 ---
 
+## WP plugin changes
+
+Whenever `bkkk-menu-config.php` is modified:
+1. Increment the `Version:` header (semver — patch for fixes, minor for new features)
+2. Repackage the zip: `cd wp-plugin && zip -r bkkk-menu-config.zip bkkk-menu-config/`
+3. Commit both `bkkk-menu-config.php` and `bkkk-menu-config.zip`
+4. Share the download link with the user so they can re-upload in WP admin:
+   `https://github.com/HeartBrains/khaoyaiart-next/raw/master/wp-plugin/bkkk-menu-config.zip`
+
+---
+
 ## Deploy flow
 
 After making fixes:
