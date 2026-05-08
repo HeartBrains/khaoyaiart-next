@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BKKK Menu Config
  * Description: Options page to toggle menu items, section anchors, page cover images, and inject custom CSS for BKKK and KYAF sites.
- * Version: 2.1.0
+ * Version: 2.2.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
