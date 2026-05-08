@@ -63,8 +63,15 @@ async function clientFetchCPT(cpt: string, site: 'bkkk' | 'kyaf'): Promise<WPRaw
         : fiuId > 0 ? (mediaMap.get(fiuId) ?? '') : '';
       const gm = post.meta?.gallery_media;
       const galleryUrls = Array.isArray(gm)
-        ? gm.map(id => mediaMap.get(Number(id)) ?? '').filter(Boolean) : [];
-      return { ...post, resolvedFeaturedImage: featuredUrl, resolvedGallery: galleryUrls };
+        ? gm.map(entry => {
+            if (typeof entry === 'string' && entry.startsWith('http')) return entry;
+            const resolved = mediaMap.get(Number(entry));
+            return resolved ?? '';
+          }).filter(Boolean)
+        : [];
+      // If no featured image resolved via WP media, fall back to first gallery URL
+      const resolvedFeaturedImage = featuredUrl || galleryUrls[0] || '';
+      return { ...post, resolvedFeaturedImage, resolvedGallery: galleryUrls };
     });
   } catch {
     return [];
