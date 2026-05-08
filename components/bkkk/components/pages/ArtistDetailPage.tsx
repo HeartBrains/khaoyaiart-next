@@ -97,11 +97,6 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
           <div className="md:col-span-6 flex flex-col gap-8">
             <div className="flex flex-col gap-0 px-0 md:px-[28px]">
               <h1 className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{name}</h1>
-              {(data.role || data.roleTH) && (
-                <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                  {language === 'th' ? (data.roleTH || data.role) : data.role}
-                </p>
-              )}
               {period && (
                 <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{period}</p>
               )}
