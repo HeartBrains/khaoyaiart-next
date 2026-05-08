@@ -13,12 +13,16 @@ function str(v: string | { en: string; th: string } | undefined | null): string 
 
 export const dynamicParams = false;
 
-const FALLBACK_SLUGS = ['mafalda-von-hessen','rolf-sachs','apichaya-wannakit','eduardo-williams','luca-lo-pinto','spencer-sweeney','anthony-huberman','nicolas-amato','cole-lu','natalie-bruck','emma-mccormick-goodhart'];
+const FALLBACK_SLUGS = ['mafalda-von-hessen','rolf-sachs','apichaya-wannakit','eduardo-williams','luca-lo-pinto','spencer-sweeney','anthony-huberman','nicolas-amato','cole-lu','natalie-bruck','emma-mccormick-goodhart','elekhlekha'];
 
 export async function generateStaticParams() {
   const posts = await fetchCPT('residency-artists', 'bkkk');
-  if (posts.length > 0) return posts.map(p => ({ slug: p.slug }));
-  return FALLBACK_SLUGS.map(slug => ({ slug }));
+  if (posts.length === 0) {
+    console.warn('[generateStaticParams] bk/artists: WP returned no posts — falling back to FALLBACK_SLUGS. Check WP connectivity.');
+  }
+  const wpSlugs = posts.map(p => p.slug);
+  const merged = Array.from(new Set([...wpSlugs, ...FALLBACK_SLUGS]));
+  return merged.map(slug => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
