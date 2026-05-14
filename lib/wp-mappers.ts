@@ -23,9 +23,11 @@ function m(post: WPRawPost, key: string): string {
   return val ?? '';
 }
 
-// Decode common HTML entities in plain-text fields (e.g. &amp; → &)
+// Decode HTML entities in plain-text fields (e.g. &amp; → &, &#8217; → ')
 function decode(str: string): string {
   return str
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+    .replace(/&#([0-9]+);/g, (_, dec) => String.fromCharCode(parseInt(dec, 10)))
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
@@ -98,7 +100,7 @@ export function mapBkkkExhibition(post: WPRawPost) {
   return {
     id: String(post.id),
     slug: post.slug,
-    title: { en: post.title.rendered, th: m(post, 'title_th') || post.title.rendered },
+    title: { en: decode(post.title.rendered), th: decode(m(post, 'title_th') || post.title.rendered) },
     artist: { en: decode(m(post, 'artist_en')), th: decode(m(post, 'artist_th') || m(post, 'artist_en')) },
     curator: { en: decode(m(post, 'curator_en')), th: decode(m(post, 'curator_th') || m(post, 'curator_en')) },
     fromDate: m(post, 'from_date'),
@@ -130,7 +132,7 @@ export function mapKyafExhibition(post: WPRawPost) {
   return {
     id: String(post.id),
     slug: post.slug,
-    title: { en: post.title.rendered, th: m(post, 'title_th') || post.title.rendered },
+    title: { en: decode(post.title.rendered), th: decode(m(post, 'title_th') || post.title.rendered) },
     artist: { en: decode(m(post, 'artist_en')), th: decode(m(post, 'artist_th') || m(post, 'artist_en')) },
     curator: { en: decode(m(post, 'curator_en')), th: decode(m(post, 'curator_th') || m(post, 'curator_en')) },
     fromDate: m(post, 'from_date'),
@@ -166,7 +168,7 @@ export function mapMovingImage(post: WPRawPost) {
   return {
     id: String(post.id),
     slug: post.slug,
-    title: { en: post.title.rendered, th: m(post, 'title_th') || post.title.rendered },
+    title: { en: decode(post.title.rendered), th: decode(m(post, 'title_th') || post.title.rendered) },
     curator: { en: decode(m(post, 'curator_en')), th: decode(m(post, 'curator_th') || m(post, 'curator_en')) },
     fromDate: m(post, 'from_date'),
     toDate: m(post, 'to_date'),
@@ -196,8 +198,8 @@ export function mapResidencyArtist(post: WPRawPost) {
   return {
     id: post.id,
     slug: post.slug,
-    name: post.title.rendered,
-    nameTH: m(post, 'title_th') || post.title.rendered,
+    name: decode(post.title.rendered),
+    nameTH: decode(m(post, 'title_th') || post.title.rendered),
     period: decode(m(post, 'role_en')),
     periodTH: decode(m(post, 'role_th') || m(post, 'role_en')),
     role: m(post, 'role_en'),
@@ -221,7 +223,7 @@ export function mapResidencyArtist(post: WPRawPost) {
 
 export function mapBkkkTeamMember(post: WPRawPost) {
   return {
-    name: post.title.rendered,
+    name: decode(post.title.rendered),
     role: m(post, 'role_en'),
     roleTH: m(post, 'role_th') || m(post, 'role_en'),
     bio: m(post, 'bio_en') || undefined,
@@ -237,7 +239,7 @@ export function mapBkkkTeamMember(post: WPRawPost) {
 
 export function mapKyafTeamMember(post: WPRawPost) {
   return {
-    name: post.title.rendered,
+    name: decode(post.title.rendered),
     role: m(post, 'role_en'),
     roleTH: m(post, 'role_th') || m(post, 'role_en'),
     bio: m(post, 'bio_en') || undefined,
@@ -256,7 +258,7 @@ export function mapActivity(post: WPRawPost, lang: Lang = 'en') {
   return {
     id: String(post.id),
     slug: post.slug,
-    title: { en: post.title.rendered, th: m(post, 'title_th') || post.title.rendered },
+    title: { en: decode(post.title.rendered), th: decode(m(post, 'title_th') || post.title.rendered) },
     dateDisplay: {
       en: decode(m(post, 'date_display_en')),
       th: decode(m(post, 'date_display_th') || m(post, 'date_display_en')),

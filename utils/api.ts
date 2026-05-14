@@ -44,13 +44,26 @@ export async function fetchPostBySlug(slug: string, type: 'activity' | 'exhibiti
   });
 }
 
+// Decode HTML entities in plain-text fields (mirrors decode() in lib/wp-mappers.ts)
+function decodeEntities(str: string): string {
+  return str
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+    .replace(/&#([0-9]+);/g, (_, dec) => String.fromCharCode(parseInt(dec, 10)))
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+}
+
 // Helper to map raw WP REST API response to our internal WPPost type
 function mapWordPressResponseToWPPost(raw: any, type: string): WPPost {
   return {
     id: raw.id.toString(),
     slug: raw.slug,
     type: type as any,
-    title: raw.title.rendered,
+    title: decodeEntities(raw.title.rendered),
     content: raw.content.rendered,
     date: new Date(raw.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
     featuredImage: raw._embedded?.['wp:featuredmedia']?.[0]?.source_url ? {
