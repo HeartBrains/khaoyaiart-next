@@ -17,6 +17,18 @@ function stripHtml(html: string): string {
   return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
+function decode(str: string): string {
+  return str
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+    .replace(/&#([0-9]+);/g, (_, dec) => String.fromCharCode(parseInt(dec, 10)))
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+}
+
 async function fetchCPT(cpt: string): Promise<any[]> {
   try {
     const all: any[] = [];
@@ -51,8 +63,8 @@ export async function getFullSearchData(): Promise<SearchDocument[]> {
   ]);
 
   for (const post of exhibitions) {
-    const titleEn = post.title?.rendered ?? '';
-    const titleTh = m(post, 'title_th') || titleEn;
+    const titleEn = decode(post.title?.rendered ?? '');
+    const titleTh = decode(m(post, 'title_th') || post.title?.rendered ?? '');
     const artistEn = m(post, 'artist_en');
     const artistTh = m(post, 'artist_th') || artistEn;
     const contentEn = stripHtml(m(post, 'content_en') || post.content?.rendered || '');
@@ -62,8 +74,8 @@ export async function getFullSearchData(): Promise<SearchDocument[]> {
   }
 
   for (const post of activities) {
-    const titleEn = post.title?.rendered ?? '';
-    const titleTh = m(post, 'title_th') || titleEn;
+    const titleEn = decode(post.title?.rendered ?? '');
+    const titleTh = decode(m(post, 'title_th') || post.title?.rendered ?? '');
     const contentEn = stripHtml(m(post, 'content_en') || post.content?.rendered || '');
     const contentTh = stripHtml(m(post, 'content_th') || contentEn);
     docs.push({ id: `activity-${post.slug}-en`, title: titleEn, content: contentEn, keywords: `activity event program workshop กิจกรรม`, page: 'activity-detail', slug: post.slug, lang: 'en' });
@@ -71,8 +83,8 @@ export async function getFullSearchData(): Promise<SearchDocument[]> {
   }
 
   for (const post of artists) {
-    const nameEn = post.title?.rendered ?? '';
-    const nameTh = m(post, 'title_th') || nameEn;
+    const nameEn = decode(post.title?.rendered ?? '');
+    const nameTh = decode(m(post, 'title_th') || post.title?.rendered ?? '');
     const bioEn = stripHtml(m(post, 'bio_en') || post.content?.rendered || '');
     const bioTh = stripHtml(m(post, 'bio_th') || bioEn);
     docs.push({ id: `artist-${post.slug}-en`, title: nameEn, content: bioEn, keywords: `artist resident residency ศิลปิน`, page: 'artist-detail', slug: post.slug, lang: 'en' });
