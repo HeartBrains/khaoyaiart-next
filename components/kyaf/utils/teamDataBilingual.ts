@@ -97,8 +97,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     { name: 'Chanisara Nukeaw', role: 'Coordination Team', roleTH: 'ทีมประสานงาน' },
     { name: 'Kwankeat Phiophong', role: 'Coordination Team', roleTH: 'ทีมประสานงาน' },
     { name: 'Vorada Teemee', role: 'Coordination Team', roleTH: 'ทีมประสานงาน' },
-    { name: 'Sulawan Wongthong', role: 'Coordination Team', roleTH: 'ทีมประสานงาน' },
-    { name: 'Siripat Rojnirun', role: 'Financial Sustainability & Donor Relations', roleTH: 'ความยั่งยืนทางการเงินและความสัมพันธ์กับผู้บริจาค' }
+    { name: 'Sulawan Wongthong', role: 'Coordination Team', roleTH: 'ทีมประสานงาน' }
 ];
 
 // Organized team structure by categories
@@ -183,13 +182,6 @@ export const TEAM_BY_CATEGORY: TeamCategory[] = [
             { name: 'Kwankeat Phiophong', role: '', roleTH: '' },
             { name: 'Vorada Teemee', role: '', roleTH: '' },
             { name: 'Sulawan Wongthong', role: '', roleTH: '' }
-        ]
-    },
-    {
-        category: 'Financial Sustainability & Donor Relations',
-        categoryTH: 'ความยั่งยืนทางการเงินและความสัมพันธ์กับผู้บริจาค',
-        members: [
-            { name: 'Siripat Rojnirun', role: '', roleTH: '' }
         ]
     }
 ];

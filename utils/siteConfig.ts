@@ -113,10 +113,10 @@ export const siteConfig = {
     noUpcomingExhibitions: { th: 'เร็วๆ นี้', en: 'Coming soon' },
     noPastExhibitions: { th: 'เร็วๆ นี้', en: 'Coming soon' },
     noCurrentActivities: { th: 'ไม่มีกิจกรรมในขณะนี้', en: 'No current activities' },
-    noCurrentMovingImage: { th: 'ไม่มีโปรแกรมภาพเคลื่อนไหวในขณะนี้', en: 'No current moving image programme' },
-    noUpcomingMovingImage: { th: 'ไม่มีโปรแกรมภาพเคลื่อนไหวที่กำลังจะมาถึง', en: 'No upcoming moving image programme' },
-    noPastMovingImage: { th: 'ไม่มีโปรแกรมภาพเคลื่อนไหวที่ผ่านมา', en: 'No past moving image programme' },
-    noCurrentResidency: { th: 'ไม่มีโปรแกรมพำนักในขณะนี้', en: 'No current residency programme' },
+    noCurrentMovingImage: { th: 'ไม่มีโปรแกรมภาพเคลื่อนไหวในขณะนี้', en: 'No current moving image program' },
+    noUpcomingMovingImage: { th: 'ไม่มีโปรแกรมภาพเคลื่อนไหวที่กำลังจะมาถึง', en: 'No upcoming moving image program' },
+    noPastMovingImage: { th: 'ไม่มีโปรแกรมภาพเคลื่อนไหวที่ผ่านมา', en: 'No past moving image program' },
+    noCurrentResidency: { th: 'ไม่มีโปรแกรมพำนักในขณะนี้', en: 'No current residency program' },
   },
 
   // External links

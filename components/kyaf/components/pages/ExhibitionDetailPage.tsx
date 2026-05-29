@@ -130,7 +130,7 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                         ? (language === 'th' ? 'กลับสู่หน้าหลัก' : 'Back to Home')
                         : backPage === 'archives' 
                         ? (language === 'th' ? 'กลับสู่คลังข้อมูล' : 'Back to Archives') 
-                        : (language === 'th' ? 'กลับสู่นิทรรศการ' : 'Back to Exhibitions')
+                        : (language === 'th' ? 'กลับสู่ผลงานศิลปะ' : 'Back to Artworks')
                     }
                 </span>
             </button>

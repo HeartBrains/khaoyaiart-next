@@ -154,12 +154,6 @@ export const TEAM_GROUPS: TeamGroup[] = [
         membersTH: ['สุพนี อำระนางค์', 'ชนิสรา นุเกียว', 'สุลาวัลย์ วงศ์ทอง']
     },
     {
-        role: 'Financial Sustainability & Donor Relations',
-        roleTH: 'ความยั่งยืนทางการเงินและความสัมพันธ์กับผู้บริจาค',
-        members: ['Siripat Rojnirun'],
-        membersTH: ['ศิริภัทร โรจน์นิรันดร์']
-    },
-    {
         role: 'Building Caretaker',
         roleTH: 'ผู้ดูแลอาคาร',
         members: ['Monta Saleerueng'],
@@ -268,13 +262,6 @@ export const TEAM_BY_CATEGORY: TeamCategory[] = [
             { name: 'Kwankeat Phiophong', role: '', roleTH: '' },
             { name: 'Vorada Teemee', role: '', roleTH: '' },
             { name: 'Sulawan Wongthong', role: '', roleTH: '' }
-        ]
-    },
-    {
-        category: 'Financial Sustainability & Donor Relations',
-        categoryTH: 'ความยั่งยืนทางการเงินและความสัมพันธ์กับผู้บริจาค',
-        members: [
-            { name: 'Siripat Rojnirun', role: '', roleTH: '' }
         ]
     }
 ];

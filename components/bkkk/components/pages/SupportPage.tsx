@@ -113,9 +113,7 @@ export function SupportPage() {
                         <Reveal delay={0.25}>
                             <p className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : 'leading-tight'}`}>
                                 For any enquiries or to explore further involvement, please do not hesitate to contact us at{' '}
-                                <a href="mailto:claudia.k@khaoyaiart.com" className="underline underline-offset-4 hover:opacity-60 transition-opacity">claudia.k@khaoyaiart.com</a>
-                                {' '}or{' '}
-                                <a href="mailto:siripat.r@khaoyaiart.com" className="underline underline-offset-4 hover:opacity-60 transition-opacity">siripat.r@khaoyaiart.com</a>
+                                <a href="mailto:claudia.k@khaoyaiart.com" className="underline underline-offset-4 hover:opacity-60 transition-opacity">claudia.k@khaoyaiart.com</a>.
                             </p>
                         </Reveal>
                     </div>
