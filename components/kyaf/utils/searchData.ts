@@ -64,7 +64,7 @@ export async function getFullSearchData(): Promise<SearchDocument[]> {
 
   for (const post of exhibitions) {
     const titleEn = decode(post.title?.rendered ?? '');
-    const titleTh = decode(m(post, 'title_th') || post.title?.rendered ?? '');
+    const titleTh = decode((m(post, 'title_th') || post.title?.rendered) ?? '');
     const artistEn = m(post, 'artist_en');
     const artistTh = m(post, 'artist_th') || artistEn;
     const contentEn = stripHtml(m(post, 'content_en') || post.content?.rendered || '');
@@ -75,7 +75,7 @@ export async function getFullSearchData(): Promise<SearchDocument[]> {
 
   for (const post of activities) {
     const titleEn = decode(post.title?.rendered ?? '');
-    const titleTh = decode(m(post, 'title_th') || post.title?.rendered ?? '');
+    const titleTh = decode((m(post, 'title_th') || post.title?.rendered) ?? '');
     const contentEn = stripHtml(m(post, 'content_en') || post.content?.rendered || '');
     const contentTh = stripHtml(m(post, 'content_th') || contentEn);
     docs.push({ id: `activity-${post.slug}-en`, title: titleEn, content: contentEn, keywords: `activity event program workshop กิจกรรม`, page: 'activity-detail', slug: post.slug, lang: 'en' });
@@ -84,7 +84,7 @@ export async function getFullSearchData(): Promise<SearchDocument[]> {
 
   for (const post of artists) {
     const nameEn = decode(post.title?.rendered ?? '');
-    const nameTh = decode(m(post, 'title_th') || post.title?.rendered ?? '');
+    const nameTh = decode((m(post, 'title_th') || post.title?.rendered) ?? '');
     const bioEn = stripHtml(m(post, 'bio_en') || post.content?.rendered || '');
     const bioTh = stripHtml(m(post, 'bio_th') || bioEn);
     docs.push({ id: `artist-${post.slug}-en`, title: nameEn, content: bioEn, keywords: `artist resident residency ศิลปิน`, page: 'artist-detail', slug: post.slug, lang: 'en' });
