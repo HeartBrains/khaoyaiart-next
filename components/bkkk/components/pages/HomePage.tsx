@@ -7,6 +7,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 import { useHomeAnchors } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
+import { RichContent } from '@/utils/richContent';
 
 // Hero images from different pages
 const heroImages = [
@@ -128,7 +129,13 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                       )}
                       <div className="flex flex-col gap-1">
                         <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title[language] || item.title.en}</h3>
-                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.artist[language] || item.artist.en}</p>
+                        {item.slug === 'weaving-matter-and-memory' && (item.additionalInfo?.[language] || item.additionalInfo?.en) ? (
+                          <div className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                            <RichContent content={item.additionalInfo[language] || item.additionalInfo.en} />
+                          </div>
+                        ) : (
+                          <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.artist[language] || item.artist.en || item.curator?.[language] || item.curator?.en}</p>
+                        )}
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.dateDisplay[language] || item.dateDisplay.en}</p>
                       </div>
                     </div>
@@ -152,7 +159,13 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                       )}
                       <div className="flex flex-col gap-1">
                         <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title[language] || item.title.en}</h3>
-                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.artist[language] || item.artist.en}</p>
+                        {item.slug === 'weaving-matter-and-memory' && (item.additionalInfo?.[language] || item.additionalInfo?.en) ? (
+                          <div className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                            <RichContent content={item.additionalInfo[language] || item.additionalInfo.en} />
+                          </div>
+                        ) : (
+                          <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.artist[language] || item.artist.en || item.curator?.[language] || item.curator?.en}</p>
+                        )}
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.dateDisplay[language] || item.dateDisplay.en}</p>
                       </div>
                     </div>
