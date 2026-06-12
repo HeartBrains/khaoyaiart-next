@@ -1,6 +1,6 @@
 ---
 name: wp-headless-static-debug
-description: Debug and fix common issues in Next.js static export projects backed by a WordPress headless CMS. Use when a page shows a 404, images are missing/broken, or data fields are blank on a statically exported Next.js + WordPress site. Triggers on "image not showing", "feature image missing", "detail page 404", "blank field", "period not showing", "FALLBACK_SLUGS", "generateStaticParams", "wp-mappers", "crossOrigin image", "new post 404", "static export 404".
+description: Debug and fix common issues in Next.js static export projects backed by a WordPress headless CMS. Use when a page shows a 404, images are missing/broken, data fields are blank, or a mapper field needs bilingual support on a statically exported Next.js + WordPress site. Triggers on "image not showing", "feature image missing", "detail page 404", "blank field", "period not showing", "FALLBACK_SLUGS", "generateStaticParams", "wp-mappers", "crossOrigin image", "new post 404", "static export 404", "add bilingual field", "additionalInfo", "collaboration field", "in collaboration".
 ---
 
 # WP Headless Static Export — Debug & Fix
@@ -22,6 +22,8 @@ description: Debug and fix common issues in Next.js static export projects backe
 | Image shows fallback/blank on a listing page | [Image CORS issue](#image-cors-issue) |
 | Detail page returns 404 after new WP post added | [Static params 404](#static-params-404) |
 | Field is blank on detail page despite data in WP | [Mapper field key mismatch](#mapper-field-key-mismatch) |
+| Need to show a field differently for one specific record | [Per-record display override](#per-record-display-override) |
+| Need to add EN/TH bilingual support to a mapper field | [Adding bilingual mapper fields](#adding-bilingual-mapper-fields) |
 
 ### Step 2 — Inspect the raw WP data first
 
@@ -53,31 +55,100 @@ Replace `<rest_base>` with the CPT REST base (see `lib/wp-api.ts` `REST_BASE` ma
 
 ---
 
+## Per-record display override
+
+**Symptom:** One specific exhibition (or other record) needs to display a different field in a slot that normally shows something else (e.g. show "In Collaboration with X" instead of curator name on the list card).
+
+**Pattern:** Hardcode a slug condition in the listing page component. Do NOT create a new WP field — use an existing field that already holds the correct data on the detail page.
+
+**Steps:**
+1. Find what field the detail page already renders for that record (e.g. `additionalInfo` rendered via `<RichContent>` in `ExhibitionDetailPage.tsx`).
+2. Confirm the field is mapped in `lib/wp-mappers.ts` for that CPT.
+3. In the listing card component (e.g. `ExhibitionsPage.tsx`), add a slug check:
+
+```tsx
+{item.slug === 'target-slug' && item.additionalInfo?.[language] ? (
+  <div className="text-xl md:text-2xl font-normal text-black leading-tight">
+    <RichContent content={item.additionalInfo[language] || item.additionalInfo.en} />
+  </div>
+) : (
+  <p className="text-xl md:text-2xl font-normal text-black leading-tight">
+    {item.artist[language] || item.curator?.[language]}
+  </p>
+)}
+```
+
+4. Import `RichContent` from `@/utils/richContent` if rendering HTML.
+5. All other records are unaffected.
+
+**Important:** After changing a mapper field shape (e.g. `string` → `{ en, th }`), update every component that reads that field — check with:
+```bash
+grep -rn "\.additionalInfo" components/ lib/ app/ --include="*.tsx" --include="*.ts"
+```
+
+---
+
+## Adding bilingual mapper fields
+
+**Symptom:** A mapper field is a plain `string` but needs EN/TH language support.
+
+**Pattern:** Change the field from `m(post, 'field_key')` to an object with `en`/`th` keys. The TH key is conventionally `field_key_th`.
+
+**In `lib/wp-mappers.ts`:**
+```ts
+// Before
+additionalInfo: m(post, 'additional_info'),
+
+// After
+additionalInfo: {
+  en: m(post, 'additional_info'),
+  th: m(post, 'additional_info_th') || m(post, 'additional_info'),
+},
+```
+
+**Update all consumers** — the shape change is a breaking change for any component reading the field:
+```bash
+grep -rn "\.additionalInfo" components/ lib/ app/ --include="*.tsx" --include="*.ts"
+```
+
+For each consumer, update from `data.additionalInfo` to `data.additionalInfo[language] || data.additionalInfo.en`.
+
+**Note:** Only change the mapper for the specific CPT that needs it (e.g. `mapBkkkExhibition`). Other CPT mappers (Activity, Artist, MovingImage) that also have `additionalInfo` remain as plain strings unless they also need bilingual support.
+
+**After the change:** The SSG rebuild CI will automatically regenerate `out/` with the updated JS chunks on the next push to `master`. A transient 404 on detail pages resolves once the rebuild completes (~2–3 min).
+
+---
+
 ## Static params 404
 
 **Symptom:** A new WP post's detail page returns 404. Existing posts work fine.
 
-**Root cause:** `dynamicParams = false` in `app/<site>/<cpt>/[slug]/page.tsx` means only slugs returned by `generateStaticParams` at build time get a static file. New posts added after the last build have no file.
+**Architecture:** Two-layer fallback system:
+1. **Static pages** in `out/` — built from slugs returned by `generateStaticParams` (WP API + `FALLBACK_SLUGS`). Served directly by Hostinger.
+2. **`app/not-found.tsx` smart shell** — Hostinger serves `out/404.html` for any URL with no matching file. `not-found.tsx` reads `window.location.pathname`, matches known CPT routes, and renders the correct `*DetailClientPage` client component dynamically from WP API. This handles new slugs immediately without a rebuild.
+
+**Root cause of 404:** `dynamicParams = false` means only pre-built slugs get a static file. New slugs fall through to `not-found.tsx`. If `not-found.tsx` itself crashes (e.g. due to a JS error in a shared component), ALL detail pages 404.
 
 **Diagnosis:**
 1. Check `app/<site>/<cpt>/[slug]/page.tsx` for `dynamicParams = false`
-2. Check `FALLBACK_SLUGS` — is the new slug missing?
-3. Check if `fetchCPT` is returning the new slug (it may be filtered by `meta.site`)
+2. Check `FALLBACK_SLUGS` — is the new slug missing? (Less critical — `not-found.tsx` handles it dynamically)
+3. Check if a recent code change broke a shared component used by `not-found.tsx` (e.g. mapper shape change causing a runtime JS error)
+4. Check if the SSG rebuild CI ran after the last code push — a transient 404 resolves once `out/` is regenerated (~2–3 min)
 
-**Fix — immediate:** Add the new slug to `FALLBACK_SLUGS`.
+**Fix — immediate (new slug missing from static build):** Add the slug to `FALLBACK_SLUGS`. The `not-found.tsx` fallback will serve it dynamically in the meantime.
 
 **Fix — structural:** Refactor `generateStaticParams` to always merge WP results with `FALLBACK_SLUGS`:
 
 ```ts
 export const dynamicParams = false;
 
-// Keep in sync with WP. Safety net if WP is unreachable at build time.
-const FALLBACK_SLUGS = ['slug-1', 'slug-2' /* add new slugs here */];
+// Safety net if WP is unreachable at build time. Add new slugs here.
+const FALLBACK_SLUGS = ['slug-1', 'slug-2'];
 
 export async function generateStaticParams() {
   const posts = await fetchCPT('<cpt-name>', '<site>');
   if (posts.length === 0) {
-    console.warn('[generateStaticParams] <path>: WP returned no posts — falling back to FALLBACK_SLUGS. Check WP connectivity.');
+    console.warn('[generateStaticParams] WP returned no posts — using FALLBACK_SLUGS only.');
   }
   const wpSlugs = posts.map(p => p.slug);
   const merged = Array.from(new Set([...wpSlugs, ...FALLBACK_SLUGS]));
@@ -85,9 +156,7 @@ export async function generateStaticParams() {
 }
 ```
 
-This makes `FALLBACK_SLUGS` a permanent safety net rather than a replacement for WP data.
-
-**When a new WP post causes a 404:** Add its slug to `FALLBACK_SLUGS` AND trigger a rebuild.
+**When ALL detail pages 404 after a code change:** The issue is likely a runtime JS error in a shared component (not a missing slug). Check for breaking shape changes in mappers or shared utilities. The SSG rebuild will fix it once the new `out/` is deployed.
 
 ---
 
