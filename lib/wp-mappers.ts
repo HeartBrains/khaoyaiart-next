@@ -119,7 +119,10 @@ export function mapBkkkExhibition(post: WPRawPost) {
       en: m(post, 'content_en') || post.content?.rendered || '',
       th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
     },
-    additionalInfo: m(post, 'additional_info'),
+    additionalInfo: {
+      en: m(post, 'additional_info'),
+      th: m(post, 'additional_info_th') || m(post, 'additional_info'),
+    },
     ctaLeft:  { label: m(post, 'cta_label'),  url: m(post, 'cta_url') },
     ctaRight: { label: m(post, 'cta2_label'), url: m(post, 'cta2_url') },
     site: m(post, 'site') as WPSite,

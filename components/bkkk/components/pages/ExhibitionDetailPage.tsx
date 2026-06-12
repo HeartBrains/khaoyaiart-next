@@ -97,9 +97,9 @@ export function ExhibitionDetailPage({ onNavigate, slug }: ExhibitionDetailPageP
                 <p key={i} className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
               ))}
               {curator && <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{language === 'th' ? 'ภัณฑารักษ์: ' : 'Curated by '}{curator}</p>}
-              {data.additionalInfo && (
+              {(data.additionalInfo?.[language] || data.additionalInfo?.en) && (
                 <div className="text-xl md:text-2xl text-black font-normal leading-tight">
-                  <RichContent content={data.additionalInfo} />
+                  <RichContent content={data.additionalInfo[language] || data.additionalInfo.en} />
                 </div>
               )}
               {data.ctaLeft?.url && data.ctaLeft?.label && (

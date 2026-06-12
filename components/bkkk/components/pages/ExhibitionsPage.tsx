@@ -9,6 +9,7 @@ import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
 import { useBkkkExhibitions, useSectionVisibility } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
+import { RichContent } from '@/utils/richContent';
 
 // Categorize exhibition status using ISO dates
 function getExhibitionStatus(fromDate: string, toDate: string, explicitStatus: 'current' | 'upcoming' | 'past', referenceDate: Date): 'current' | 'upcoming' | 'past' | null {
@@ -157,9 +158,15 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
           <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
             {item.title[language]}
           </h3>
-          <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-            {item.artist[language] || item.curator?.[language]}
-          </p>
+          {item.slug === 'weaving-matter-and-memory' && (item.additionalInfo?.[language] || item.additionalInfo?.en) ? (
+            <div className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+              <RichContent content={item.additionalInfo[language] || item.additionalInfo.en} />
+            </div>
+          ) : (
+            <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+              {item.artist[language] || item.curator?.[language]}
+            </p>
+          )}
           <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
             {item.dateDisplay[language]}
           </p>
