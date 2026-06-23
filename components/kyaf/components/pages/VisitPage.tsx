@@ -66,7 +66,7 @@ export function VisitPage() {
                                             {language === 'th' ? 'พระหัสบดี - ศุกร์: 12:30 - 18:00' : 'Thursday - Friday: 12:30 - 18:00'}
                                         </p>
                                         <p className="text-xl md:text-2xl leading-relaxed text-gray-600">
-                                            {language === 'th' ? 'Fog Forest Experience: 16:00 (10 นาที)' : 'Fog Forest Experience: 16:00 (10 minutes)'}
+                                            {language === 'th' ? 'Fog Forest Experience: 16:30 (10 นาที)' : 'Fog Forest Experience: 16:30 (10 minutes)'}
                                         </p>
                                     </div>
                                     <div>
@@ -137,6 +137,9 @@ export function VisitPage() {
                                             {language === 'th' 
                                                 ? 'นักเรียน/นักศึกษาเต็มเวลา และผู้สูงอายุ (65 ปีขึ้นไป) ฿250.00'
                                                 : 'Full-time student and Senior (65+ years old) ฿250.00'}
+                                        </p>
+                                        <p className="text-xl md:text-2xl leading-relaxed">
+                                            &quot;Afternoon Tea&quot; &amp; Full Site Admission ฿750.00
                                         </p>
                                     </div>
                                     <div>
