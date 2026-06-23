@@ -207,3 +207,41 @@ Branch naming: `<initials>/fix-<area>` (e.g. `hb/fix-bk-residency`)
 Commit style: conventional commits — `fix(<scope>): <description>`
 
 Merging to `master` with changes in `app/**`, `components/**`, or `lib/**` triggers the deploy workflow automatically.
+
+---
+
+## Local build fallback (when CI is broken)
+
+**When to use:** CI (`deploy.yml`) fails at checkout (expired `GH_PAT` secret) or any other step, so `out/` is never rebuilt. Hostinger still serves the stale `out/`. Build and commit `out/` manually.
+
+**Check CI status first:**
+```bash
+curl -s "https://api.github.com/repos/HeartBrains/khaoyaiart-next/actions/runs?branch=master&per_page=3" \
+  | grep -o '"conclusion":"[^"]*"' | head -3
+```
+If `"failure"` appears, proceed with local build.
+
+**Install Node (no Node in devcontainer by default):**
+```bash
+curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir /tmp/fnm --skip-shell
+/tmp/fnm/fnm install 20 --fnm-dir /tmp/fnm-versions
+export PATH="/tmp/fnm-versions/node-versions/v20.20.2/installation/bin:$PATH"
+```
+
+**Build and verify:**
+```bash
+cd /workspaces/khaoyaiart-next
+npm ci
+npm run build
+# Spot-check the changed page — e.g. for /kyaf/visit:
+grep -o "YourChangedText" out/kyaf/visit/index.html
+```
+
+**Commit and push `out/`:**
+```bash
+git add out/
+git commit -m "SSG rebuild $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+git push origin master
+```
+
+Hostinger picks up the new `out/` immediately on push. No CI needed.
