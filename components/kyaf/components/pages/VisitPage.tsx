@@ -138,6 +138,8 @@ export function VisitPage() {
                                                 ? 'นักเรียน/นักศึกษาเต็มเวลา และผู้สูงอายุ (65 ปีขึ้นไป) ฿250.00'
                                                 : 'Full-time student and Senior (65+ years old) ฿250.00'}
                                         </p>
+                                    </div>
+                                    <div>
                                         <p className="text-xl md:text-2xl leading-relaxed">
                                             &quot;Afternoon Tea&quot; &amp; Full Site Admission ฿750.00
                                         </p>
