@@ -116,7 +116,7 @@ export const siteConfig = {
     noCurrentMovingImage: { th: 'ไม่มีโปรแกรมภาพเคลื่อนไหวในขณะนี้', en: 'No current moving image program' },
     noUpcomingMovingImage: { th: 'ไม่มีโปรแกรมภาพเคลื่อนไหวที่กำลังจะมาถึง', en: 'No upcoming moving image program' },
     noPastMovingImage: { th: 'ไม่มีโปรแกรมภาพเคลื่อนไหวที่ผ่านมา', en: 'No past moving image program' },
-    noCurrentResidency: { th: 'ไม่มีโปรแกรมพำนักในขณะนี้', en: 'No current residency program' },
+    noCurrentResidency: { th: 'Coming soon', en: 'Coming soon' },
   },
 
   // External links
