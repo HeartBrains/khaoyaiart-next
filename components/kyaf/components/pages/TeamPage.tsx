@@ -31,11 +31,14 @@ export function TeamPage({ activePage }: TeamPageProps) {
 
   const FOUNDER = sorted.find(m => m.group?.toLowerCase() === 'founder');
   const DIRECTORS = grouped['Directors'] || grouped['directors'] || [];
+  const CULINARY = sorted.filter(m => m.role === 'Culinary Director' || m.name.includes('Wuttisak'));
   const ADVISORY = grouped['Advisory Board'] || grouped['advisory-board'] || [];
   const DONORS = grouped['Donors'] || grouped['donors'] || [];
+  const culinaryNames = new Set(CULINARY.map(m => m.name));
   const teamGroups = Object.entries(grouped).filter(
     ([key]) => !['founder','Founder','Directors','directors','Advisory Board','advisory-board','Donors','donors'].includes(key)
-  );
+  ).map(([key, members]) => [key, members.filter(m => !culinaryNames.has(m.name))] as [string, typeof members])
+   .filter(([, members]) => members.length > 0);
 
   // Handle auto-scroll to section
   useEffect(() => {
@@ -126,6 +129,37 @@ export function TeamPage({ activePage }: TeamPageProps) {
           </section>
         )}
 
+        {/* Culinary */}
+        {CULINARY.length > 0 && (
+          <section id="culinary" className="flex flex-col md:flex-row mb-24 md:mb-32">
+            <div className="w-full md:w-1/2 mb-12 md:mb-0">
+              <h2 className={`text-xl md:text-2xl font-normal sticky top-32 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                Culinary
+              </h2>
+            </div>
+            <div className="w-full md:w-1/2 flex flex-col gap-12">
+              {CULINARY.map((member, idx) => (
+                <div key={idx} className="flex flex-col gap-4">
+                  {member.image && (
+                    <div className="w-full mb-4">
+                      <img src={member.image} alt={member.name} className="w-full aspect-[3/4] object-cover object-center" />
+                    </div>
+                  )}
+                  <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
+                    <div className="mb-2">{member.name}</div>
+                    <div className="text-base md:text-lg text-gray-500"><RichContent content={language === 'th' ? (member.roleTH || member.role) : member.role} /></div>
+                    {member.bio && (
+                      <div className="text-base md:text-lg text-gray-700 mt-2 [&>p]:mb-4">
+                        <RichContent content={language === 'th' ? (member.bioTH || member.bio) : member.bio} />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Advisory Board */}
         {ADVISORY.length > 0 && (
           <section id="advisory-board" className="flex flex-col md:flex-row mb-24 md:mb-32">
@@ -138,7 +172,6 @@ export function TeamPage({ activePage }: TeamPageProps) {
               {ADVISORY.map((member, idx) => (
                 <div key={idx} className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
                   <div>{member.name}</div>
-                  {member.role && <div className="text-base md:text-lg text-gray-500"><RichContent content={language === 'th' ? (member.roleTH || member.role) : member.role} /></div>}
                 </div>
               ))}
             </div>
