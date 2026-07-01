@@ -7,7 +7,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 import { useHomeAnchors } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
-import { RichContent } from '@/utils/richContent';
+import { RichContent, stripWrapperDivs } from '@/utils/richContent';
 
 // Hero images from different pages
 const heroImages = [
@@ -129,9 +129,9 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                       )}
                       <div className="flex flex-col gap-1">
                         <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title[language] || item.title.en}</h3>
-                        {item.slug === 'weaving-matter-and-memory' && (item.additionalInfo?.[language] || item.additionalInfo?.en) ? (
+                        {(item.additionalInfo?.[language] || item.additionalInfo?.en) ? (
                           <div className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                            <RichContent content={item.additionalInfo[language] || item.additionalInfo.en} />
+                            <RichContent content={stripWrapperDivs(item.additionalInfo[language] || item.additionalInfo.en)} />
                           </div>
                         ) : (
                           <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.artist[language] || item.artist.en || item.curator?.[language] || item.curator?.en}</p>
@@ -159,9 +159,9 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                       )}
                       <div className="flex flex-col gap-1">
                         <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title[language] || item.title.en}</h3>
-                        {item.slug === 'weaving-matter-and-memory' && (item.additionalInfo?.[language] || item.additionalInfo?.en) ? (
+                        {(item.additionalInfo?.[language] || item.additionalInfo?.en) ? (
                           <div className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                            <RichContent content={item.additionalInfo[language] || item.additionalInfo.en} />
+                            <RichContent content={stripWrapperDivs(item.additionalInfo[language] || item.additionalInfo.en)} />
                           </div>
                         ) : (
                           <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.artist[language] || item.artist.en || item.curator?.[language] || item.curator?.en}</p>
