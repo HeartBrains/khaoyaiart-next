@@ -158,7 +158,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
           <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
             {item.title[language]}
           </h3>
-          {item.slug === 'weaving-matter-and-memory' && (item.additionalInfo?.[language] || item.additionalInfo?.en) ? (
+          {(item.additionalInfo?.[language] || item.additionalInfo?.en) ? (
             <div className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
               <RichContent content={item.additionalInfo[language] || item.additionalInfo.en} />
             </div>
