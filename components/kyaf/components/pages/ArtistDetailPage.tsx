@@ -103,10 +103,30 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
               {period && (
                 <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{period}</p>
               )}
+              {data.ctaLabel && data.ctaUrl && (
+                <a
+                  href={data.ctaUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-block text-sm font-normal text-black underline underline-offset-4 hover:opacity-60 transition-opacity"
+                >
+                  {data.ctaLabel}
+                </a>
+              )}
             </div>
           </div>
           <div className={`md:col-start-7 md:col-span-6 text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
             {bio && <div className="[&>p]:mb-8"><RichContent content={bio} /></div>}
+            {data.cta2Label && data.cta2Url && (
+              <a
+                href={data.cta2Url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-8 inline-block text-sm font-normal text-black underline underline-offset-4 hover:opacity-60 transition-opacity"
+              >
+                {data.cta2Label}
+              </a>
+            )}
             {data.imageCredits && (
               <div className="mt-8">
                 {data.imageCredits.split('\n').map((line, i) => {
