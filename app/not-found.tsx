@@ -27,10 +27,11 @@ function matchRoute(pathname: string): RouteMatch {
   // Expected: ['kyaf' | 'bkkk', cpt, slug]
   if (parts.length !== 3) return null;
   const [site, cpt, slug] = parts;
-  if (site !== 'kyaf' && site !== 'bkkk') return null;
+  if (site !== 'kyaf' && site !== 'bkkk' && site !== 'bk') return null;
+  const resolvedSite = site === 'bk' ? 'bkkk' : site as 'kyaf' | 'bkkk';
   const knownCpts = ['exhibitions', 'activities', 'moving-image', 'artists', 'blog'];
   if (!knownCpts.includes(cpt)) return null;
-  return { site: site as 'kyaf' | 'bkkk', cpt, slug };
+  return { site: resolvedSite, cpt, slug };
 }
 
 function DetailShell({ site, cpt, slug }: { site: 'kyaf' | 'bkkk'; cpt: string; slug: string }) {
