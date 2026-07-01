@@ -13,6 +13,26 @@ function decodeEntities(str: string): string {
 }
 
 /**
+ * Strip layout wrapper divs that WP sometimes saves around content,
+ * leaving only the inner semantic HTML (p, a, strong, etc.).
+ * Handles patterns like: <div class="md:col-span-6 ..."><div ...><p>text</p></div></div>
+ */
+export function stripWrapperDivs(html: string): string {
+  let result = html.trim();
+  // Repeatedly unwrap outermost <div ...>...</div> if it contains no sibling elements
+  const divPattern = /^<div[^>]*>([\s\S]*)<\/div>\s*$/i;
+  for (let i = 0; i < 10; i++) {
+    const match = result.match(divPattern);
+    if (!match) break;
+    const inner = match[1].trim();
+    // Only unwrap if the inner content doesn't start with multiple sibling divs
+    // (i.e. this div is purely a wrapper, not a layout container with siblings)
+    result = inner;
+  }
+  return result;
+}
+
+/**
  * Auto-link bare URLs in text content.
  */
 export function autoLink(text: string): string {
