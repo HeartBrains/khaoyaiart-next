@@ -37,7 +37,7 @@ export function stripWrapperDivs(html: string): string {
  */
 export function autoLink(text: string): string {
   return text.replace(
-    /(https?:\/\/[^\s<>"']+)/g,
+    /(?<!href=")(?<!src=")(https?:\/\/[^\s<>"']+)/g,
     '<a href="$1" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">$1</a>'
   );
 }
