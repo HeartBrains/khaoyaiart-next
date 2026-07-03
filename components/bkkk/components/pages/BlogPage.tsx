@@ -1,13 +1,11 @@
 'use client';
 import { useState, useMemo } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { Reveal } from '../ui/Reveal';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
-import { getMockPostsByType } from '@/utils/mockDataBilingual';
+import { useBkkkBlogPosts } from '@/lib/useWPData';
 import { IMG_FOG_SRC } from '@/utils/imageConstants';
 
 interface BlogPageProps {
@@ -19,15 +17,12 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
   const covers = useCovers();
   const [selectedYear, setSelectedYear] = useState<string>('all');
 
-  // Get all blog posts in current language
-  const allBlogPosts = getMockPostsByType('post', language);
+  const { data: allBlogPosts } = useBkkkBlogPosts();
 
   // Group posts by year
   const blogsByYear = useMemo(() => {
     const grouped = allBlogPosts.reduce((acc, post) => {
-      // Extract year from date (handling both formats)
-      const yearMatch = post.date.match(/\d{4}/);
-      const year = yearMatch ? yearMatch[0] : '2025';
+      const year = post.year || '2025';
       
       if (!acc[year]) {
         acc[year] = [];
@@ -102,8 +97,8 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
                                         {/* Image */}
                                         <div className="aspect-[3/4] w-full bg-gray-200 overflow-hidden">
                                             <ImageWithFallback 
-                                                src={post.featuredImage?.sourceUrl} 
-                                                alt={post.title}
+                                                src={post.featuredImage} 
+                                                alt={post.title[language] || post.title.en}
                                                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                             />
                                         </div>
@@ -111,13 +106,8 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
                                         {/* Text Content */}
                                         <div className="flex flex-col gap-1">
                                             <h3 className={`text-xl md:text-2xl font-sans text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                                                {post.title}
+                                                {post.title[language] || post.title.en}
                                             </h3>
-                                            {post.categories && post.categories[0] && (
-                                                <p className={`text-xl md:text-2xl font-sans text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                                                    {post.categories[0]}
-                                                </p>
-                                            )}
                                             <p className={`text-xl md:text-2xl font-sans text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                                                 {post.date}
                                             </p>

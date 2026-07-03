@@ -305,6 +305,32 @@ export function mapAboutUs(post: WPRawPost) {
   };
 }
 
+// ─── Blog Post ────────────────────────────────────────────────────────────────
+
+export function mapBlogPost(post: WPRawPost) {
+  const rawDate = post.date ?? '';
+  const dateFormatted = rawDate
+    ? new Date(rawDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    : '';
+  return {
+    id: String(post.id),
+    slug: post.slug,
+    title: {
+      en: decode(post.title.rendered),
+      th: decode(m(post, 'title_th') || post.title.rendered),
+    },
+    date: dateFormatted,
+    year: rawDate ? rawDate.slice(0, 4) : '',
+    featuredImage: featuredImageUrl(post),
+    imageCredits: m(post, 'image_credits'),
+    content: {
+      en: m(post, 'content_en') || post.content?.rendered || '',
+      th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
+    },
+    site: m(post, 'site') as WPSite,
+  };
+}
+
 // ─── Press Item ───────────────────────────────────────────────────────────────
 
 export function mapPressItem(post: WPRawPost) {

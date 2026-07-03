@@ -4,7 +4,7 @@ import { fetchCPTBySlug, fetchMenuConfig, type WPRawPost, type MenuConfig, type 
 import { mapAboutUs } from './wp-mappers';
 import {
   mapBkkkExhibition, mapKyafExhibition, mapMovingImage,
-  mapActivity, mapResidencyArtist, mapBkkkTeamMember, mapKyafTeamMember, mapPressItem,
+  mapActivity, mapResidencyArtist, mapBkkkTeamMember, mapKyafTeamMember, mapPressItem, mapBlogPost,
 } from './wp-mappers';
 
 const _WP_URL = (process.env.NEXT_PUBLIC_WP_BASE_URL ?? 'https://content.khaoyaiart.org').replace(/\/$/, '');
@@ -129,6 +129,9 @@ export const useKyafExhibitionBySlug    = (slug: string) => useWPItem('exhibitio
 export const useActivityBySlug      = (slug: string) => useWPItem('activity', slug, mapActivity);
 export const useMovingImageBySlug   = (slug: string) => useWPItem('moving_image', slug, mapMovingImage);
 export const useResidencyArtistBySlug = (slug: string) => useWPItem('residency_artist', slug, mapResidencyArtist);
+export const useBkkkBlogPosts   = () => useWPList('blog-posts', 'bkkk', mapBlogPost);
+export const useKyafBlogPosts   = () => useWPList('blog-posts', 'kyaf', mapBlogPost);
+export const useBlogPostBySlug  = (slug: string) => useWPItem('blog-posts', slug, mapBlogPost);
 
 // ─── Menu config ─────────────────────────────────────────────────────────────
 
