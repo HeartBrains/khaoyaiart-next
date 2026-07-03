@@ -129,9 +129,9 @@ export const useKyafExhibitionBySlug    = (slug: string) => useWPItem('exhibitio
 export const useActivityBySlug      = (slug: string) => useWPItem('activity', slug, mapActivity);
 export const useMovingImageBySlug   = (slug: string) => useWPItem('moving_image', slug, mapMovingImage);
 export const useResidencyArtistBySlug = (slug: string) => useWPItem('residency_artist', slug, mapResidencyArtist);
-export const useBkkkBlogPosts   = () => useWPList('blog-posts', 'bkkk', mapBlogPost);
-export const useKyafBlogPosts   = () => useWPList('blog-posts', 'kyaf', mapBlogPost);
-export const useBlogPostBySlug  = (slug: string) => useWPItem('blog-posts', slug, mapBlogPost);
+export const useBkkkBlogPosts   = () => useWPList('blog_post', 'bkkk', mapBlogPost);
+export const useKyafBlogPosts   = () => useWPList('blog_post', 'kyaf', mapBlogPost);
+export const useBlogPostBySlug  = (slug: string) => useWPItem('blog_post', slug, mapBlogPost);
 
 // ─── Menu config ─────────────────────────────────────────────────────────────
 
