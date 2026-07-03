@@ -56,25 +56,25 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
           image={covers.blog || IMG_FOG_SRC}
           height="h-[80vh]"
        >
-          <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />
+          <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
        </ParallaxHero>
 
       {/* Content Section */}
-      <div className="w-full mx-auto px-[5%] pt-[96px] pb-[0px]">
-        <div className="flex flex-col">
+      <div className="w-full mx-auto px-[6vw] pt-[96px] pb-[0px]">
+        <div className="flex flex-col md:flex-row mb-32 md:mb-40">
             
             {/* Sidebar - Shows only years that are currently loaded/visible */}
-            <aside className="w-full shrink-0 h-fit mb-12">
-                <nav className="flex flex-col items-start gap-2">
-                    <h2 className="text-xl md:text-2xl font-sans font-medium text-black mb-4">Blog</h2>
+            <aside className="w-full md:w-1/2 shrink-0 md:sticky md:top-32 h-fit mb-12 md:mb-0">
+                <nav className="flex flex-col space-y-2">
+                    <h2 className="text-xl md:text-2xl font-normal text-black mb-4">Blog</h2>
                     {years.map((year) => (
                         <button
                             key={year}
                             onClick={() => setSelectedYear(year)}
-                            className={`text-left text-xl md:text-2xl font-sans transition-all duration-300 ${
+                            className={`text-left text-xl md:text-2xl font-normal transition-all duration-300 cursor-pointer ${
                                 selectedYear === year
-                                ? 'text-black font-medium' 
-                                : 'text-gray-400 hover:text-black font-normal'
+                                ? 'text-black' 
+                                : 'text-gray-400 hover:text-gray-600'
                             }`}
                         >
                             {year}
@@ -84,38 +84,36 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
             </aside>
 
             {/* Main Content */}
-            <main className="w-full min-h-[50vh]">
+            <main className="w-full md:w-1/2 flex flex-col gap-12 md:gap-16">
                 {filteredBlogs.map((yearGroup) => (
-                    <div key={yearGroup.year} id={`year-${yearGroup.year}`} className="mb-24 scroll-mt-32">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-24">
-                            {yearGroup.posts.map((post) => (
-                                <Reveal key={post.id}>
-                                    <div 
-                                        className="flex flex-col gap-6 cursor-pointer group w-full"
-                                        onClick={() => onNavigate('blog-detail', post.slug)}
-                                    >
-                                        {/* Image */}
-                                        <div className="aspect-[3/4] w-full bg-gray-200 overflow-hidden">
-                                            <ImageWithFallback 
-                                                src={post.featuredImage} 
-                                                alt={post.title[language] || post.title.en}
-                                                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                                            />
-                                        </div>
-
-                                        {/* Text Content */}
-                                        <div className="flex flex-col gap-1">
-                                            <h3 className={`text-xl md:text-2xl font-sans text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                                                {post.title[language] || post.title.en}
-                                            </h3>
-                                            <p className={`text-xl md:text-2xl font-sans text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                                                {post.date}
-                                            </p>
-                                        </div>
+                    <div key={yearGroup.year} id={`year-${yearGroup.year}`} className="flex flex-col gap-12 md:gap-16">
+                        {yearGroup.posts.map((post) => (
+                            <Reveal key={post.id}>
+                                <div 
+                                    className="flex flex-col gap-6 cursor-pointer group w-full"
+                                    onClick={() => onNavigate('blog-detail', post.slug)}
+                                >
+                                    {/* Image */}
+                                    <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
+                                        <ImageWithFallback 
+                                            src={post.featuredImage} 
+                                            alt={post.title[language] || post.title.en}
+                                            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                                        />
                                     </div>
-                                </Reveal>
-                            ))}
-                        </div>
+
+                                    {/* Text Content */}
+                                    <div className="flex flex-col gap-1">
+                                        <h3 className={`text-lg md:text-xl font-normal text-black leading-tight ${language === 'th' ? 'font-sans leading-[1.82em]' : ''}`}>
+                                            {post.title[language] || post.title.en}
+                                        </h3>
+                                        <p className={`text-lg md:text-xl font-normal text-black leading-tight ${language === 'th' ? 'font-sans leading-[1.82em]' : ''}`}>
+                                            {post.date}
+                                        </p>
+                                    </div>
+                                </div>
+                            </Reveal>
+                        ))}
                     </div>
                 ))}
             </main>
