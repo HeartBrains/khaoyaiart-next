@@ -41,25 +41,25 @@ export function BlogDetailPage({ onNavigate, slug }: BlogDetailPageProps) {
     <div className="w-full bg-white min-h-screen pb-24">
       {/* Hero */}
       {galleryImages.length > 0 && (
-        <div className="h-[35vh] md:h-[80vh] w-full relative overflow-hidden group bg-black">
+        <div className="w-full relative group bg-black">
           <Carousel
             setApi={setApi}
             plugins={[plugin.current]}
-            className="w-full h-full"
+            className="w-full"
             opts={{ align: "start", loop: true }}
           >
-            <CarouselContent className="h-full -ml-0">
+            <CarouselContent className="-ml-0">
               {galleryImages.map((src, index) => (
-                <CarouselItem key={index} className="h-full pl-0">
+                <CarouselItem key={index} className="pl-0">
                   <ImageWithFallback
                     src={src}
                     alt={`${wpPost.title[language] || wpPost.title.en} Gallery ${index + 1}`}
-                    className="w-full h-full object-cover opacity-90"
+                    className="w-full h-auto min-h-[50vh] max-h-[80vh] object-cover block opacity-90"
                   />
                 </CarouselItem>
               ))}
             </CarouselContent>
-            
+
             {galleryImages.length > 1 && (
               <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                 <CarouselPrevious className="pointer-events-auto static transform-none h-12 w-12 bg-black/30 hover:bg-black/50 border-none text-white" />
@@ -68,7 +68,7 @@ export function BlogDetailPage({ onNavigate, slug }: BlogDetailPageProps) {
             )}
           </Carousel>
 
-          {/* Thumbnails */}
+          {/* Dot indicators */}
           {galleryImages.length > 1 && (
             <div className="absolute bottom-8 right-[5%] z-20 flex gap-2">
               {galleryImages.map((_, index) => (
@@ -76,8 +76,8 @@ export function BlogDetailPage({ onNavigate, slug }: BlogDetailPageProps) {
                   key={index}
                   onClick={() => scrollTo(index)}
                   className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    current === index 
-                      ? 'bg-white scale-125' 
+                    current === index
+                      ? 'bg-white scale-125'
                       : 'bg-white/50 hover:bg-white/75'
                   }`}
                   aria-label={`Go to image ${index + 1}`}
@@ -88,9 +88,9 @@ export function BlogDetailPage({ onNavigate, slug }: BlogDetailPageProps) {
 
           {/* Back Button */}
           <div className="absolute bottom-8 left-6 md:left-12 z-20">
-            <button 
+            <button
               onClick={() => onNavigate('blog')}
-              className="fixed top-[120px] left-6 z-30 md:static md:ml-[5%] flex items-center gap-2 text-white/80 hover:text-white transition-colors bg-black/20 hover:bg-black/40 px-4 py-2 rounded-full backdrop-blur-sm"
+              className="flex items-center gap-2 text-white/80 hover:text-white transition-colors bg-black/20 hover:bg-black/40 px-4 py-2 rounded-full backdrop-blur-sm"
             >
               <ArrowLeft className="w-5 h-5" />
               <span className="text-sm font-normal font-sans">

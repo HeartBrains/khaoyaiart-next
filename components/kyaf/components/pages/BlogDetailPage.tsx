@@ -47,20 +47,20 @@ export function BlogDetailPage({ onNavigate, slug, backPage }: BlogDetailPagePro
     <div className="w-full bg-white min-h-screen pb-24">
       {/* Hero */}
       {galleryImages.length > 0 ? (
-        <div className="h-[35vh] md:h-[80vh] w-full relative overflow-hidden group bg-black">
+        <div className="w-full relative group bg-black">
           <Carousel
             setApi={setApi}
             plugins={[plugin.current]}
-            className="w-full h-full"
+            className="w-full"
             opts={{ align: 'start', loop: true }}
           >
-            <CarouselContent className="h-full -ml-0">
+            <CarouselContent className="-ml-0">
               {galleryImages.map((src, index) => (
-                <CarouselItem key={index} className="h-full pl-0">
+                <CarouselItem key={index} className="pl-0">
                   <ImageWithFallback
                     src={src}
                     alt={`${wpPost.title[language] || wpPost.title.en} Gallery ${index + 1}`}
-                    className="w-full h-full object-cover opacity-90"
+                    className="w-full h-auto min-h-[50vh] max-h-[80vh] object-cover block opacity-90"
                   />
                 </CarouselItem>
               ))}
