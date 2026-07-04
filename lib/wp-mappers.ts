@@ -322,6 +322,12 @@ export function mapBlogPost(post: WPRawPost) {
     date: dateFormatted,
     year: rawDate ? rawDate.slice(0, 4) : '',
     featuredImage: featuredImageUrl(post),
+    gallery: (() => {
+      const urls = galleryUrls(post);
+      if (urls.length > 0) return urls;
+      const fi = featuredImageUrl(post);
+      return fi ? [fi] : [];
+    })(),
     imageCredits: m(post, 'image_credits'),
     content: {
       en: m(post, 'content_en') || post.content?.rendered || '',

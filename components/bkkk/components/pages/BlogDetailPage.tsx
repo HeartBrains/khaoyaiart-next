@@ -35,7 +35,7 @@ export function BlogDetailPage({ onNavigate, slug }: BlogDetailPageProps) {
   if (loading) return <div className="min-h-screen flex items-center justify-center font-sans">{t('common.loading')}</div>;
   if (!wpPost) return <div className="min-h-screen flex items-center justify-center font-sans text-red-500">{language === 'th' ? 'ไม่พบบทความ' : 'Post not found.'}</div>;
 
-  const galleryImages = wpPost.featuredImage ? [wpPost.featuredImage] : [];
+  const galleryImages = wpPost.gallery ?? [];
 
   return (
     <div className="w-full bg-white min-h-screen pb-24">
