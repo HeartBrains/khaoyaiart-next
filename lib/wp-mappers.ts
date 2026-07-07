@@ -62,15 +62,6 @@ function featuredImageUrl(post: WPRawPost): string {
     }
   }
 
-  // Fall back to gallery_media URLs
-  const galleryMedia = post.meta?.['gallery_media'];
-  if (Array.isArray(galleryMedia)) {
-    const first = (galleryMedia as string[]).find(u => typeof u === 'string' && u.startsWith('http'));
-    if (first) return first;
-  }
-  // Fall back to pipe-separated gallery text field
-  const gallery = m(post, 'gallery');
-  if (gallery) return splitUrls(gallery)[0] ?? '';
   return '';
 }
 
