@@ -31,6 +31,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
   const currentExhibitions  = allExhibitions.filter(e => e.status === 'current');
   const upcomingExhibitions = allExhibitions.filter(e => e.status === 'upcoming');
   const currentActivities   = allActivities.filter(a => a.status === 'current');
+  const upcomingActivities  = allActivities.filter(a => a.status === 'upcoming');
   const currentMovingImageProgram = allMovingImages.find(m => m.status === 'current') ?? null;
   const wpAnchors = useHomeAnchors('bkkk');
   // Fall back to siteConfig while WP loads
@@ -39,6 +40,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
     upcomingExhibitions: wpAnchors ? (wpAnchors.upcomingExhibitions ?? true) : siteConfig.homeAnchors.upcomingExhibitions,
     currentMovingImage:  wpAnchors ? (wpAnchors.currentMovingImage  ?? true) : siteConfig.homeAnchors.currentMovingImageProgram,
     currentActivities:   wpAnchors ? wpAnchors.currentActivities   : siteConfig.homeAnchors.currentActivities,
+    upcomingActivities:  true,
   };
 
   const sections = useMemo(() => [
@@ -46,7 +48,8 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
     { id: 'upcoming-exhibitions',  label: language === 'th' ? 'นิทรรศการที่กำลังจะเริ่ม' : 'Upcoming Exhibitions',            visible: anchors.upcomingExhibitions && upcomingExhibitions.length > 0 },
     { id: 'moving-image-program',  label: language === 'th' ? 'โปรแกรมภาพเคลื่อนไหวปัจจุบัน' : 'Current Moving Image Program', visible: anchors.currentMovingImage  && currentMovingImageProgram !== null },
     { id: 'current-activities',    label: language === 'th' ? 'กิจกรรมปัจจุบัน' : 'Current Activities',                       visible: anchors.currentActivities   && currentActivities.length > 0 },
-  ].filter(s => s.visible), [language, anchors, currentExhibitions, upcomingExhibitions, currentMovingImageProgram, currentActivities]);
+    { id: 'upcoming-activities',   label: language === 'th' ? 'กิจกรรมที่กำลังจะมาถึง' : 'Upcoming Activities',                 visible: anchors.upcomingActivities  && upcomingActivities.length > 0 },
+  ].filter(s => s.visible), [language, anchors, currentExhibitions, upcomingExhibitions, currentMovingImageProgram, currentActivities, upcomingActivities]);
 
   // Scroll to section
   const scrollToSection = (id: string) => {
@@ -98,6 +101,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                   s.id === 'current-exhibitions'  ? currentExhibitions.map(i => ({ id: i.id, slug: i.slug, title: i.title[language] || i.title.en })) :
                   s.id === 'upcoming-exhibitions' ? upcomingExhibitions.map(i => ({ id: i.id, slug: i.slug, title: i.title[language] || i.title.en })) :
                   s.id === 'current-activities'   ? currentActivities.map(i => ({ id: i.id, slug: i.slug, title: i.title[language] || i.title.en })) :
+                  s.id === 'upcoming-activities'  ? upcomingActivities.map(i => ({ id: i.id, slug: i.slug, title: i.title[language] || i.title.en })) :
                   s.id === 'moving-image-program' ? (currentMovingImageProgram ? [{ id: currentMovingImageProgram.id, slug: currentMovingImageProgram.slug, title: currentMovingImageProgram.title[language] || currentMovingImageProgram.title.en }] : []) :
                   []
                 ),
@@ -220,6 +224,28 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                   )) : (
                     <p className={`text-xl md:text-2xl font-normal text-gray-400 text-left w-full ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getEmptyStateMessage('noCurrentActivities', language)}</p>
                   )}
+                </div>
+              </section>
+            )}
+
+            {/* Upcoming Activities */}
+            {anchors.upcomingActivities && upcomingActivities.length > 0 && (
+              <section id="upcoming-activities" className="mb-32 md:mb-40 scroll-mt-32 w-full">
+                <div className="flex flex-col gap-12 md:items-end">
+                  {upcomingActivities.map((item) => (
+                    <div id={`record-${item.slug}`} key={item.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', item.slug)}>
+                      {item.featuredImage && (
+                        <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
+                          <ImageWithFallback src={item.featuredImage} alt={item.title[language] || item.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                        </div>
+                      )}
+                      <div className="flex flex-col gap-1">
+                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title[language] || item.title.en}</h3>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.artist?.[language] || item.artist?.en}</p>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.dateDisplay?.[language] || item.dateDisplay?.en}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </section>
             )}

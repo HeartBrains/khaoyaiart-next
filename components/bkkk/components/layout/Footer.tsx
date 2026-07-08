@@ -26,13 +26,13 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
               onClick={() => onNavigate?.('support')} 
               className={`hover:text-gray-300 transition-colors text-left ${language === 'th' ? 'leading-[1.82em]' : ''}`}
             >
-              {language === 'th' ? 'การสนับสนุน' : 'Sponsorship'}
+              {language === 'th' ? 'การสนับสนุน' : 'Support us'}
             </button>
             <button 
               onClick={() => onNavigate?.('contact')} 
               className={`hover:text-gray-300 transition-colors text-left ${language === 'th' ? 'leading-[1.82em]' : ''}`}
             >
-              {language === 'th' ? 'สมัครรับข่าวสาร' : 'Subscription'}
+              {language === 'th' ? 'สมัครรับข่าวสาร' : 'Contact us'}
             </button>
           </div>
 

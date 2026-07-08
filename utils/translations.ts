@@ -23,7 +23,7 @@ export const translations = {
     'nav.shop': 'Shop',
     'nav.booking': 'Booking',
     'nav.press': 'Press',
-    'nav.contact': 'Contact',
+    'nav.contact': 'Contact us',
     'nav.khaoyai': 'Khao Yai',
     
     // Press
