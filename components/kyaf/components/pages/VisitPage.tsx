@@ -176,7 +176,7 @@ export function VisitPage() {
                 <div className="flex flex-col md:flex-row gap-12 md:gap-16 mb-12">
                     <div className="md:w-1/2">
                         <p id="transportation" className={`text-xl md:text-2xl font-normal ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                            {language === 'th' ? 'การเดินทาง' : 'Transportation'}
+                            {language === 'th' ? 'การเดินทาง' : 'Getting Here'}
                         </p>
                     </div>
                     <div className="md:w-1/2">

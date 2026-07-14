@@ -76,20 +76,18 @@ export function VisitInfo() {
                     <p className="text-xl md:text-2xl font-sans text-black leading-[1.82em]">กิจกรรมพิเศษที่อาจมีค่าใช้จ่ายแตกต่างกัน</p>
                   </>
                 ) : (
-                  <>
-                    <p className="text-xl md:text-2xl font-sans text-black">Entry to exhibitions is free, except for special events, charges will vary.</p>
-                  </>
+                  <p className="text-xl md:text-2xl font-sans text-black">Admission to all exhibitions is free. Ticket fees may apply to selected special events and public programs; prices will vary depending on the event.</p>
                 )}
             </div>
         </div>
       </Reveal>
 
-      {/* Transportation */}
+      {/* Getting Here */}
       <Reveal>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-y-4 md:gap-x-8">
             <div className="md:col-span-6">
                 <span className={`text-xl md:text-2xl font-sans text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                  {language === 'th' ? 'การดินทาง' : 'Transportation'}
+                  {language === 'th' ? 'การเดินทาง' : 'Getting Here'}
                 </span>
             </div>
             <div className="md:col-span-6 flex flex-col gap-8">
@@ -104,7 +102,7 @@ export function VisitInfo() {
                               {language === 'th' ? 'สถานีหัวลำโพง' : 'Hua Lamphong Station'}
                             </p>
                             <p className={`text-xl md:text-2xl font-sans text-gray-500 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                              {language === 'th' ? 'เดิน 6 - 7 นาที' : '6 - 7 minute walk.'}
+                              {language === 'th' ? 'เดิน 6 - 7 นาที' : 'Approximately a 6\u20137-minute walk.'}
                             </p>
                         </div>
                         <div className="flex flex-col">
@@ -112,7 +110,7 @@ export function VisitInfo() {
                               {language === 'th' ? 'สถานีวัดมังกร' : 'Wat Mangkon Station'}
                             </p>
                             <p className={`text-xl md:text-2xl font-sans text-gray-500 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                              {language === 'th' ? 'เดิน 10 - 12 นาที' : '10 - 12 minute walk.'}
+                              {language === 'th' ? 'เดิน 10 - 12 นาที' : 'Approximately a 10\u201312-minute walk.'}
                             </p>
                         </div>
                     </div>
@@ -126,46 +124,29 @@ export function VisitInfo() {
                     <p className={`text-xl md:text-2xl font-sans text-black mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                       {language === 'th' ? (
                         <>
-                          ค้นหา "<a href="https://maps.app.goo.gl/88XLQBeDFaC1wvuQA" target="_blank" rel="noopener noreferrer" className="underline hover:no-underline">บางกอก คุนซ์ฮาลเล่</a>"
+                          ค้นหา &ldquo;<a href="https://maps.app.goo.gl/88XLQBeDFaC1wvuQA" target="_blank" rel="noopener noreferrer" className="underline hover:no-underline">บางกอก คุนซ์ฮาลเล่</a>&rdquo; ในแอปนำทาง หรือแสดงที่อยู่นี้ให้คนขับ:
                         </>
                       ) : (
                         <>
-                          Search for "<a href="https://maps.app.goo.gl/88XLQBeDFaC1wvuQA" target="_blank" rel="noopener noreferrer" className="underline hover:no-underline">Bangkok Kunsthalle</a>"
+                          Search for &ldquo;<a href="https://maps.app.goo.gl/88XLQBeDFaC1wvuQA" target="_blank" rel="noopener noreferrer" className="underline hover:no-underline">Bangkok Kunsthalle</a>&rdquo; in your navigation app, or show your driver the address below:
                         </>
                       )}
                     </p>
-                    <p className={`text-xl md:text-2xl font-sans text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                      {language === 'th' ? 'หรือแสดงที่อยู่นี้ให้คนขับ:' : 'or show the driver this address in Thai:'}
-                    </p>
-                    <p className="text-xl md:text-2xl font-sans text-black mt-2 leading-[1.82em]">599 ซอย พันธจิตต์ แขวงป้อมปราบ</p>
-                    <p className="text-xl md:text-2xl font-sans text-black leading-[1.82em]">เขตป้อมปราบศัตรูพาย กรุงเทพมหานคร</p>
+                    <p className="text-xl md:text-2xl font-sans text-black mt-2 leading-[1.82em]">599 ซอยพันธจิตต์ แขวงป้อมปราบ</p>
+                    <p className="text-xl md:text-2xl font-sans text-black leading-[1.82em]">เขตป้อมปราบศัตรูพ่าย กรุงเทพมหานคร</p>
                 </div>
 
-                {/* Boat */}
+                {/* Parking */}
                 <div className="flex flex-col gap-1">
                     <p className={`text-xl md:text-2xl font-sans text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                      {language === 'th' ? 'เรือ' : 'Boat'}
-                    </p>
-                    <p className={`text-xl md:text-2xl font-sans text-black mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                      {language === 'th' ? 'สำหรับเส้นทางที่สวยงามกวา นั่งเรือด่วนเจ้าพระยาไปที่ท่ากรมเจ้าท่า (N4)' : 'For a more scenic route, take the Chao Phraya Express Boat to Marine Department (N4)'}
-                    </p>
-                    <p className={`text-xl md:text-2xl font-sans text-gray-500 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                      {language === 'th' ? 'เดิน 15 นาที' : 'with a 15 minute walk.'}
-                    </p>
-                </div>
-
-                {/* Car & Parking */}
-                <div className="flex flex-col gap-1">
-                    <p className={`text-xl md:text-2xl font-sans text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                      {language === 'th' ? 'รถยนต์และที่จอดรถ' : 'Car & Parking'}
+                      {language === 'th' ? 'ที่จอดรถ' : 'Parking'}
                     </p>
                     {language === 'th' ? (
                       <>
-                        <p className="text-xl md:text-2xl font-sans text-black mt-2 leading-[1.82em]">ที่จอดรถในสถานที่มีจำกัดมากเนื่องจากตั้งอยู่ในซอยแคบ</p>
-                        <p className="text-xl md:text-2xl font-sans text-black mt-4 leading-[1.82em]">แนะนำอย่างยิ่งให้���อดรถที่ลานจอรถเชิพาณิชย์ใกล้เคียง:</p>
+                        <p className="text-xl md:text-2xl font-sans text-black mt-2 leading-[1.82em]">ที่จอดรถในสถานที่มีจำกัดมาก มีที่จอดรถในลานจอดรถเชิงพาณิชย์ดังต่อไปนี้:</p>
                         <p className="text-xl md:text-2xl font-sans text-black mt-2 leading-[1.82em]">
                           <a href="https://maps.app.goo.gl/bz9RmmiWfELuy4MV6" target="_blank" rel="noopener noreferrer" className="underline hover:no-underline">
-                            อาคารจอดรถ Moh Mee Development
+                            อาคาร Moh Mee
                           </a>
                         </p>
                         <p className="text-xl md:text-2xl font-sans text-black leading-[1.82em]">
@@ -176,20 +157,31 @@ export function VisitInfo() {
                       </>
                     ) : (
                       <>
-                        <p className="text-xl md:text-2xl font-sans text-black mt-2">On-site parking is extremely limited due to our location in a narrow alley.</p>
-                        <p className="text-xl md:text-2xl font-sans text-black mt-4">It is highly recommended to park at nearby commercial lots:</p>
+                        <p className="text-xl md:text-2xl font-sans text-black mt-2">On-site parking is extremely limited. Parking is available in the following commercial parking facilities:</p>
                         <p className="text-xl md:text-2xl font-sans text-black mt-2">
                           <a href="https://maps.app.goo.gl/bz9RmmiWfELuy4MV6" target="_blank" rel="noopener noreferrer" className="underline hover:no-underline">
-                            Moh Mee Development Parking Building
+                            Moh Mee Building
                           </a>
                         </p>
                         <p className="text-xl md:text-2xl font-sans text-black">
                           <a href="https://maps.app.goo.gl/Djd42rKh3Wqt4cvv5" target="_blank" rel="noopener noreferrer" className="underline hover:no-underline">
-                            Hua Lamphong railway station car park
+                            Hua Lamphong Railway Station Parking Lot
                           </a>
                         </p>
                       </>
                     )}
+                </div>
+
+                {/* Boat */}
+                <div className="flex flex-col gap-1">
+                    <p className={`text-xl md:text-2xl font-sans text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                      {language === 'th' ? 'เรือ' : 'Boat'}
+                    </p>
+                    <p className={`text-xl md:text-2xl font-sans text-black mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                      {language === 'th'
+                        ? 'สำหรับเส้นทางที่สวยงามกว่า นั่งเรือด่วนเจ้าพระยาไปที่ท่ากรมเจ้าท่า (N4) บางกอก คุนซ์ฮาลเล่อยู่ห่างจากท่าเรือประมาณ 15 นาที'
+                        : 'For a more scenic journey, take the Chao Phraya Express Boat to Marine Department Pier (N4). Bangkok Kunsthalle is approximately a 15-minute walk from the pier.'}
+                    </p>
                 </div>
             </div>
         </div>

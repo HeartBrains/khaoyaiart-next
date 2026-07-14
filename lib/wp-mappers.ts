@@ -163,6 +163,7 @@ export function mapMovingImage(post: WPRawPost) {
     id: String(post.id),
     slug: post.slug,
     title: { en: decode(post.title.rendered), th: decode(m(post, 'title_th') || post.title.rendered) },
+    artist: { en: decode(m(post, 'artist_en')), th: decode(m(post, 'artist_th') || m(post, 'artist_en')) },
     curator: { en: decode(m(post, 'curator_en')), th: decode(m(post, 'curator_th') || m(post, 'curator_en')) },
     fromDate: m(post, 'from_date'),
     toDate: m(post, 'to_date'),

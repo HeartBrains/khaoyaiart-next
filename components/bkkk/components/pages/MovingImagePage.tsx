@@ -138,7 +138,7 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
                       )}
                       <div className="flex flex-col gap-1">
                         <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.title[language] || record.title.en}</h3>
-                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.curator?.[language] || record.curator?.en}</p>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.artist?.[language] || record.artist?.en}</p>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.dateDisplay?.[language] || record.dateDisplay?.en}</p>
                       </div>
                     </div>
@@ -169,7 +169,7 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
                       )}
                       <div className="flex flex-col gap-1">
                         <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.title[language] || record.title.en}</h3>
-                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.curator?.[language] || record.curator?.en}</p>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.artist?.[language] || record.artist?.en}</p>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.dateDisplay?.[language] || record.dateDisplay?.en}</p>
                       </div>
                     </div>
@@ -200,7 +200,7 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
                       )}
                       <div className="flex flex-col gap-1">
                         <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.title[language] || record.title.en}</h3>
-                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.curator?.[language] || record.curator?.en}</p>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.artist?.[language] || record.artist?.en}</p>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.dateDisplay?.[language] || record.dateDisplay?.en}</p>
                       </div>
                     </div>
