@@ -40,7 +40,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
     upcomingExhibitions: wpAnchors ? (wpAnchors.upcomingExhibitions ?? true) : siteConfig.homeAnchors.upcomingExhibitions,
     currentMovingImage:  wpAnchors ? (wpAnchors.currentMovingImage  ?? true) : siteConfig.homeAnchors.currentMovingImageProgram,
     currentActivities:   wpAnchors ? wpAnchors.currentActivities   : siteConfig.homeAnchors.currentActivities,
-    upcomingActivities:  true,
+    upcomingActivities:  wpAnchors ? (wpAnchors.currentActivities ?? false) : siteConfig.homeAnchors.currentActivities,
   };
 
   const sections = useMemo(() => [
