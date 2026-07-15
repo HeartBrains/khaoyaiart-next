@@ -205,7 +205,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
             )}
 
             {/* Current Activities */}
-            {anchors.currentActivities && (
+            {false && anchors.currentActivities && (
               <section id="current-activities" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:items-end">
                   {currentActivities.length > 0 ? currentActivities.map((item) => (
@@ -229,7 +229,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
             )}
 
             {/* Upcoming Activities */}
-            {anchors.upcomingActivities && upcomingActivities.length > 0 && (
+            {false && anchors.upcomingActivities && upcomingActivities.length > 0 && (
               <section id="upcoming-activities" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:items-end">
                   {upcomingActivities.map((item) => (
