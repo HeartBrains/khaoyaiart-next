@@ -133,24 +133,12 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
 
   return (
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
-      <div
-        style={{
-          width: '100%',
-          height: '50vh',
-          maxHeight: '80vh',
-          overflow: 'hidden',
-          backgroundColor: '#000',
-        }}
-      >
+      <div className="w-full bg-black overflow-hidden">
         <img
           src="https://irp.cdn-website.com/5516674f/dms3rep/multi/1000012646.jpg"
           alt="Residency"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            display: 'block',
-          }}
+          className="w-full h-auto max-h-[80vh] object-cover block"
+          style={{ minHeight: '50vh' }}
           loading="eager"
         />
       </div>
