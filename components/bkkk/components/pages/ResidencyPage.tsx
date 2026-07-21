@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { ParallaxHero } from '../ui/ParallaxHero';
+
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
@@ -134,12 +134,13 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
 
   return (
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
-      <ParallaxHero
-        image="https://irp.cdn-website.com/5516674f/dms3rep/multi/1000012646.jpg"
-        height="h-[50vh] md:h-[70vh]"
-      >
-        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />
-      </ParallaxHero>
+      <div className="w-full bg-black">
+        <img
+          src="https://irp.cdn-website.com/5516674f/dms3rep/multi/1000012646.jpg"
+          alt="Residency"
+          className="w-full h-auto min-h-[50vh] max-h-[80vh] object-cover block"
+        />
+      </div>
 
       <div className="w-full px-[5%] pt-[96px] pb-[0px]">
         <div className="flex flex-col md:flex-row gap-12 md:gap-0">
