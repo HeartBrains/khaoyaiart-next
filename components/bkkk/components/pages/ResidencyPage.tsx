@@ -136,7 +136,7 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
       <ParallaxHero
         image="https://irp.cdn-website.com/5516674f/dms3rep/multi/1000012646.jpg"
-        height="min-h-[50vh] max-h-[80vh] h-[60vh] md:h-[80vh]"
+        height="h-[50vh] md:h-[70vh]"
       >
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />
       </ParallaxHero>
