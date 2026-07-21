@@ -214,3 +214,4 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
     </div>
   );
 }
+
