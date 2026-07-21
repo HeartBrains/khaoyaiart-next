@@ -1,6 +1,7 @@
 'use client';
-import { useState, useEffect } from 'react';
-
+import { useState, useEffect, useRef } from 'react';
+import { Carousel, CarouselContent, CarouselItem } from '../ui/carousel';
+import Autoplay from 'embla-carousel-autoplay';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
@@ -18,6 +19,7 @@ interface ResidencyPageProps {
 export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: ResidencyPageProps) {
   const internalNavigate = useAppNavigate();
   const onNavigate = onNavigateProp ?? internalNavigate;
+  const plugin = useRef(Autoplay({ delay: 4000, stopOnInteraction: true }));
   const { language } = useLanguage();
   const covers = useCovers();
   const { data: ARTISTS_DATA } = useResidencyArtists();
@@ -134,12 +136,19 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
 
   return (
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
-      <div className="w-full min-h-[50vh] max-h-[80vh] h-[50vh] md:h-[80vh] bg-black overflow-hidden">
-        <img
-          src="https://irp.cdn-website.com/5516674f/dms3rep/multi/1000012646.jpg"
-          alt="Residency"
-          className="w-full h-full object-cover block"
-        />
+      <div className="w-full relative group">
+        <Carousel plugins={[plugin.current]} className="w-full bg-black" opts={{ align: 'start', loop: false }}>
+          <CarouselContent className="-ml-0">
+            <CarouselItem className="pl-0">
+              <img
+                src="https://irp.cdn-website.com/5516674f/dms3rep/multi/1000012646.jpg"
+                alt="Residency"
+                className="w-full h-auto min-h-[50vh] max-h-[80vh] object-cover block"
+                loading="eager"
+              />
+            </CarouselItem>
+          </CarouselContent>
+        </Carousel>
       </div>
 
       <div className="w-full px-[5%] pt-[96px] pb-[0px]">
