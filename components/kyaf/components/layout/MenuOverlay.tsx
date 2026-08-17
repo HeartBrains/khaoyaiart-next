@@ -74,7 +74,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
         label: t('nav.residency'),
         page: 'residency',
         children: [
-            ...(sec('residency', 'upcoming') ? [{ label: t('residency.upcomingArtists'), page: 'residency', section: 'upcoming' }] : []),
+            ...(sec('residency', 'upcoming') ? [{ label: language === 'th' ? t('residency.upcomingArtists') : 'Upcoming Residency', page: 'residency', section: 'upcoming' }] : []),
             ...(sec('residency', 'current')  ? [{ label: t('residency.currentArtists'),  page: 'residency', section: 'current'  }] : []),
             ...(sec('residency', 'past')     ? [{ label: t('residency.pastArtists'),      page: 'residency', section: 'past'     }] : []),
         ]
