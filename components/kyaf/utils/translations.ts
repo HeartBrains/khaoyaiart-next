@@ -107,7 +107,7 @@ export const translations = {
     'residency.title': 'Artist in Residence',
     'residency.description': 'Our residency program supports emerging and established artists.',
     'residency.currentArtists': 'Current Artists',
-    'residency.upcomingArtists': 'Upcoming Artists',
+    'residency.upcomingArtists': 'Upcoming Residency',
     'residency.pastArtists': 'Past Artists',
     'residency.applyNow': 'Apply Now',
     'residency.currentResidents': 'Current Residents',
