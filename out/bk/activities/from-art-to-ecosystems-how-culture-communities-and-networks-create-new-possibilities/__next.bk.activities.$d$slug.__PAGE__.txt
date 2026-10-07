@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[79014,["/_next/static/chunks/0vi~3sgpfx6h3.js","/_next/static/chunks/0dbhjjzl8qfwv.js","/_next/static/chunks/14-4bc~r~d8jq.js","/_next/static/chunks/0lpm4rgbmnia_.js","/_next/static/chunks/0gv1fmowoa8hx.js","/_next/static/chunks/162wodo~tpaxy.js","/_next/static/chunks/12sll9k~j161_.js","/_next/static/chunks/04oy1clzzhd3w.js","/_next/static/chunks/0q3fpccypwvjq.js"],"ActivityDetailClientPage"]
-3:I[97367,["/_next/static/chunks/0vi~3sgpfx6h3.js","/_next/static/chunks/0dbhjjzl8qfwv.js"],"OutletBoundary"]
+2:I[229,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","3680","static/chunks/3680-d62bf8c87c68ae1c.js","1193","static/chunks/1193-a32f306d876d5bb2.js","8016","static/chunks/app/bk/activities/%5Bslug%5D/page-5a99640043c16f0f.js"],"ActivityDetailClientPage"]
+3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"bkkk","slug":"from-art-to-ecosystems-how-culture-communities-and-networks-create-new-possibilities"}]],[["$","script","script-0",{"src":"/_next/static/chunks/04oy1clzzhd3w.js","async":true}],["$","script","script-1",{"src":"/_next/static/chunks/0q3fpccypwvjq.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"HCfmdy0F1IDjgllYfE6UA"}
+0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"bkkk","slug":"from-art-to-ecosystems-how-culture-communities-and-networks-create-new-possibilities"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"rFDhbQzyzOsHvJ0joOU-6"}
 5:null
