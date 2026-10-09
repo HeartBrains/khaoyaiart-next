@@ -11,9 +11,13 @@ on:
       - 'public/**'
       - 'next.config.ts'
       - 'package.json'
+      - '.github/workflows/**'
   repository_dispatch:
     types: [wp_content_updated]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build-and-commit:
@@ -21,8 +25,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GH_PAT }}
 
       - uses: actions/setup-node@v4
         with:
