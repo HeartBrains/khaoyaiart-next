@@ -9,7 +9,6 @@ on:
       - 'lib/**'
       - 'utils/**'
       - 'public/**'
-      - '.github/workflows/**'
       - 'next.config.ts'
       - 'package.json'
   repository_dispatch:
@@ -19,13 +18,11 @@ on:
 jobs:
   build-and-commit:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - uses: actions/checkout@v4
         with:
-          token: ${{ github.token }}
+          token: ${{ secrets.GH_PAT }}
 
       - uses: actions/setup-node@v4
         with:
