@@ -14,11 +14,6 @@ const TYPE_LABELS: Record<RelatedContentType, Record<Language, string>> = {
   blog: { en: 'Blog', th: 'บทความ' },
 };
 
-const SITE_LABELS = {
-  bkkk: 'BK · Bangkok Kunsthalle',
-  kyaf: 'KYAF · Khao Yai Art Forest',
-} as const;
-
 export function RelatedContent({
   items,
   language,
@@ -62,12 +57,12 @@ export function RelatedContent({
                       />
                     </div>
                   ) : null}
-                  <p className="mt-3 text-xs uppercase tracking-wide text-gray-500">
-                    {SITE_LABELS[item.site]}
-                  </p>
-                  <h4 className={`mt-1 text-base md:text-lg font-normal leading-tight group-hover:opacity-60 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                  <h4 className={`mt-3 text-base md:text-lg font-normal leading-tight group-hover:opacity-60 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                     {item.title[language] || item.title.en}
                   </h4>
+                  {item.date ? (
+                    <p className="mt-2 text-sm text-gray-500">{item.date}</p>
+                  ) : null}
                 </a>
               );
             })}

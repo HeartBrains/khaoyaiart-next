@@ -12,6 +12,7 @@ export interface RelatedContentItem {
   slug: string;
   type: RelatedContentType;
   title: { en: string; th: string };
+  date?: string;
   image?: string;
   category?: string;
   site: WPSite;
@@ -71,6 +72,7 @@ export function parseRelatedContent(value: unknown): RelatedContentItem[] {
       slug,
       type,
       title: { en, th },
+      date: typeof item.date === 'string' ? item.date : undefined,
       image: typeof item.image === 'string' ? item.image : undefined,
       category: typeof item.category === 'string' ? item.category : undefined,
       site,

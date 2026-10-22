@@ -17,9 +17,9 @@ This spec replaces the previously completed smart-404 spec. The previous spec is
 
 ### Headless site
 
-- Expose the relation data through the WordPress REST API in a form the static build and client-side detail fallback can use. Each resolved item needs at least its WordPress ID, type, slug, title, and owning site; include a featured image when available.
+- Expose the relation data through the WordPress REST API in a form the static build and client-side detail fallback can use. Each resolved item needs at least its WordPress ID, type, slug, title, date, and owning site; include a featured image when available.
 - Render a related-content section on detail pages when a record has related items. Group items by related record type. Records of the same type from BK and KYAF appear together in that group, rather than in separate site groups.
-- Match each brand’s current detail-page design and reuse its established card/list patterns. Use the linked record’s site and type to generate its URL; do not rely on a WordPress admin permalink.
+- Match each brand’s current detail-page design and reuse its established card/list patterns. Show the linked record’s date below its title without displaying its site name. Use the linked record’s site and type to generate its URL; do not rely on a WordPress admin permalink.
 - Keep relations directional: an item appears on A’s page when A relates to it, and does not appear on B’s page unless B has its own relation to A.
 - Work for statically generated detail pages and for detail pages rendered by the runtime smart 404 shell.
 
@@ -58,5 +58,6 @@ This spec replaces the previously completed smart-404 spec. The previous spec is
 - Existing saved relations remain intact, and a relation remains one-way unless separately selected on the other record.
 - REST data identifies each selected record’s type and owning site and is usable by both static and client-side detail rendering.
 - Detail pages show related records grouped by type, with BK and KYAF records of the same type together and styled consistently with the page’s brand.
+- Every related-content card displays its date below its title and omits the site name.
 - Every related link resolves to the correct public route: `/bk/...` for `bkkk` and `/kyaf/...` for `kyaf`.
 - Same-site and cross-site relations behave consistently on both BK and KYAF pages, including after static rebuild and through the runtime smart 404 shell.
