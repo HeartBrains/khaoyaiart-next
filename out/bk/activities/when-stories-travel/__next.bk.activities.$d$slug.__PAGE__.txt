@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[229,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","3680","static/chunks/3680-d62bf8c87c68ae1c.js","1193","static/chunks/1193-2779244b8c289d4b.js","229","static/chunks/229-6518dd99852f15b1.js","8016","static/chunks/app/bk/activities/%5Bslug%5D/page-61c21bf2d9f2f8e6.js"],"ActivityDetailClientPage"]
+2:I[229,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","3680","static/chunks/3680-d62bf8c87c68ae1c.js","1193","static/chunks/1193-6708af374b68bffa.js","229","static/chunks/229-6518dd99852f15b1.js","8016","static/chunks/app/bk/activities/%5Bslug%5D/page-38098a27db91034f.js"],"ActivityDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"bkkk","slug":"when-stories-travel"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"JJV-dqblrhN7QPz-aPk7_"}
+0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"bkkk","slug":"when-stories-travel"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"SHlOS4O1zK3yerDC2Pnkb"}
 5:null
