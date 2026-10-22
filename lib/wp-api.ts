@@ -188,13 +188,17 @@ export async function fetchMenuConfig(): Promise<MenuConfig | null> {
   }
 }
 
-export async function fetchCPTBySlug(cpt: string, slug: string): Promise<WPRawPost | null> {
+export async function fetchCPTBySlug(cpt: string, slug: string, site?: WPSite): Promise<WPRawPost | null> {
   try {
     const url = `${WP_BASE}/${restBase(cpt)}?slug=${slug}&_fields=id,slug,title,content,date,modified,meta,featured_media&_=${Date.now()}`;
     const res = await fetchWithRetry(url);
     if (!res) return null;
     const data: WPRawPost[] = await res.json();
-    const post = data[0] ?? null;
+    const post = site
+      ? data.find(candidate => candidate.meta?.site === site)
+        ?? data.find(candidate => !candidate.meta?.site)
+        ?? null
+      : data[0] ?? null;
     if (!post) return null;
 
     // Resolve featured_media and gallery_media IDs to URLs

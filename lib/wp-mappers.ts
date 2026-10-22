@@ -2,6 +2,7 @@
  * Maps raw WordPress REST API responses to typed objects used by page components.
  */
 import type { WPRawPost, WPSite } from './wp-api';
+import { parseRelatedContent } from './related-content';
 
 // ─── Exported types (inferred from mapper return types) ───────────────────────
 export type ExhibitionItem = ReturnType<typeof mapBkkkExhibition>;
@@ -117,6 +118,7 @@ export function mapBkkkExhibition(post: WPRawPost) {
     ctaLeft:  { label: m(post, 'cta_label'),  url: m(post, 'cta_url') },
     ctaRight: { label: m(post, 'cta2_label'), url: m(post, 'cta2_url') },
     site: m(post, 'site') as WPSite,
+    relatedContent: parseRelatedContent(post.meta?.related_content_json),
   };
 }
 
@@ -153,6 +155,7 @@ export function mapKyafExhibition(post: WPRawPost) {
       th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
     },
     site: m(post, 'site') as WPSite,
+    relatedContent: parseRelatedContent(post.meta?.related_content_json),
   };
 }
 
@@ -184,6 +187,7 @@ export function mapMovingImage(post: WPRawPost) {
       th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
     },
     site: m(post, 'site') as WPSite,
+    relatedContent: parseRelatedContent(post.meta?.related_content_json),
   };
 }
 
@@ -211,6 +215,7 @@ export function mapResidencyArtist(post: WPRawPost) {
     cta2Label: m(post, 'cta2_label'),
     cta2Url: m(post, 'cta2_url'),
     site: m(post, 'site') as WPSite,
+    relatedContent: parseRelatedContent(post.meta?.related_content_json),
   };
 }
 
@@ -278,6 +283,7 @@ export function mapActivity(post: WPRawPost, lang: Lang = 'en') {
       th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
     },
     site: m(post, 'site') as WPSite,
+    relatedContent: parseRelatedContent(post.meta?.related_content_json),
   };
 }
 
@@ -326,6 +332,7 @@ export function mapBlogPost(post: WPRawPost) {
       th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
     },
     site: m(post, 'site') as WPSite,
+    relatedContent: parseRelatedContent(post.meta?.related_content_json),
   };
 }
 

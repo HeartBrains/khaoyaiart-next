@@ -22,7 +22,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await fetchCPTBySlug('activities', slug);
+  const post = await fetchCPTBySlug('activities', slug, 'kyaf');
   const data = post ? mapActivity(post) : null;
   return kyafMetadata(
     str(data?.title) ?? slug,
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = await fetchCPTBySlug('activities', slug);
+  const post = await fetchCPTBySlug('activities', slug, 'kyaf');
   const data = post ? mapActivity(post) : null;
   const BASE = 'https://khaoyaiart.org/kyaf';
 

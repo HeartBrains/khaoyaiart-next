@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import { RichContent } from '@/utils/richContent';
 import { useLanguage } from '@/utils/languageContext';
 import { useKyafExhibitionBySlug } from '@/lib/useWPData';
+import { RelatedContent } from '@/components/RelatedContent';
 import { Reveal } from '../ui/Reveal';
 import {
   Carousel,
@@ -223,6 +224,7 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                 )}
             </div>
         </div>
+        <RelatedContent items={exhibitionData.relatedContent} language={language} />
       </div>
     </div>
   );

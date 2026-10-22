@@ -6,6 +6,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import Autoplay from 'embla-carousel-autoplay';
 import { useLanguage } from '@/utils/languageContext';
 import { useResidencyArtistBySlug } from '@/lib/useWPData';
+import { RelatedContent } from '@/components/RelatedContent';
 import { RichContent } from '@/utils/richContent';
 
 interface ArtistDetailPageProps {
@@ -148,6 +149,7 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
             )}
           </div>
         </div>
+        <RelatedContent items={data.relatedContent} language={language} />
       </div>
     </div>
   );

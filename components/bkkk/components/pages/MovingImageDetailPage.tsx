@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/utils/languageContext';
 import { RichContent } from '@/utils/richContent';
 import { useMovingImageBySlug } from '@/lib/useWPData';
+import { RelatedContent } from '@/components/RelatedContent';
 import { ArrowLeft } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '../ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
@@ -140,6 +141,7 @@ export function MovingImageDetailPage({ slug, onNavigate }: MovingImageDetailPag
             )}
           </div>
         </div>
+        <RelatedContent items={data.relatedContent} language={language} />
       </div>
     </div>
   );

@@ -27,7 +27,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await fetchCPTBySlug('residency-artists', slug);
+  const post = await fetchCPTBySlug('residency-artists', slug, 'bkkk');
   const data = post ? mapResidencyArtist(post) : null;
   return bkkkMetadata(
     data?.name ?? slug,

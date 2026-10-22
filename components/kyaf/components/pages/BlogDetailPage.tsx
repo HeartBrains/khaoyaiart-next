@@ -8,6 +8,7 @@ import { Reveal } from '../ui/Reveal';
 import { useLanguage } from '@/utils/languageContext';
 import { useScrollHide } from '@/utils/useScrollHide';
 import { useBlogPostBySlug } from '@/lib/useWPData';
+import { RelatedContent } from '@/components/RelatedContent';
 import { RichContent } from '@/utils/richContent';
 
 interface BlogDetailPageProps {
@@ -18,7 +19,7 @@ interface BlogDetailPageProps {
 
 export function BlogDetailPage({ onNavigate, slug, backPage }: BlogDetailPageProps) {
   const { language, t } = useLanguage();
-  const { data: wpPost, loading } = useBlogPostBySlug(slug ?? '');
+  const { data: wpPost, loading } = useBlogPostBySlug(slug ?? '', 'kyaf');
   const { isScrolling } = useScrollHide();
 
   const plugin = useRef(
@@ -142,6 +143,7 @@ export function BlogDetailPage({ onNavigate, slug, backPage }: BlogDetailPagePro
             )}
           </div>
         </div>
+        <RelatedContent items={wpPost.relatedContent} language={language} />
       </div>
     </div>
   );

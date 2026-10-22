@@ -6,6 +6,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import Autoplay from 'embla-carousel-autoplay';
 import { useLanguage } from '@/utils/languageContext';
 import { useResidencyArtistBySlug } from '@/lib/useWPData';
+import { RelatedContent } from '@/components/RelatedContent';
 import { RichContent } from '@/utils/richContent';
 
 interface ArtistDetailPageProps {
@@ -15,7 +16,7 @@ interface ArtistDetailPageProps {
 
 export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
   const { language, t } = useLanguage();
-  const { data, loading, error } = useResidencyArtistBySlug(slug ?? '');
+  const { data, loading, error } = useResidencyArtistBySlug(slug ?? '', 'kyaf');
 
   const plugin = useRef(Autoplay({ delay: 4000, stopOnInteraction: true }));
   const [api, setApi] = useState<CarouselApi>();
@@ -137,6 +138,7 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
             )}
           </div>
         </div>
+        <RelatedContent items={data.relatedContent} language={language} />
       </div>
     </div>
   );

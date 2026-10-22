@@ -7,6 +7,7 @@ import Autoplay from 'embla-carousel-autoplay';
 import { ArrowLeft } from 'lucide-react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { useActivityBySlug } from '@/lib/useWPData';
+import { RelatedContent } from '@/components/RelatedContent';
 
 interface ActivityDetailPageProps {
   onNavigate: (page: string) => void;
@@ -16,7 +17,7 @@ interface ActivityDetailPageProps {
 
 export function ActivityDetailPage({ onNavigate, slug, backPage }: ActivityDetailPageProps) {
   const { language, t } = useLanguage();
-  const { data, loading, error } = useActivityBySlug(slug ?? '');
+  const { data, loading, error } = useActivityBySlug(slug ?? '', 'kyaf');
 
   const plugin = useRef(Autoplay({ delay: 4000, stopOnInteraction: true }));
   const [api, setApi] = useState<CarouselApi>();
@@ -146,6 +147,7 @@ export function ActivityDetailPage({ onNavigate, slug, backPage }: ActivityDetai
             )}
           </div>
         </div>
+        <RelatedContent items={data.relatedContent} language={language} />
       </div>
     </div>
   );

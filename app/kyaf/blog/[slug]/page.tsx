@@ -11,7 +11,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await fetchCPTBySlug('blog_post', slug);
+  const post = await fetchCPTBySlug('blog_post', slug, 'kyaf');
   return kyafMetadata(
     post?.title?.rendered ?? slug,
     post?.content?.rendered?.replace(/<[^>]+>/g, '').slice(0, 160) ?? '',

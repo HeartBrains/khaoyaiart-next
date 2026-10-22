@@ -21,7 +21,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await fetchCPTBySlug('moving-images', slug);
+  const post = await fetchCPTBySlug('moving-images', slug, 'bkkk');
   const data = post ? mapMovingImage(post) : null;
   return bkkkMetadata(
     str(data?.title) ?? slug,

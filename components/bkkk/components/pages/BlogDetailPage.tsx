@@ -6,6 +6,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import Autoplay from 'embla-carousel-autoplay';
 import { useLanguage } from '@/utils/languageContext';
 import { useBlogPostBySlug } from '@/lib/useWPData';
+import { RelatedContent } from '@/components/RelatedContent';
 import { RichContent } from '@/utils/richContent';
 
 interface BlogDetailPageProps {
@@ -97,8 +98,8 @@ export function BlogDetailPage({ onNavigate, slug }: BlogDetailPageProps) {
                 {language === 'th' ? 'กลับไปบล็อก' : 'Back to Blog'}
               </span>
             </button>
-          </div>
-        </div>
+         </div>
+       </div>
       )}
 
       {/* Content */}
@@ -128,6 +129,7 @@ export function BlogDetailPage({ onNavigate, slug }: BlogDetailPageProps) {
                )}
             </div>
          </div>
+         <RelatedContent items={wpPost.relatedContent} language={language} />
       </div>
     </div>
   );

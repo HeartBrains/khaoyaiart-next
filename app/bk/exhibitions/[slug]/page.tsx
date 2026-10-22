@@ -25,7 +25,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await fetchCPTBySlug('exhibitions', slug);
+  const post = await fetchCPTBySlug('exhibitions', slug, 'bkkk');
   const data = post ? mapBkkkExhibition(post) : null;
   return bkkkMetadata(
     str(data?.title) ?? slug,
@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = await fetchCPTBySlug('exhibitions', slug);
+  const post = await fetchCPTBySlug('exhibitions', slug, 'bkkk');
   const data = post ? mapBkkkExhibition(post) : null;
   const BASE = 'https://khaoyaiart.org/bk';
 

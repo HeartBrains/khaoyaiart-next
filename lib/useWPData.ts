@@ -91,13 +91,13 @@ function useWPList<T>(cpt: string, site: 'bkkk' | 'kyaf', mapper: (p: WPRawPost)
   return { data, loading };
 }
 
-function useWPItem<T>(cpt: string, slug: string, mapper: (p: WPRawPost) => T) {
+function useWPItem<T>(cpt: string, slug: string, mapper: (p: WPRawPost) => T, site?: 'bkkk' | 'kyaf') {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     if (!slug) return;
-    fetchCPTBySlug(cpt, slug).then(post => {
+    fetchCPTBySlug(cpt, slug, site).then(post => {
       if (!post) setError('Not found');
       setData(post ? mapper(post) : null);
       setLoading(false);
@@ -105,7 +105,7 @@ function useWPItem<T>(cpt: string, slug: string, mapper: (p: WPRawPost) => T) {
       setError(String(e));
       setLoading(false);
     });
-  }, [cpt, slug]);
+  }, [cpt, slug, site]);
   return { data, loading, error };
 }
 
@@ -124,14 +124,14 @@ export const useKyafPressItems  = () => useWPList('press_item', 'kyaf', mapPress
 export const useBkkkAboutUs     = () => useWPList('about-us', 'bkkk', mapAboutUs);
 export const useKyafAboutUs     = () => useWPList('about-us', 'kyaf', mapAboutUs);
 
-export const useExhibitionBySlug        = (slug: string) => useWPItem('exhibition', slug, mapBkkkExhibition);
-export const useKyafExhibitionBySlug    = (slug: string) => useWPItem('exhibition', slug, mapKyafExhibition);
-export const useActivityBySlug      = (slug: string) => useWPItem('activity', slug, mapActivity);
-export const useMovingImageBySlug   = (slug: string) => useWPItem('moving_image', slug, mapMovingImage);
-export const useResidencyArtistBySlug = (slug: string) => useWPItem('residency_artist', slug, mapResidencyArtist);
+export const useExhibitionBySlug        = (slug: string) => useWPItem('exhibition', slug, mapBkkkExhibition, 'bkkk');
+export const useKyafExhibitionBySlug    = (slug: string) => useWPItem('exhibition', slug, mapKyafExhibition, 'kyaf');
+export const useActivityBySlug      = (slug: string, site: 'bkkk' | 'kyaf' = 'bkkk') => useWPItem('activity', slug, mapActivity, site);
+export const useMovingImageBySlug   = (slug: string) => useWPItem('moving_image', slug, mapMovingImage, 'bkkk');
+export const useResidencyArtistBySlug = (slug: string, site: 'bkkk' | 'kyaf' = 'bkkk') => useWPItem('residency_artist', slug, mapResidencyArtist, site);
 export const useBkkkBlogPosts   = () => useWPList('blog_post', 'bkkk', mapBlogPost);
 export const useKyafBlogPosts   = () => useWPList('blog_post', 'kyaf', mapBlogPost);
-export const useBlogPostBySlug  = (slug: string) => useWPItem('blog_post', slug, mapBlogPost);
+export const useBlogPostBySlug  = (slug: string, site: 'bkkk' | 'kyaf' = 'bkkk') => useWPItem('blog_post', slug, mapBlogPost, site);
 
 // ─── Menu config ─────────────────────────────────────────────────────────────
 

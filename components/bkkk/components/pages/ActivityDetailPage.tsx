@@ -6,6 +6,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import Autoplay from 'embla-carousel-autoplay';
 import { ArrowLeft } from 'lucide-react';
 import { useActivityBySlug } from '@/lib/useWPData';
+import { RelatedContent } from '@/components/RelatedContent';
 
 interface ActivityDetailPageProps {
   onNavigate: (page: string) => void;
@@ -144,6 +145,7 @@ export function ActivityDetailPage({ onNavigate, slug, backPage }: ActivityDetai
             )}
           </div>
         </div>
+        <RelatedContent items={data.relatedContent} language={language} />
       </div>
     </div>
   );
