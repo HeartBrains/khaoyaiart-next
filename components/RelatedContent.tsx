@@ -46,7 +46,13 @@ export function RelatedContent({
               const href = relatedContentHref(item);
               if (!href) return null;
               return (
-                <a key={`${item.site}:${item.type}:${item.id}`} href={href} className="group block text-black">
+                <a
+                  key={`${item.site}:${item.type}:${item.id}`}
+                  href={href}
+                  data-related-site={item.site}
+                  data-related-type={item.type}
+                  className="group block text-black"
+                >
                   {item.image ? (
                     <div className="aspect-[4/3] overflow-hidden bg-gray-100">
                       <img
