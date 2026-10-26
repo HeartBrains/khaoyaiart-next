@@ -70,17 +70,20 @@ function featuredImageUrl(post: WPRawPost): string {
 function galleryUrls(post: WPRawPost): string[] {
   const resolved = post.resolvedGallery ?? [];
 
-  // gallery_media may be an array of URLs (from JetEngine media field)
+  // JetEngine can expose gallery_media as either a URL string or an array.
   const galleryMedia = post.meta?.['gallery_media'];
-  const mediaUrls: string[] = Array.isArray(galleryMedia)
-    ? (galleryMedia as string[]).filter(u => typeof u === 'string' && u.startsWith('http'))
-    : [];
+  const mediaUrls = Array.isArray(galleryMedia)
+    ? galleryMedia.flatMap((value) => typeof value === 'string' ? splitUrls(value) : [])
+    : typeof galleryMedia === 'string'
+      ? splitUrls(galleryMedia)
+      : [];
+  const validMediaUrls = mediaUrls.filter((url) => url.startsWith('http'));
 
   const text = splitUrls(m(post, 'gallery'));
 
   // Merge all sources, deduplicated
   const merged = [...resolved];
-  for (const url of [...mediaUrls, ...text]) {
+  for (const url of [...validMediaUrls, ...text]) {
     if (!merged.includes(url)) merged.push(url);
   }
   return merged;
