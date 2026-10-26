@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[1398,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","3680","static/chunks/3680-d62bf8c87c68ae1c.js","1193","static/chunks/1193-737ff77cbf3ba3d7.js","8259","static/chunks/app/bk/blog/%5Bslug%5D/page-2f1cb25adf73562d.js"],"BlogDetailClientPage"]
+2:I[1398,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","3680","static/chunks/3680-d62bf8c87c68ae1c.js","1193","static/chunks/1193-ee4c6e2203bf287f.js","8259","static/chunks/app/bk/blog/%5Bslug%5D/page-71021e48cad289a5.js"],"BlogDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","slug":"nostalgia-for-unity-interview-with-korakrit-arunanondchai"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"IRUWSLJi_PleYPmVqPaUz"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","slug":"nostalgia-for-unity-interview-with-korakrit-arunanondchai"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"n6uKV5FaWaJ70UKk5Rntp"}
 5:null
