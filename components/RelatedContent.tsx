@@ -1,13 +1,6 @@
 'use client';
 
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/bkkk/components/ui/carousel';
-import {
   relatedContentHref,
   type RelatedContentItem,
   type RelatedContentType,
@@ -15,12 +8,12 @@ import {
 
 type Language = 'en' | 'th';
 
-const TYPE_LABELS: Record<RelatedContentType, Record<Language, string>> = {
-  exhibitions: { en: 'Exhibitions', th: 'นิทรรศการ' },
-  activities: { en: 'Activities', th: 'กิจกรรม' },
-  'moving-image': { en: 'Moving Image', th: 'ภาพเคลื่อนไหว' },
-  artists: { en: 'Artists', th: 'ศิลปิน' },
-  blog: { en: 'Blog', th: 'บทความ' },
+const RELATED_HEADINGS: Record<RelatedContentType, Record<Language, string>> = {
+  exhibitions: { en: 'Related Exhibitions', th: 'นิทรรศการที่เกี่ยวข้อง' },
+  activities: { en: 'Related Activities', th: 'กิจกรรมที่เกี่ยวข้อง' },
+  'moving-image': { en: 'Related Moving Image', th: 'ภาพเคลื่อนไหวที่เกี่ยวข้อง' },
+  artists: { en: 'Related Artists', th: 'ศิลปินที่เกี่ยวข้อง' },
+  blog: { en: 'Related Blog Posts', th: 'บทความที่เกี่ยวข้อง' },
 };
 
 const TYPE_ORDER: RelatedContentType[] = [
@@ -54,68 +47,47 @@ export function RelatedContent({
   }
 
   return (
-    <section className="mt-16 border-t border-black/10 pt-10" aria-label={language === 'th' ? 'เนื้อหาที่เกี่ยวข้อง' : 'Related content'}>
-      <h2 className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-        {language === 'th' ? 'เนื้อหาที่เกี่ยวข้อง' : 'Related content'}
-      </h2>
-      {orderedGroups.map(([type, records]) => (
-        <div key={type} className="mt-8">
-          <h3 className={`mb-4 text-base md:text-lg font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-            {TYPE_LABELS[type][language]}
-          </h3>
-          <Carousel
-            className="w-full"
-            opts={{ align: 'start', loop: records.length > 2 }}
-          >
-            <CarouselContent>
+    <section
+      className="mt-16 border-t border-black/10 pt-8"
+      aria-label={language === 'th' ? 'เนื้อหาที่เกี่ยวข้อง' : 'Related content'}
+    >
+      {orderedGroups.map(([type, records], groupIndex) => (
+        <div key={type} className={groupIndex > 0 ? 'mt-12' : ''}>
+          <h2 className={`mb-6 text-xl font-bold text-black ${language === 'th' ? 'leading-[1.82em]' : 'leading-tight'}`}>
+            {RELATED_HEADINGS[type][language]}
+          </h2>
+          <div className="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-2">
             {records.map((item) => {
               const href = relatedContentHref(item);
               if (!href) return null;
               return (
-                <CarouselItem
+                <a
                   key={`${item.site}:${item.type}:${item.id}`}
-                  className="basis-[85%] sm:basis-[55%] lg:basis-[45%]"
+                  href={href}
+                  data-related-site={item.site}
+                  data-related-type={item.type}
+                  className="group block min-w-0 text-black"
                 >
-                  <a
-                    href={href}
-                    data-related-site={item.site}
-                    data-related-type={item.type}
-                    className="group block h-full text-black"
-                  >
-                    {item.image ? (
-                      <div className="aspect-[4/3] md:aspect-[5/2] overflow-hidden bg-gray-100">
-                        <img
-                          src={item.image}
-                          alt={item.title[language] || item.title.en}
-                          loading="lazy"
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                        />
-                      </div>
-                    ) : null}
-                    <h4 className={`mt-3 text-base md:text-lg font-normal leading-tight group-hover:opacity-60 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                      {item.title[language] || item.title.en}
-                    </h4>
-                    {item.date ? (
-                      <p className="mt-2 text-sm text-gray-500">{item.date}</p>
-                    ) : null}
-                  </a>
-                </CarouselItem>
+                  {item.image ? (
+                    <div className="aspect-[3/4] overflow-hidden bg-gray-100">
+                      <img
+                        src={item.image}
+                        alt={item.title[language] || item.title.en}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      />
+                    </div>
+                  ) : null}
+                  <h3 className={`mt-4 text-base font-bold leading-tight group-hover:opacity-60 md:text-lg ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                    {item.title[language] || item.title.en}
+                  </h3>
+                  {item.date ? (
+                    <p className="mt-1 text-sm text-gray-500">{item.date}</p>
+                  ) : null}
+                </a>
               );
             })}
-            </CarouselContent>
-            {records.length > 1 ? (
-              <>
-                <CarouselPrevious
-                  aria-label={language === 'th' ? 'รายการก่อนหน้า' : 'Previous related items'}
-                  className="left-2 top-1/2 z-10 -translate-y-1/2 border-0 bg-white/90 shadow-md hover:bg-white"
-                />
-                <CarouselNext
-                  aria-label={language === 'th' ? 'รายการถัดไป' : 'Next related items'}
-                  className="right-2 top-1/2 z-10 -translate-y-1/2 border-0 bg-white/90 shadow-md hover:bg-white"
-                />
-              </>
-            ) : null}
-          </Carousel>
+          </div>
         </div>
       ))}
     </section>

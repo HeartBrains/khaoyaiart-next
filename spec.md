@@ -1,75 +1,52 @@
-# Pre-cross-site behavior audit and regression recovery
+# Align production related-content design with dev
 
 ## Goal
 
-Use the last known pre-cross-site build as the behavior baseline, identify site functions that were lost or changed afterward, and restore them with focused changes on the current `master` branch. Preserve the cross-site related-content feature while bringing back the earlier behavior.
+Keep the correct cross-site related records currently shown on `khaoyaiart.org`, while matching the related-content design and layout shown on `dev.khaoyaiart.org` in the user-provided comparison screenshot. Apply the design to **all related-content sections on BK and KYAF detail pages**. Treat dev as a visual reference only; make the implementation on `master` and publish it to production.
 
-The baseline identified by the user is the successful GitHub Actions build on `master` for commit `d9cb7429` (`SSG rebuild 2026-10-17T02:43:45Z`). The repo does not contain that commit and the configured GitHub remote does not resolve it, so this recovery uses the user's six-item regression list, the provided screenshot, and current live/build behavior as its evidence. It cannot claim a line-by-line comparison to the Oct 17 source tree. The user reports that the following behavior is missing or incorrect:
-
-1. Menu/control behavior associated with the slideshow image is missing.
-2. Images embedded within page content are missing.
-3. The “Additional Info” area should return to its larger presentation from the baseline.
-4. Related-content image proportions and item ordering/layout are distorted.
-5. The menu’s side-switching behavior and logo placement on the opposite side are missing.
-6. Videos embedded within page content are missing.
+The comparison is for the BK exhibition detail page `/bk/exhibitions/spirits-melt-to-flesh/`. Production currently has the desired cross-site records but presents them as a carousel under a generic “Related content” heading, with oversized/wide cards. The dev screenshot shows a stronger “Related Activities” heading and a two-column card grid with portrait images, titles, and dates beneath. The user confirmed that this layout should apply across all BK and KYAF detail pages.
 
 ## Requirements
 
-- Compare current behavior with all recoverable baseline evidence before changing implementation code; record when the exact source or generated output is unavailable.
-- Inspect all site routes and shared components affected by the changes after the baseline, rather than limiting the audit to the related-content component.
-- Trace each reported regression to its data source, mapper, route/page component, shared UI, or generated static output. Record the responsible files and affected routes in a regression matrix.
-- Restore the six reported behaviors to match the baseline on the routes and viewport sizes where each applies:
-  - slideshow image menu and controls;
-  - images embedded in content;
-  - larger Additional Info presentation;
-  - related-content proportions and ordering/layout;
-  - menu side-switching and opposite-side logo placement;
-  - embedded content videos.
-- Keep current cross-site related-content selection and rendering functional. Related records must continue resolving to the correct site: internal site ID `bkkk` uses `/bk/`, and `kyaf` uses `/kyaf/`.
-- Preserve existing WordPress relation values and plugin behavior. Do not change the field schema or relation storage unless the audit proves that a frontend regression cannot be corrected without it.
-- Implement each recovery as the smallest targeted change that restores baseline behavior. Do not reset `master` to the October 17 build or broadly revert the cross-site feature.
-- Check both statically generated pages and the existing runtime detail-page fallback where supported.
-- After implementation, build the static frontend and inspect its generated output before using the repository’s established GitHub deployment trigger.
+- Preserve the cross-site relation data that is currently correct on production. Do not replace it with dev content or dev API data.
+- Match the dev screenshot's related-content presentation for the agreed scope, including group heading treatment, card grid, image proportions/cropping, typography, and spacing.
+- Keep same-type BK and KYAF records in the same group and retain the current production relation ordering unless the user confirms another order.
+- Every card must link to the correct site and detail route: `bkkk` records use `/bk/`; `kyaf` records use `/kyaf/`.
+- Preserve the prior display requirement: show a related record's date below its title and omit the site name.
+- Make the layout usable at narrow and wide viewport sizes; prevent horizontal overflow and ensure every card remains reachable.
+- Apply the agreed layout consistently to the agreed detail-page/site scope, including generated detail pages. Keep the existing runtime detail fallback compatible where it renders related records.
+- Do not modify WordPress relation storage, editor fields, or plugins for this presentation change.
 
-## Constraints and known facts
+## Constraints and current architecture
 
-- Work on `master`; do not base changes on a `dev` branch.
-- The current checkout is `/workspaces/khaoyaiart-next`, with `origin` set to `HeartBrains/khaoyaiart-next`.
-- The checked-out repository does not contain commit `d9cb7429`; fetching that SHA from the configured remote failed, and the GitHub API did not resolve it. The user’s screenshot identifies it as a completed `master` build. Do not silently substitute October 9 commit `9fde9f5` for the October 17 baseline. Implementation may proceed from the user's regression list and verifiable current behavior while clearly recording this comparison limit.
-- The worktree has a pre-existing untracked `.devcontainer/` directory. Leave it untouched.
-- The public URL prefix `/bk/` maps to internal site ID `bkkk`; `/kyaf/` maps to `kyaf`. Preserve this mapping in route resolution and detail fallback handling.
-- WordPress is headless at `content.khaoyaiart.org`; the frontend is a static export with build-time WordPress data and client-side fallback for supported detail pages. There is no Next.js server runtime.
-- Before writing Next.js code, read the relevant guide under `node_modules/next/dist/docs/` and follow the repository-specific Next.js rules.
-- Do not install or mutate WordPress plugins as part of frontend recovery unless the regression audit establishes a specific WordPress-side cause. If plugin changes become necessary, keep them separately scoped and package/push the plugin source or ZIP without installing it on WordPress.
+- Work on `master`; do not develop on or merge from the `dev` branch.
+- `khaoyaiart.org` is the production frontend. `www.khaoyaiart.org` redirects to it. `dev.khaoyaiart.org` is a separate visual reference and must not be the deployment target.
+- The current checkout is `/workspaces/khaoyaiart-next`; the deployed production revision is `82fd194dbd4a22ef7c47d872a5f10422667619fd`.
+- The frontend is a Next.js static export backed by WordPress at `content.khaoyaiart.org`. The shared `components/RelatedContent.tsx` component groups relation records and currently renders them in a carousel. Data mapping and canonical route generation are in `lib/`.
+- Keep the data and presentation responsibilities separate: retain the production related-record model, grouping, ordering, and `relatedContentHref` routing while changing the shared card presentation to match the approved dev reference.
+- The recent Hostinger sync targeted `/home/u202460562/domains/khaoyaiart.org/public_html`; WordPress files under the `content.khaoyaiart.org` document root were not changed.
+- Before writing Next.js code, read the relevant guide under `node_modules/next/dist/docs/` as required by `AGENTS.md`.
+- Avoid removing generated files during manual deployment. The prior sync kept old assets and backed up replaced files under `/home/u202460562/.backups/kyaf-static-before-82fd194dbd`.
 
-## Architecture and audit method
+## Proposed architecture
 
-1. **Baseline acquisition:** Resolve the exact full SHA behind `d9cb7429` from the GitHub Actions run, a retained Git ref, checkout, or build artifact. Verify its parent and tree before treating it as the source baseline. If only a static artifact is recoverable, use it for visual and behavior comparison and record that source-level attribution remains limited.
-2. **Behavior inventory:** Enumerate current BK and KYAF routes, shared layouts, detail templates, menus, content renderers, media components, and related-content components. For each of the six reported items, record baseline behavior, current behavior, affected templates/routes, likely owner, and the verification method.
-3. **Regression attribution:** Compare source commits after the baseline and inspect generated output separately. Distinguish source regressions from stale SSG output or missing WordPress response data. Identify the smallest responsible code path for each issue.
-4. **Focused recovery:** Apply targeted frontend fixes on current `master`. Keep site-specific presentation in the established BK/KYAF component trees, and keep shared behavior in existing shared components only where both sites use the same contract. Preserve cross-site relation resolution and canonical URLs.
-5. **Verification:** Compare representative baseline and current pages, then verify every affected route/site combination, responsive menu positions, inline images and video, Additional Info sizing, slideshow controls, and related-content layout/order. Confirm cross-site related links still use `/bk/` or `/kyaf/` correctly.
-6. **Static release:** Rebuild the static export through the repository workflow, inspect representative generated files, and use the established GitHub trigger after the recovered behavior is reviewable.
+1. Keep production's current cross-site record resolution and route builder as the source of truth.
+2. Update the shared related-content renderer's presentation to reproduce the approved dev layout. Use responsive CSS grid/card styles rather than importing dev branch code or changing the relation API.
+3. Keep the related type groups and each group's production item order intact. Display the existing title, date, and image fields with the established language fallback.
+4. Rebuild the static export on `master`, inspect representative generated detail pages, then publish those files to the production document root using the repository's GitHub workflow and the verified Hostinger route if CI output alone does not refresh the domain.
 
 ## Implementation steps
 
-1. Attempt to retrieve the full `d9cb7429` revision or its corresponding successful build artifact. Keep the current `master` worktree as the implementation target; if retrieval fails, document the evidence limit and use the user's regression list and live/build behavior.
-2. Create a route-by-route regression matrix for the six reported behaviors and identify any additional behavior differences found by comparing shared layouts, detail pages, and generated output.
-3. Trace each regression to the first source change after the baseline that explains it; document whether its cause is a frontend component, data mapping/API response, CSS/layout, or stale SSG output.
-4. Prepare a minimal recovery design for each confirmed regression, including any interaction between restored behavior and cross-site related content. Do not implement a broad rollback.
-5. Implement the approved focused recovery on current `master`, preserving one-way relations, existing WordPress data, and correct site/type/slug routing.
-6. Build and manually verify the affected pages against the baseline. Verify both BK and KYAF where applicable, desktop and narrow viewport behavior for the menu/layout, and static plus runtime detail rendering where supported.
-7. Review the final diff for unrelated changes, then rebuild and publish through the existing GitHub workflow. Do not install WordPress plugin updates as part of this frontend-only recovery.
+1. Compare `components/RelatedContent.tsx` and its supporting styles with the dev screenshot; identify the smallest presentation-only changes needed for the approved layout.
+2. Implement the responsive related-card grid on `master`, preserving production's cross-site data, grouping, selection order, and canonical links.
+3. Run the static build and inspect representative BK and KYAF generated detail pages across all supported detail types. Verify records from both sites remain present, dates appear below titles, site names are absent, and card links resolve to the correct prefixes.
+4. Push the source change to `master`, allow GitHub Actions to generate and commit `out/`, and verify the production URL serves the new output. Do not deploy to `dev.khaoyaiart.org` or modify WordPress.
 
 ## Success criteria
 
-- The October 17 baseline recovery limitation is clearly recorded; behavior claims are limited to the user's supplied regression list and observed current output.
-- A regression matrix covers all six reported behaviors and the affected routes/components; any other discovered losses are added with evidence before implementation.
-- Slideshow image menu/control behavior matches the baseline.
-- Inline content images and embedded videos render on the same supported pages as in the baseline.
-- Additional Info returns to the baseline’s larger presentation.
-- Related-content cards preserve the baseline’s intended image proportions and ordering/layout while continuing to show cross-site records with correct links.
-- The menu retains its side-switching behavior and opposite-side logo placement across relevant viewport sizes.
-- Existing BK/KYAF route mapping, WordPress relation data, and cross-site relation behavior remain intact.
-- The generated static output contains the recovered behavior, and supported runtime detail fallback pages behave consistently.
-- The implementation diff contains only the changes needed for verified regressions and the associated generated build output.
+- All BK and KYAF detail pages with related content visually match the dev reference's related-content heading, card grid, image proportions, typography, and spacing at desktop and narrow widths.
+- Production continues to show the correct cross-site related records, in the existing selected order, with each site's records grouped together by type.
+- Cards show the date below the title and do not display a site label.
+- Each card opens the correct `/bk/` or `/kyaf/` detail page.
+- The static build succeeds, generated output contains the approved design, and the production URL serves the new build.
+- Changes stay on `master`; the dev branch, dev host, WordPress content, and relation-field storage remain unchanged.
