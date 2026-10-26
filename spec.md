@@ -1,63 +1,75 @@
-# Cross-site related content
+# Pre-cross-site behavior audit and regression recovery
 
 ## Goal
 
-Allow WordPress editors to relate published content records across Bangkok Kunsthalle (BK) and Khao Yai Art Forest (KYAF). Show those relations on the headless detail pages, grouped by the related record’s content type, with every link pointing to the record’s correct site and detail route.
+Use the last known pre-cross-site build as the behavior baseline, identify site functions that were lost or changed afterward, and restore them with focused changes on the current `master` branch. Preserve the cross-site related-content feature while bringing back the earlier behavior.
 
-This spec replaces the previously completed smart-404 spec. The previous spec is preserved at [docs/spec-immediate-detail-access.md](docs/spec-immediate-detail-access.md).
+The baseline identified by the user is the successful GitHub Actions build on `master` for commit `d9cb7429` (`SSG rebuild 2026-10-17T02:43:45Z`). The repo does not contain that commit and the configured GitHub remote does not resolve it, so this recovery uses the user's six-item regression list, the provided screenshot, and current live/build behavior as its evidence. It cannot claim a line-by-line comparison to the Oct 17 source tree. The user reports that the following behavior is missing or incorrect:
+
+1. Menu/control behavior associated with the slideshow image is missing.
+2. Images embedded within page content are missing.
+3. The “Additional Info” area should return to its larger presentation from the baseline.
+4. Related-content image proportions and item ordering/layout are distorted.
+5. The menu’s side-switching behavior and logo placement on the opposite side are missing.
+6. Videos embedded within page content are missing.
 
 ## Requirements
 
-### WordPress editor
+- Compare current behavior with all recoverable baseline evidence before changing implementation code; record when the exact source or generated output is unavailable.
+- Inspect all site routes and shared components affected by the changes after the baseline, rather than limiting the audit to the related-content component.
+- Trace each reported regression to its data source, mapper, route/page component, shared UI, or generated static output. Record the responsible files and affected routes in a regression matrix.
+- Restore the six reported behaviors to match the baseline on the routes and viewport sizes where each applies:
+  - slideshow image menu and controls;
+  - images embedded in content;
+  - larger Additional Info presentation;
+  - related-content proportions and ordering/layout;
+  - menu side-switching and opposite-side logo placement;
+  - embedded content videos.
+- Keep current cross-site related-content selection and rendering functional. Related records must continue resolving to the correct site: internal site ID `bkkk` uses `/bk/`, and `kyaf` uses `/kyaf/`.
+- Preserve existing WordPress relation values and plugin behavior. Do not change the field schema or relation storage unless the audit proves that a frontend regression cannot be corrected without it.
+- Implement each recovery as the smallest targeted change that restores baseline behavior. Do not reset `master` to the October 17 build or broadly revert the cross-site feature.
+- Check both statically generated pages and the existing runtime detail-page fallback where supported.
+- After implementation, build the static frontend and inspect its generated output before using the repository’s established GitHub deployment trigger.
 
-- Extend the existing custom WordPress code/plugin that stores related records. Keep its existing storage format and preserve saved relations; do not migrate or clear relation data unless discovery shows the current schema cannot support cross-site selection.
-- Let editors select any **published record with a supported headless detail route**, regardless of whether its site is BK or KYAF or whether its content type matches the current record.
-- Make each candidate identifiable by title, content type, and owning site. Exclude the current record, unpublished records, duplicate selections, and records without a valid site/type/slug route.
-- Keep relations one-way. Adding A → B must not add B → A automatically.
+## Constraints and known facts
 
-### Headless site
+- Work on `master`; do not base changes on a `dev` branch.
+- The current checkout is `/workspaces/khaoyaiart-next`, with `origin` set to `HeartBrains/khaoyaiart-next`.
+- The checked-out repository does not contain commit `d9cb7429`; fetching that SHA from the configured remote failed, and the GitHub API did not resolve it. The user’s screenshot identifies it as a completed `master` build. Do not silently substitute October 9 commit `9fde9f5` for the October 17 baseline. Implementation may proceed from the user's regression list and verifiable current behavior while clearly recording this comparison limit.
+- The worktree has a pre-existing untracked `.devcontainer/` directory. Leave it untouched.
+- The public URL prefix `/bk/` maps to internal site ID `bkkk`; `/kyaf/` maps to `kyaf`. Preserve this mapping in route resolution and detail fallback handling.
+- WordPress is headless at `content.khaoyaiart.org`; the frontend is a static export with build-time WordPress data and client-side fallback for supported detail pages. There is no Next.js server runtime.
+- Before writing Next.js code, read the relevant guide under `node_modules/next/dist/docs/` and follow the repository-specific Next.js rules.
+- Do not install or mutate WordPress plugins as part of frontend recovery unless the regression audit establishes a specific WordPress-side cause. If plugin changes become necessary, keep them separately scoped and package/push the plugin source or ZIP without installing it on WordPress.
 
-- Expose the relation data through the WordPress REST API in a form the static build and client-side detail fallback can use. Each resolved item needs at least its WordPress ID, type, slug, title, date, and owning site; include a featured image when available.
-- Render a related-content section on detail pages when a record has related items. Group items by related record type. Records of the same type from BK and KYAF appear together in that group, rather than in separate site groups.
-- Match each brand’s current detail-page design and reuse its established card/list patterns. Show the linked record’s date below its title without displaying its site name. Use the linked record’s site and type to generate its URL; do not rely on a WordPress admin permalink.
-- Keep relations directional: an item appears on A’s page when A relates to it, and does not appear on B’s page unless B has its own relation to A.
-- Work for statically generated detail pages and for detail pages rendered by the runtime smart 404 shell.
+## Architecture and audit method
 
-## Constraints and current architecture
-
-- The headless site is a Next.js static export backed by WordPress at `content.khaoyaiart.org`. Related data must be available during build and to the existing client-side fallback; there is no Next.js server runtime.
-- Internal site IDs are `bkkk` and `kyaf`. Public route prefixes are `/bk/` for `bkkk` and `/kyaf/` for `kyaf`. The shared route resolver must preserve this mapping.
-- Existing detail routes cover exhibitions, activities, artists (`residency_artist` records), and blog on both sites. BK also has a moving-image detail route. Team and press records do not currently have detail routes and therefore are not picker candidates under the agreed scope.
-- Route support needs an implementation-time audit: `app/not-found.tsx` recognizes `moving-image` in its route matcher, but its detail shell currently renders moving-image only for `bkkk`. Do not offer KYAF moving-image records until that route is actually supported.
-- `fetchCPT(cpt, site)` filters records to one site. Resolving a cross-site relation must not accidentally drop the related record through that site filter. Use the relation API response or an ID-based lookup that can resolve both sites.
-- The related-record field and picker are not defined in the checked-in plugins. The live/custom WordPress plugin and its field schema must be located before implementation. Reuse the established field where possible and keep the implementation deployable to WordPress separately from the static-site code.
-- Before writing Next.js code, read the relevant guide under `node_modules/next/dist/docs/` as required by the repository instructions.
-
-## Architecture
-
-1. **WordPress relation provider:** The existing custom plugin owns the editor field and relation storage. Its candidate query spans the supported content types and both site values, returns published records only, and exposes enough metadata to identify each candidate. The relation remains a directed reference.
-2. **REST contract:** The plugin or current REST integration exposes selected relations as IDs and/or resolved record summaries. The response must be public-safe and must not expose drafts or private fields. Preserve ordering from the WordPress relation field if it has an explicit selection order.
-3. **Headless model and route resolver:** Add a shared related-record model and a single route resolver based on the related record’s site and type. Map `bkkk` to `/bk/`, `kyaf` to `/kyaf/`, and use only routes confirmed to exist. Unresolvable records must not produce guessed links.
-4. **Detail rendering:** Both brand component trees consume the same relation model. Their visual wrappers follow each brand’s existing design. The rendering groups resolved records by type and combines BK and KYAF records within each type group.
-5. **Static and runtime data paths:** Integrate the relation contract with build-time detail data and the client-side detail fetch used by the smart 404 shell so both paths show the same related items and canonical links.
+1. **Baseline acquisition:** Resolve the exact full SHA behind `d9cb7429` from the GitHub Actions run, a retained Git ref, checkout, or build artifact. Verify its parent and tree before treating it as the source baseline. If only a static artifact is recoverable, use it for visual and behavior comparison and record that source-level attribution remains limited.
+2. **Behavior inventory:** Enumerate current BK and KYAF routes, shared layouts, detail templates, menus, content renderers, media components, and related-content components. For each of the six reported items, record baseline behavior, current behavior, affected templates/routes, likely owner, and the verification method.
+3. **Regression attribution:** Compare source commits after the baseline and inspect generated output separately. Distinguish source regressions from stale SSG output or missing WordPress response data. Identify the smallest responsible code path for each issue.
+4. **Focused recovery:** Apply targeted frontend fixes on current `master`. Keep site-specific presentation in the established BK/KYAF component trees, and keep shared behavior in existing shared components only where both sites use the same contract. Preserve cross-site relation resolution and canonical URLs.
+5. **Verification:** Compare representative baseline and current pages, then verify every affected route/site combination, responsive menu positions, inline images and video, Additional Info sizing, slideshow controls, and related-content layout/order. Confirm cross-site related links still use `/bk/` or `/kyaf/` correctly.
+6. **Static release:** Rebuild the static export through the repository workflow, inspect representative generated files, and use the established GitHub trigger after the recovered behavior is reviewable.
 
 ## Implementation steps
 
-1. Locate the live/custom WordPress plugin and identify the existing relation field, stored value shape, candidate query, and REST exposure. Inventory published detail routes by site and content type; map `residency_artist` to `/artists/` and resolve the KYAF moving-image discrepancy before considering that type eligible.
-2. Extend the existing picker to query all published, routable records from both sites. Preserve the current relation storage and existing selections; show title, type, and site in candidate results; retain one-way behavior.
-3. Expose selected relations through the WordPress REST API with the fields needed by the headless site. Confirm cross-site records can be resolved without site-filter loss.
-4. Implement the shared related-record mapping and canonical route resolver for every supported site/type combination. Handle missing site, type, slug, or unpublished targets without emitting broken links.
-5. Add the grouped related-content section to BK and KYAF detail pages, using their current visual patterns. Include all supported detail types and keep same-type records from both sites together.
-6. Verify manually in WordPress and on both site variants: select same-site and cross-site records, inspect REST responses, confirm one-way behavior and type grouping, and follow links to the correct site. Verify both a generated detail page and the runtime smart-404 path after a rebuild.
-7. Package/deploy the WordPress plugin update separately, then rebuild and publish the static site through the repository’s established deploy workflow.
+1. Attempt to retrieve the full `d9cb7429` revision or its corresponding successful build artifact. Keep the current `master` worktree as the implementation target; if retrieval fails, document the evidence limit and use the user's regression list and live/build behavior.
+2. Create a route-by-route regression matrix for the six reported behaviors and identify any additional behavior differences found by comparing shared layouts, detail pages, and generated output.
+3. Trace each regression to the first source change after the baseline that explains it; document whether its cause is a frontend component, data mapping/API response, CSS/layout, or stale SSG output.
+4. Prepare a minimal recovery design for each confirmed regression, including any interaction between restored behavior and cross-site related content. Do not implement a broad rollback.
+5. Implement the approved focused recovery on current `master`, preserving one-way relations, existing WordPress data, and correct site/type/slug routing.
+6. Build and manually verify the affected pages against the baseline. Verify both BK and KYAF where applicable, desktop and narrow viewport behavior for the menu/layout, and static plus runtime detail rendering where supported.
+7. Review the final diff for unrelated changes, then rebuild and publish through the existing GitHub workflow. Do not install WordPress plugin updates as part of this frontend-only recovery.
 
 ## Success criteria
 
-- Editors can find and select any published, routable record from either BK or KYAF, including records of a different type from the current record.
-- Draft, private, deleted, unsupported-route, self, and duplicate candidates are not offered or rendered.
-- Existing saved relations remain intact, and a relation remains one-way unless separately selected on the other record.
-- REST data identifies each selected record’s type and owning site and is usable by both static and client-side detail rendering.
-- Detail pages show related records grouped by type, with BK and KYAF records of the same type together and styled consistently with the page’s brand.
-- Every related-content card displays its date below its title and omits the site name.
-- Every related link resolves to the correct public route: `/bk/...` for `bkkk` and `/kyaf/...` for `kyaf`.
-- Same-site and cross-site relations behave consistently on both BK and KYAF pages, including after static rebuild and through the runtime smart 404 shell.
+- The October 17 baseline recovery limitation is clearly recorded; behavior claims are limited to the user's supplied regression list and observed current output.
+- A regression matrix covers all six reported behaviors and the affected routes/components; any other discovered losses are added with evidence before implementation.
+- Slideshow image menu/control behavior matches the baseline.
+- Inline content images and embedded videos render on the same supported pages as in the baseline.
+- Additional Info returns to the baseline’s larger presentation.
+- Related-content cards preserve the baseline’s intended image proportions and ordering/layout while continuing to show cross-site records with correct links.
+- The menu retains its side-switching behavior and opposite-side logo placement across relevant viewport sizes.
+- Existing BK/KYAF route mapping, WordPress relation data, and cross-site relation behavior remain intact.
+- The generated static output contains the recovered behavior, and supported runtime detail fallback pages behave consistently.
+- The implementation diff contains only the changes needed for verified regressions and the associated generated build output.

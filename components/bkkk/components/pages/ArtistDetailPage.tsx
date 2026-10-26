@@ -56,7 +56,7 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
               ))}
             </CarouselContent>
             {gallery.length > 1 && (
-              <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <div className="absolute inset-0 flex items-center justify-between p-4 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 transition-opacity pointer-events-none">
                 <CarouselPrevious className="pointer-events-auto static transform-none h-12 w-12 bg-black/30 hover:bg-black/50 border-none text-white" />
                 <CarouselNext className="pointer-events-auto static transform-none h-12 w-12 bg-black/30 hover:bg-black/50 border-none text-white" />
               </div>
@@ -117,8 +117,8 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
 
               {/* Additional Info */}
               {data.additionalInfo && (
-                <div className={`text-sm font-normal text-gray-500 mt-6 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                  {data.additionalInfo}
+                <div className={`mt-6 text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                  <RichContent content={data.additionalInfo} />
                 </div>
               )}
 

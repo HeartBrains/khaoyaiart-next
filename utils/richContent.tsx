@@ -2,13 +2,23 @@
 import React from 'react';
 
 /** Decode HTML entities so WP-encoded content renders correctly. */
+function decodeCodePoint(value: string, radix: number): string {
+  const codePoint = parseInt(value, radix);
+  return Number.isInteger(codePoint) && codePoint >= 0 && codePoint <= 0x10ffff
+    ? String.fromCodePoint(codePoint)
+    : '';
+}
+
 function decodeEntities(str: string): string {
   return str
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => decodeCodePoint(hex, 16))
+    .replace(/&#([0-9]+);/g, (_, dec) => decodeCodePoint(dec, 10))
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&#039;/g, "'")
+    .replace(/&apos;/g, "'")
     .replace(/&nbsp;/g, ' ');
 }
 
@@ -37,9 +47,24 @@ export function stripWrapperDivs(html: string): string {
  */
 export function autoLink(text: string): string {
   return text.replace(
-    /(?<!href=")(?<!src=")(https?:\/\/[^\s<>"']+)/g,
+    /(https?:\/\/[^\s<>"']+)/g,
     '<a href="$1" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">$1</a>'
   );
+}
+
+/** Link URLs in HTML text nodes without rewriting media or link attributes. */
+function autoLinkHtml(html: string): string {
+  let insideAnchor = false;
+
+  return html.split(/(<[^>]+>)/g).map((part) => {
+    if (part.startsWith('<')) {
+      if (/^<\/a\b/i.test(part)) insideAnchor = false;
+      else if (/^<a\b/i.test(part)) insideAnchor = true;
+      return part;
+    }
+
+    return insideAnchor ? part : autoLink(part);
+  }).join('');
 }
 
 /**
@@ -61,7 +86,7 @@ export function RichContent({
   const isHtml = /<[a-z][\s\S]*>/i.test(decoded);
 
   if (isHtml) {
-    const linked = autoLink(decoded);
+    const linked = autoLinkHtml(decoded);
     return (
       <div
         className={`rich-content ${bold ? '[&_a]:font-bold' : ''} ${className}`}

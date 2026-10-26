@@ -566,3 +566,36 @@ html {
 .rich-content a:hover {
   opacity: 0.6;
 }
+
+/* Keep WordPress body media visible and responsive inside detail copy. */
+.rich-content figure {
+  max-width: 100%;
+  margin: 2rem 0;
+}
+
+.rich-content img,
+.rich-content video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 2rem 0;
+}
+
+.rich-content figure img,
+.rich-content figure video {
+  margin: 0;
+}
+
+.rich-content iframe {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  margin: 2rem 0;
+}
+
+.rich-content figure iframe {
+  margin: 0;
+}

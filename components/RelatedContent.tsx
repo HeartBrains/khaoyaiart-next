@@ -23,6 +23,14 @@ const TYPE_LABELS: Record<RelatedContentType, Record<Language, string>> = {
   blog: { en: 'Blog', th: 'บทความ' },
 };
 
+const TYPE_ORDER: RelatedContentType[] = [
+  'exhibitions',
+  'activities',
+  'moving-image',
+  'artists',
+  'blog',
+];
+
 export function RelatedContent({
   items,
   language,
@@ -39,13 +47,18 @@ export function RelatedContent({
   }
 
   if (grouped.size === 0) return null;
+  const orderedGroups: Array<[RelatedContentType, RelatedContentItem[]]> = [];
+  for (const type of TYPE_ORDER) {
+    const records = grouped.get(type);
+    if (records?.length) orderedGroups.push([type, records]);
+  }
 
   return (
     <section className="mt-16 border-t border-black/10 pt-10" aria-label={language === 'th' ? 'เนื้อหาที่เกี่ยวข้อง' : 'Related content'}>
       <h2 className={`text-xl md:text-2xl font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
         {language === 'th' ? 'เนื้อหาที่เกี่ยวข้อง' : 'Related content'}
       </h2>
-      {[...grouped.entries()].map(([type, records]) => (
+      {orderedGroups.map(([type, records]) => (
         <div key={type} className="mt-8">
           <h3 className={`mb-4 text-base md:text-lg font-normal text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
             {TYPE_LABELS[type][language]}
@@ -70,7 +83,7 @@ export function RelatedContent({
                     className="group block h-full text-black"
                   >
                     {item.image ? (
-                      <div className="aspect-[4/3] overflow-hidden bg-gray-100">
+                      <div className="aspect-[4/3] md:aspect-[5/2] overflow-hidden bg-gray-100">
                         <img
                           src={item.image}
                           alt={item.title[language] || item.title.en}

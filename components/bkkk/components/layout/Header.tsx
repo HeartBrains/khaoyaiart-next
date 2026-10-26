@@ -2,6 +2,7 @@
 import { Menu } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Logo } from '../ui/Logo';
+import KyafBlk from '@/components/kyaf/imports/KyafBlk';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -24,12 +25,24 @@ export function Header({ onMenuClick, onLogoClick, isTransparent = false, isScro
           white={isTransparent}
         />
       </div>
-      <div className="flex items-center gap-4 mr-[-2%]">
-        {/* Removed KYAF link */}
+      <div className="flex items-center gap-3 mr-[-2%]">
+        <a
+          href="/kyaf/"
+          aria-label="Switch to Khao Yai Art Forest"
+          title="Khao Yai Art Forest"
+          className="inline-flex items-center justify-center"
+        >
+          <span
+            className="relative block h-[22px] w-[52px] md:h-[30px] md:w-[70px]"
+            style={{ filter: isTransparent ? 'invert(1) brightness(2)' : undefined }}
+          >
+            <KyafBlk />
+          </span>
+        </a>
         <Button 
           variant="ghost" 
           onClick={onMenuClick}
-          className={`w-[9vw] h-[9vw] min-w-[9vw] min-h-[9vw] md:w-[6vw] md:h-[6vw] md:min-w-[6vw] md:min-h-[6vw] !p-0 transition-colors hover:bg-gray-500/40 ${
+          className={`w-[9vw] h-[9vw] min-w-[44px] min-h-[44px] md:w-[6vw] md:h-[6vw] md:min-w-[44px] md:min-h-[44px] !p-0 transition-colors hover:bg-gray-500/40 ${
             isTransparent 
               ? 'text-white' 
               : 'text-black'

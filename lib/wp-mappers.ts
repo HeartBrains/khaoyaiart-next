@@ -44,6 +44,62 @@ function splitUrls(value: string): string[] {
   return value.split(sep).map(u => u.trim()).filter(Boolean);
 }
 
+const EMBEDDED_MEDIA_BLOCK =
+  /<figure\b[^>]*>[\s\S]*?<\/figure>|<(?:iframe|video|audio)\b[^>]*>[\s\S]*?<\/(?:iframe|video|audio)>|<img\b[^>]*\/?>/gi;
+
+function embeddedMediaBlocks(html: string): string[] {
+  return html.match(EMBEDDED_MEDIA_BLOCK) ?? [];
+}
+
+function embeddedMediaSources(html: string): string[] {
+  const normalized = html
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/gi, "'");
+  const sources: string[] = [];
+  normalized.replace(
+    /\b(?:src|data-src|poster)\s*=\s*(?:"([^"]*)"|'([^']*)')/gi,
+    (_match, doubleQuoted: string | undefined, singleQuoted: string | undefined) => {
+      const source = doubleQuoted ?? singleQuoted;
+      if (source) sources.push(source);
+      return _match;
+    }
+  );
+  return sources;
+}
+
+/**
+ * Prefer JetEngine's localized body text, but retain media entered in the
+ * standard WordPress editor when that media is absent from the custom field.
+ */
+function contentWithEmbeddedMedia(post: WPRawPost, preferred: string): string {
+  const nativeContent = post.content?.rendered ?? '';
+  if (!preferred) return nativeContent;
+
+  const mediaBlocks = embeddedMediaBlocks(nativeContent);
+  if (mediaBlocks.length === 0) return preferred;
+
+  const seenSources = new Set(embeddedMediaSources(preferred));
+  const seenSourceLessBlocks = new Set<string>();
+  const missingMedia = mediaBlocks.filter((block) => {
+    const sources = embeddedMediaSources(block);
+    if (sources.length === 0) {
+      const key = block.replace(/\s+/g, ' ').trim();
+      if (seenSourceLessBlocks.has(key) || preferred.includes(block)) return false;
+      seenSourceLessBlocks.add(key);
+      return true;
+    }
+
+    const missingSources = sources.filter((source) => !seenSources.has(source));
+    missingSources.forEach((source) => seenSources.add(source));
+    return missingSources.length > 0;
+  });
+
+  return missingMedia.length > 0
+    ? [preferred, ...missingMedia].join('\n')
+    : preferred;
+}
+
 // Featured image: native WP media (resolved at fetch time) → meta text URL fallback
 function featuredImageUrl(post: WPRawPost): string {
   if (post.resolvedFeaturedImage) return post.resolvedFeaturedImage;
@@ -111,8 +167,8 @@ export function mapBkkkExhibition(post: WPRawPost) {
     imageCredits: m(post, 'image_credits'),
     tags: m(post, 'tags_en'),
     content: {
-      en: m(post, 'content_en') || post.content?.rendered || '',
-      th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
+      en: contentWithEmbeddedMedia(post, m(post, 'content_en')),
+      th: contentWithEmbeddedMedia(post, m(post, 'content_th') || m(post, 'content_en')),
     },
     additionalInfo: {
       en: m(post, 'additional_info'),
@@ -154,8 +210,8 @@ export function mapKyafExhibition(post: WPRawPost) {
       th: m(post, 'content_th').replace(/<[^>]+>/g, '').slice(0, 200),
     },
     content: {
-      en: m(post, 'content_en') || post.content?.rendered || '',
-      th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
+      en: contentWithEmbeddedMedia(post, m(post, 'content_en')),
+      th: contentWithEmbeddedMedia(post, m(post, 'content_th') || m(post, 'content_en')),
     },
     site: m(post, 'site') as WPSite,
     relatedContent: parseRelatedContent(post.meta?.related_content_json),
@@ -186,8 +242,8 @@ export function mapMovingImage(post: WPRawPost) {
     ctaLeft:  { label: m(post, 'cta_label'),  url: m(post, 'cta_url') },
     ctaRight: { label: m(post, 'cta2_label'), url: m(post, 'cta2_url') },
     content: {
-      en: m(post, 'content_en') || post.content?.rendered || '',
-      th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
+      en: contentWithEmbeddedMedia(post, m(post, 'content_en')),
+      th: contentWithEmbeddedMedia(post, m(post, 'content_th') || m(post, 'content_en')),
     },
     site: m(post, 'site') as WPSite,
     relatedContent: parseRelatedContent(post.meta?.related_content_json),
@@ -211,8 +267,8 @@ export function mapResidencyArtist(post: WPRawPost) {
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),
     additionalInfo: m(post, 'additional_info'),
-    bio: m(post, 'bio_en') || post.content?.rendered || '',
-    bioTH: m(post, 'bio_th') || m(post, 'bio_en') || post.content?.rendered || '',
+    bio: contentWithEmbeddedMedia(post, m(post, 'bio_en')),
+    bioTH: contentWithEmbeddedMedia(post, m(post, 'bio_th') || m(post, 'bio_en')),
     ctaLabel: m(post, 'cta_label'),
     ctaUrl: m(post, 'cta_url'),
     cta2Label: m(post, 'cta2_label'),
@@ -282,8 +338,8 @@ export function mapActivity(post: WPRawPost, lang: Lang = 'en') {
       th: (m(post, 'content_th') || m(post, 'content_en')).replace(/<[^>]+>/g, '').slice(0, 200),
     },
     content: {
-      en: m(post, 'content_en') || post.content?.rendered || '',
-      th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
+      en: contentWithEmbeddedMedia(post, m(post, 'content_en')),
+      th: contentWithEmbeddedMedia(post, m(post, 'content_th') || m(post, 'content_en')),
     },
     site: m(post, 'site') as WPSite,
     relatedContent: parseRelatedContent(post.meta?.related_content_json),
